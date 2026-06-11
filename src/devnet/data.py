@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data import Dataset
+from torchvision.transforms import v2
 
 
 def load_split(root, split: str):
@@ -52,3 +53,43 @@ class ArrayDataset(Dataset):
         if self.transform is not None:
             x = self.transform(x)
         return x, self.labels[i]
+
+
+# Augmentation tiers. Script-aware: NO horizontal/vertical flips —
+# a mirrored Devanagari character is not a valid character.
+_AUG_TIERS = {
+    "none": [],
+    "light": [
+        v2.RandomAffine(degrees=8, translate=(0.08, 0.08), scale=(0.95, 1.05)),
+    ],
+    "medium": [
+        v2.RandomAffine(degrees=12, translate=(0.10, 0.10), scale=(0.90, 1.10), shear=5),
+        v2.ElasticTransform(alpha=15.0, sigma=3.0),
+    ],
+    "heavy": [
+        v2.RandomAffine(degrees=15, translate=(0.12, 0.12), scale=(0.85, 1.15), shear=8),
+        v2.ElasticTransform(alpha=25.0, sigma=3.0),
+    ],
+}
+
+
+def compute_mean_std(images: np.ndarray) -> tuple[float, float]:
+    """Mean/std in [0,1] units, computed on the training split only."""
+    x = images.astype(np.float64) / 255.0
+    return float(x.mean()), float(x.std())
+
+
+def build_train_transform(tier: str, mean: float, std: float):
+    return v2.Compose([
+        v2.ToDtype(torch.float32, scale=True),
+        *_AUG_TIERS[tier],
+        v2.Normalize([mean], [std]),
+        v2.RandomErasing(p=0.25, scale=(0.02, 0.10)),
+    ])
+
+
+def build_eval_transform(mean: float, std: float):
+    return v2.Compose([
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize([mean], [std]),
+    ])
