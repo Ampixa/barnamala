@@ -1,0 +1,12 @@
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.997102846258772,
+  "mapping_note": "recovered permutation (identity acc was 0.0217)",
+  "published_accuracy": 0.9971
+}
