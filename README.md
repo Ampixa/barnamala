@@ -30,7 +30,11 @@ a ~1.1M-parameter distilled student. Spec: `docs/superpowers/specs/`.
     ./scripts/run_seeds.sh configs/student.yaml
 
     # 5. Baseline + paired stats
+    git clone --depth 1 https://github.com/sahajrajmalla/MallaNet /tmp/mallanet_repo
     .venv/bin/python scripts/reproduce_mallanet.py
+    .venv/bin/python scripts/run_mcnemar.py \
+        results/student_distilled_seed0/test_predictions.npz \
+        results/mallanet_baseline/test_predictions.npz
 
 ## Statistical protocol
 

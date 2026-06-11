@@ -4,6 +4,7 @@ Produces results/mallanet_baseline/test_predictions.npz for paired tests.
 Handles potential class-index permutation between their numeric training
 folders and our alphabetical UCI folder order.
 """
+import argparse
 import json
 from pathlib import Path
 
@@ -17,8 +18,6 @@ from devnet.evaluate import metrics_from_predictions, predict, save_predictions
 from devnet.models.mallanet_baseline import EnhancedBMCNNwHFCs
 from devnet.train import resolve_device
 
-WEIGHTS = Path("/tmp/mallanet_repo/models/best_model.pth")
-DATA_ROOT = "data/extracted/DevanagariHandwrittenCharacterDataset"
 OUT = Path("results/mallanet_baseline")
 
 
@@ -34,12 +33,24 @@ def recover_permutation(preds, labels, num_classes=46):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--weights", default="/tmp/mallanet_repo/models/best_model.pth")
+    ap.add_argument("--data-root",
+                    default="data/extracted/DevanagariHandwrittenCharacterDataset")
+    args = ap.parse_args()
+
+    if not Path(args.weights).exists():
+        raise SystemExit(
+            f"MallaNet checkpoint not found: {args.weights}\n"
+            "Clone it first: git clone --depth 1 "
+            "https://github.com/sahajrajmalla/MallaNet /tmp/mallanet_repo")
+
     device = resolve_device("auto")
     model = EnhancedBMCNNwHFCs(num_classes=46).to(device)
-    ckpt = torch.load(WEIGHTS, map_location=device, weights_only=False)
+    ckpt = torch.load(args.weights, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model_state_dict"])
 
-    images, labels, classes = load_split(DATA_ROOT, "Test")
+    images, labels, classes = load_split(args.data_root, "Test")
     # Their exact eval transform: ToTensor + Normalize((0.5,), (0.5,))
     transform = v2.Compose([
         v2.ToDtype(torch.float32, scale=True),
