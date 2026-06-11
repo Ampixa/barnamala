@@ -51,3 +51,22 @@ def test_cosine_warmup_shape():
     assert lrs[0] < lrs[9]            # warming up
     assert max(lrs) <= 1.0 + 1e-8     # peak at base lr
     assert lrs[-1] < 0.01             # decayed to ~0
+
+
+def test_scheduler_does_not_bounce_past_total_steps():
+    opt = torch.optim.SGD([torch.nn.Parameter(torch.zeros(1))], lr=1.0)
+    sched = cosine_warmup_scheduler(opt, warmup_steps=10, total_steps=100)
+    for _ in range(200):  # deliberately step well past total_steps
+        opt.step()
+        sched.step()
+    assert opt.param_groups[0]["lr"] <= 1e-6  # stays at 0, no rebound
+
+
+def test_apply_mix_does_not_mutate_input():
+    rng = np.random.default_rng(2)
+    x = torch.randn(8, 1, 32, 32)
+    x_orig = x.clone()
+    y = torch.arange(8)
+    for _ in range(20):  # hits both mixup and cutmix branches
+        apply_mix(x, y, mixup_alpha=0.2, cutmix_alpha=1.0, mix_prob=1.0, rng=rng)
+        assert torch.equal(x, x_orig)

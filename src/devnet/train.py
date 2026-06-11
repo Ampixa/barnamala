@@ -19,6 +19,7 @@ def apply_mix(x, y, *, mixup_alpha, cutmix_alpha, mix_prob, rng):
         return x, y, y[perm], lam
     # cutmix
     lam = float(rng.beta(cutmix_alpha, cutmix_alpha))
+    x = x.clone()
     H, W = x.shape[-2:]
     rh, rw = int(H * math.sqrt(1 - lam)), int(W * math.sqrt(1 - lam))
     cy, cx = int(rng.integers(H)), int(rng.integers(W))
@@ -54,7 +55,7 @@ def cosine_warmup_scheduler(optimizer, warmup_steps: int, total_steps: int):
     def fn(step):
         if step < warmup_steps:
             return (step + 1) / warmup_steps
-        progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
+        progress = min((step - warmup_steps) / max(1, total_steps - warmup_steps), 1.0)
         return 0.5 * (1 + math.cos(math.pi * progress))
 
     return torch.optim.lr_scheduler.LambdaLR(optimizer, fn)
