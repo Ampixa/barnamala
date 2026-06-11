@@ -1,0 +1,6 @@
+# Wide teacher, medium augmentation
+widths: [96, 192, 384]
+depths: [3, 3, 3]
+epochs: 300
+aug_tier: medium
+out_dir: results/teacher_a

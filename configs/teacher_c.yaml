@@ -1,0 +1,6 @@
+# Deeper-narrower teacher, medium augmentation
+widths: [64, 128, 256]
+depths: [4, 4, 4]
+epochs: 300
+aug_tier: medium
+out_dir: results/teacher_c
