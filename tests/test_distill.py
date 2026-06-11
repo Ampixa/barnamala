@@ -60,3 +60,36 @@ def test_distill_trainer_rejects_mismatched_teacher_file(tmp_path):
     )
     with pytest.raises(ValueError, match="teacher logits shape"):
         DistillTrainer(cfg, images=images, labels=labels, num_classes=4)
+
+
+def test_train_main_dispatches_to_distill_trainer(tmp_path, monkeypatch):
+    import sys
+
+    import devnet.train as train_mod
+    from devnet.distill import DistillTrainer
+
+    rng = np.random.default_rng(0)
+    base = rng.integers(0, 255, (4, 32, 32), dtype=np.uint8)
+    images = np.repeat(base, 16, axis=0)
+    labels = np.repeat(np.arange(4), 16).astype(np.int64)
+    teacher_logits = np.eye(4, dtype=np.float32)[labels] * 8
+    logits_path = tmp_path / "teacher_logits.npz"
+    np.savez(logits_path, logits=teacher_logits)
+
+    cfg_yaml = tmp_path / "distill.yaml"
+    cfg_yaml.write_text(
+        "widths: [8, 16, 32]\ndepths: [1, 1, 1]\nepochs: 1\nbatch_size: 16\n"
+        "num_workers: 0\ndevice: cpu\nval_fraction: 0.25\naug_tier: none\n"
+        f"teacher_logits: {logits_path}\nout_dir: {tmp_path / 'run'}\n")
+
+    seen = {}
+    orig_init = DistillTrainer.__init__
+
+    def spy_init(self, cfg, **kw):
+        seen["cls"] = type(self).__name__
+        orig_init(self, cfg, images=images, labels=labels, num_classes=4)
+
+    monkeypatch.setattr(DistillTrainer, "__init__", spy_init)
+    monkeypatch.setattr(sys, "argv", ["prog", "--config", str(cfg_yaml)])
+    train_mod.main()
+    assert seen["cls"] == "DistillTrainer"

@@ -217,7 +217,12 @@ def main():
     if args.seed is not None:
         cfg = RunConfig(**{**cfg.__dict__, "seed": args.seed,
                            "out_dir": f"{cfg.out_dir}_seed{args.seed}"})
-    result = Trainer(cfg).fit()
+    if cfg.teacher_logits:
+        from devnet.distill import DistillTrainer  # lazy: avoids circular import
+        trainer_cls = DistillTrainer
+    else:
+        trainer_cls = Trainer
+    result = trainer_cls(cfg).fit()
     print(json.dumps(result))
 
 

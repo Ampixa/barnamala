@@ -20,6 +20,10 @@ def main():
                     default="data/extracted/DevanagariHandwrittenCharacterDataset")
     args = ap.parse_args()
 
+    if len(args.checkpoints) < 2:
+        raise SystemExit("refusing to build an 'ensemble' from fewer than 2 checkpoints")
+    print(f"averaging {len(args.checkpoints)} teacher checkpoints")
+
     device = resolve_device("auto")
     images, labels, _ = load_split(args.data_root, "Train")
     acc = None
