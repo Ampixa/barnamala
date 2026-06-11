@@ -15,7 +15,7 @@ def corrupt(x: torch.Tensor, kind: str, severity: int,
     if severity == 0:
         return x.clone()
     if kind == "noise":
-        noise = torch.randn(x.shape, generator=generator) * _NOISE_STD[severity]
+        noise = torch.randn(x.shape, generator=generator, device=x.device) * _NOISE_STD[severity]
         return (x + noise).clamp(0.0, 1.0)
     if kind == "blur":
         return TF.gaussian_blur(x, kernel_size=5,

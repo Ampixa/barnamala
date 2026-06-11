@@ -16,6 +16,7 @@ def test_severity_zero_is_identity():
     x = torch.rand(2, 1, 32, 32)
     for kind in CORRUPTIONS:
         assert torch.allclose(corrupt(x, kind, severity=0), x, atol=1e-6)
+        assert corrupt(x, kind, severity=0) is not x
 
 
 def test_noise_is_deterministic_given_generator():
