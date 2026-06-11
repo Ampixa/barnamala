@@ -1,8 +1,25 @@
 """Training: mixup/cutmix, weight EMA, cosine warmup, Trainer."""
+import csv
+import json
 import math
+import subprocess
+from pathlib import Path
 
 import numpy as np
 import torch
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+
+from devnet.config import RunConfig
+from devnet.data import (
+    ArrayDataset,
+    build_eval_transform,
+    build_train_transform,
+    compute_mean_std,
+    load_split,
+    stratified_split,
+)
+from devnet.models.student import DevNet
 
 
 def apply_mix(x, y, *, mixup_alpha, cutmix_alpha, mix_prob, rng):
@@ -59,3 +76,150 @@ def cosine_warmup_scheduler(optimizer, warmup_steps: int, total_steps: int):
         return 0.5 * (1 + math.cos(math.pi * progress))
 
     return torch.optim.lr_scheduler.LambdaLR(optimizer, fn)
+
+
+def resolve_device(name: str) -> torch.device:
+    if name == "auto":
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    return torch.device(name)
+
+
+def git_sha() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], text=True
+        ).strip()
+    except Exception:
+        return "unknown"
+
+
+class Trainer:
+    """Supervised trainer. Subclassed by DistillTrainer (later task) which
+    overrides _loaders and _loss; batches may carry a third element (indices)."""
+
+    def __init__(self, cfg: RunConfig, *, images=None, labels=None, num_classes=46):
+        self.cfg = cfg
+        self.device = resolve_device(cfg.device)
+        self.num_classes = num_classes
+        torch.manual_seed(cfg.seed)
+
+        if images is None:  # load real DHCD train split
+            images, labels, _ = load_split(cfg.data_root, "Train")
+        self.mean, self.std = compute_mean_std(images)
+        tr_idx, va_idx = stratified_split(labels, cfg.val_fraction, seed=cfg.seed)
+
+        self.train_ds = ArrayDataset(
+            images[tr_idx], labels[tr_idx],
+            build_train_transform(cfg.aug_tier, self.mean, self.std),
+        )
+        self.val_ds = ArrayDataset(
+            images[va_idx], labels[va_idx],
+            build_eval_transform(self.mean, self.std),
+        )
+        self.train_indices = tr_idx  # kept for KD logit alignment (distill task)
+
+        self.model = DevNet(cfg.widths, cfg.depths, num_classes, cfg.dropout).to(self.device)
+        self.ema = EMA(self.model, cfg.ema_decay)
+        self.rng = np.random.default_rng(cfg.seed)
+
+    def _loaders(self):
+        cfg = self.cfg
+        train = DataLoader(self.train_ds, cfg.batch_size, shuffle=True,
+                           num_workers=cfg.num_workers, pin_memory=True,
+                           drop_last=True)
+        val = DataLoader(self.val_ds, cfg.batch_size, shuffle=False,
+                         num_workers=cfg.num_workers, pin_memory=True)
+        return train, val
+
+    def _loss(self, out, ya, yb, lam, extra=None):
+        ls = self.cfg.label_smoothing
+        return lam * F.cross_entropy(out, ya, label_smoothing=ls) + \
+            (1 - lam) * F.cross_entropy(out, yb, label_smoothing=ls)
+
+    @torch.no_grad()
+    def _validate(self, loader):
+        """Validation accuracy of the EMA weights."""
+        model = DevNet(self.cfg.widths, self.cfg.depths, self.num_classes,
+                       self.cfg.dropout).to(self.device)
+        self.ema.copy_to(model)
+        model.eval()
+        correct = total = 0
+        for x, y in loader:
+            x, y = x.to(self.device), y.to(self.device)
+            correct += (model(x).argmax(1) == y).sum().item()
+            total += y.numel()
+        return correct / total
+
+    def fit(self):
+        cfg = self.cfg
+        out_dir = Path(cfg.out_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        train_loader, val_loader = self._loaders()
+        opt = torch.optim.AdamW(self.model.parameters(), lr=cfg.lr,
+                                weight_decay=cfg.weight_decay)
+        steps_per_epoch = max(1, len(train_loader))
+        sched = cosine_warmup_scheduler(
+            opt, cfg.warmup_epochs * steps_per_epoch, cfg.epochs * steps_per_epoch)
+        use_amp = self.device.type == "cuda"
+        scaler = torch.amp.GradScaler(enabled=use_amp)
+
+        (out_dir / "config.json").write_text(
+            json.dumps({**cfg.__dict__, "git_sha": git_sha(),
+                        "mean": self.mean, "std": self.std}, default=str, indent=2))
+        best_val = 0.0
+        with open(out_dir / "log.csv", "w", newline="") as f:
+            log = csv.writer(f)
+            log.writerow(["epoch", "train_loss", "val_acc", "lr"])
+            for epoch in range(cfg.epochs):
+                self.model.train()
+                running = 0.0
+                for batch in train_loader:
+                    x, y = batch[0].to(self.device), batch[1].to(self.device)
+                    extra = batch[2] if len(batch) > 2 else None
+                    if extra is not None:  # distillation: per-image teacher logits, no mixing
+                        x, ya, yb, lam = x, y, y, 1.0
+                    else:
+                        x, ya, yb, lam = apply_mix(
+                            x, y, mixup_alpha=cfg.mixup_alpha,
+                            cutmix_alpha=cfg.cutmix_alpha,
+                            mix_prob=cfg.mix_prob, rng=self.rng)
+                    with torch.autocast(self.device.type, enabled=use_amp):
+                        out = self.model(x)
+                        loss = self._loss(out, ya, yb, lam, extra=extra)
+                    opt.zero_grad(set_to_none=True)
+                    scaler.scale(loss).backward()
+                    scaler.step(opt)
+                    scaler.update()
+                    sched.step()
+                    self.ema.update(self.model)
+                    running += loss.item() * x.size(0)
+                val_acc = self._validate(val_loader)
+                log.writerow([epoch + 1, running / len(self.train_ds),
+                              val_acc, opt.param_groups[0]["lr"]])
+                f.flush()
+                if val_acc >= best_val:
+                    best_val = val_acc
+                    torch.save({"model_state_dict": self.ema.shadow,
+                                "config": cfg.__dict__,
+                                "mean": self.mean, "std": self.std,
+                                "val_acc": val_acc},
+                               out_dir / "best.pth")
+        return {"best_val_acc": best_val}
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", required=True)
+    ap.add_argument("--seed", type=int, default=None)
+    args = ap.parse_args()
+    cfg = RunConfig.from_yaml(args.config)
+    if args.seed is not None:
+        cfg = RunConfig(**{**cfg.__dict__, "seed": args.seed,
+                           "out_dir": f"{cfg.out_dir}_seed{args.seed}"})
+    result = Trainer(cfg).fit()
+    print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main()
