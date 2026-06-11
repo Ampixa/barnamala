@@ -33,7 +33,7 @@ Three exploitable gaps in the existing literature:
 | # | Claim | Success criterion |
 |---|-------|-------------------|
 | C1 | New SOTA on 46-class DHCD | Ensemble+TTA ≥ 99.82% (≤25 errors), McNemar p < 0.05 vs reproduced MallaNet |
-| C2 | Pareto dominance | Distilled student ~1–1.5M params at ≥ 99.70% single-model accuracy |
+| C2 | Pareto dominance | Distilled student ~1–1.5M params at ≥ 99.70% accuracy, single forward pass (no TTA, no ensemble) |
 | C3 | First statistically rigorous evaluation on this benchmark | 5-seed mean±std, Wilson 95% CIs, exact McNemar paired tests |
 | C4 | Robustness and ceiling analysis | Degradation curves (noise/blur/contrast) vs reproduced MallaNet; manual audit of all residual test errors |
 
