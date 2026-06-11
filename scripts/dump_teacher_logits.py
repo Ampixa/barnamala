@@ -26,8 +26,9 @@ def main():
     for path in args.checkpoints:
         ckpt = torch.load(path, map_location=device, weights_only=False)
         cfg = ckpt["config"]
+        num_classes = ckpt["model_state_dict"]["fc.weight"].shape[0]
         model = DevNet(tuple(cfg["widths"]), tuple(cfg["depths"]),
-                       46, cfg["dropout"]).to(device)
+                       num_classes, cfg["dropout"]).to(device)
         model.load_state_dict(ckpt["model_state_dict"])
         ds = ArrayDataset(images, labels,
                           build_eval_transform(ckpt["mean"], ckpt["std"]))

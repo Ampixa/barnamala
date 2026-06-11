@@ -43,8 +43,15 @@ class DistillTrainer(Trainer):
     def __init__(self, cfg, **kwargs):
         super().__init__(cfg, **kwargs)
         full = np.load(cfg.teacher_logits)["logits"]
-        # align teacher logits with the post-split training subset
-        self.teacher = torch.from_numpy(full[self.train_indices]).float()
+        n_full = len(self.train_indices) + len(self.val_ds)
+        if full.shape != (n_full, self.num_classes):
+            raise ValueError(
+                f"teacher logits shape {full.shape} does not match "
+                f"(full train size, num_classes) = ({n_full}, {self.num_classes}); "
+                "stale or mismatched npz?")
+        # align teacher logits with the post-split training subset; keep on the
+        # training device to avoid a per-batch host-to-device copy
+        self.teacher = torch.from_numpy(full[self.train_indices]).float().to(self.device)
 
     def _loaders(self):
         train, val = super()._loaders()
@@ -55,7 +62,7 @@ class DistillTrainer(Trainer):
 
     def _loss(self, out, ya, yb, lam, extra=None):
         # mixing is disabled for distillation runs (teacher logits are per-image)
-        t = self.teacher[extra].to(out.device)
+        t = self.teacher[extra.to(self.teacher.device)]
         return kd_loss(out, t, ya, temperature=self.cfg.kd_temperature,
                        alpha=self.cfg.kd_alpha,
                        label_smoothing=self.cfg.label_smoothing)

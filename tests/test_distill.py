@@ -41,3 +41,22 @@ def test_distill_trainer_runs_and_uses_teacher(tmp_path):
     trainer = DistillTrainer(cfg, images=images, labels=labels, num_classes=4)
     result = trainer.fit()
     assert result["best_val_acc"] >= 0.99
+
+
+def test_distill_trainer_rejects_mismatched_teacher_file(tmp_path):
+    import pytest
+
+    rng = np.random.default_rng(0)
+    images = rng.integers(0, 255, (64, 32, 32), dtype=np.uint8)
+    labels = np.repeat(np.arange(4), 16).astype(np.int64)
+    bad_logits = np.zeros((10, 4), dtype=np.float32)  # wrong row count
+
+    logits_path = tmp_path / "bad.npz"
+    np.savez(logits_path, logits=bad_logits)
+    cfg = RunConfig(
+        widths=(8, 16, 32), depths=(1, 1, 1), epochs=1, batch_size=16,
+        num_workers=0, device="cpu", out_dir=str(tmp_path / "run"),
+        val_fraction=0.25, seed=0, teacher_logits=str(logits_path),
+    )
+    with pytest.raises(ValueError, match="teacher logits shape"):
+        DistillTrainer(cfg, images=images, labels=labels, num_classes=4)
