@@ -1,7 +1,7 @@
 # Design: Statistically-Defended SOTA for Handwritten Devanagari Character Recognition
 
-**Date:** 2026-06-11
-**Status:** Approved
+**Date:** 2026-06-11 (status updated 2026-06-12)
+**Status:** In progress — pipeline implemented (plan Tasks 1–15 merged to main); GPU experiment program (Task 16) pending hardware
 **Working model name:** DevNet (placeholder — final name chosen before manuscript submission)
 **Target venue:** Scientific Reports (same venue as MallaNet)
 
@@ -113,6 +113,11 @@ Compact pre-activation residual ConvNet for 32×32×1 input, ~1–1.5M parameter
   (github.com/sahajrajmalla/MallaNet, `models/best_model.pth` — verified present) on
   the test set to obtain per-image predictions for paired testing. **Comparison
   baseline only — zero architectural inheritance.**
+  **DONE (2026-06-12): reproduced exactly — 99.7101%, 40/13,800 errors, matching the
+  published figure. Their class-index order is a full permutation of the UCI
+  alphabetical order (identity-mapping accuracy 2.17%); `scripts/reproduce_mallanet.py`
+  recovers the bijection from per-class modal predictions. Predictions saved at
+  `results/mallanet_baseline/test_predictions.npz`.**
 - Robustness: accuracy vs Gaussian noise σ, blur radius, contrast reduction — ours vs
   reproduced MallaNet.
 - Calibration: expected calibration error (ECE).
@@ -156,7 +161,21 @@ mallanet/                      # project dir name; model renamed before submissi
 - Full runs on a rented single GPU (RTX 4090 class is sufficient; well under 1 hour
   per training run at 32×32). Estimated total program: 30–50 GPU-hours.
 
-## 9. Out of scope (this paper)
+## 9. Implementation status (2026-06-12)
+
+| Spec section | State |
+|---|---|
+| §3 data pipeline, §4 student (1,109,116 params), §5 recipe, §6 distillation, §7 stats/robustness, §8 repo+tests | Implemented; 48 tests passing incl. real-data smoke gate (>90% val, ~70s CPU) |
+| §7 MallaNet baseline | Reproduced exactly (99.7101%, 40 errors) — see note above |
+| C1–C4 experiment runs | Pending rented GPU (plan Task 16; README "Full experiment program") |
+
+Deviations from plan during implementation (all reviewed): smoke gate uses
+epochs=20 + ema_decay=0.9 (plan's epochs=8 left the EMA ~85% random-init);
+cosine schedule clamped past total_steps; cutmix made non-mutating;
+DistillTrainer guards teacher-logits shape; `devnet.train` CLI dispatches to
+DistillTrainer when `teacher_logits` is set.
+
+## 10. Out of scope (this paper)
 
 - Word-level / continuous text recognition.
 - Cross-script transfer (a second-dataset generalization section, e.g. CMATERdb, is an
