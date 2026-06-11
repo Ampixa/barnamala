@@ -42,3 +42,21 @@ def test_ece_overconfident():
     conf = np.array([0.99, 0.99, 0.99, 0.99])
     correct = np.array([1, 1, 0, 0])  # 50% accuracy at 99% confidence
     assert expected_calibration_error(conf, correct) == pytest.approx(0.49, abs=1e-9)
+
+
+def test_ece_confidence_zero_included():
+    conf = np.array([0.0])
+    correct = np.array([1.0])
+    assert expected_calibration_error(conf, correct) == pytest.approx(1.0, abs=1e-9)
+
+
+def test_wilson_ci_invalid_inputs_raise():
+    with pytest.raises(ValueError):
+        wilson_ci(correct=0, n=0)
+    with pytest.raises(ValueError):
+        wilson_ci(correct=11, n=10)
+
+
+def test_ece_length_mismatch_raises():
+    with pytest.raises(ValueError):
+        expected_calibration_error(np.array([0.5]), np.array([1.0, 0.0]))

@@ -6,6 +6,8 @@ import numpy as np
 
 def wilson_ci(correct: int, n: int, z: float = 1.96) -> tuple[float, float]:
     """Wilson score 95% confidence interval for a binomial proportion."""
+    if n <= 0 or not (0 <= correct <= n):
+        raise ValueError(f"invalid counts: correct={correct}, n={n}")
     p = correct / n
     denom = 1 + z * z / n
     center = (p + z * z / (2 * n)) / denom
@@ -34,10 +36,15 @@ def expected_calibration_error(
     """ECE with equal-width confidence bins."""
     confidences = np.asarray(confidences, dtype=float)
     correct = np.asarray(correct, dtype=float)
+    if len(confidences) != len(correct):
+        raise ValueError(f"Length mismatch: len(confidences)={len(confidences)}, len(correct)={len(correct)}")
     edges = np.linspace(0.0, 1.0, n_bins + 1)
     ece = 0.0
     for lo, hi in zip(edges[:-1], edges[1:]):
-        mask = (confidences > lo) & (confidences <= hi)
+        if lo == 0.0:
+            mask = (confidences >= lo) & (confidences <= hi)
+        else:
+            mask = (confidences > lo) & (confidences <= hi)
         if mask.any():
             ece += mask.mean() * abs(correct[mask].mean() - confidences[mask].mean())
     return float(ece)
