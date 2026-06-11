@@ -1,6 +1,7 @@
 # tests/test_data.py
 import numpy as np
 import pytest
+import torch
 from PIL import Image
 
 from devnet.data import load_split, stratified_split
@@ -46,3 +47,23 @@ def test_stratified_split_deterministic_given_seed():
     assert np.array_equal(a[0], b[0]) and np.array_equal(a[1], b[1])
     c = stratified_split(labels, val_fraction=0.2, seed=8)
     assert not np.array_equal(a[1], c[1])
+
+
+def test_array_dataset_item_and_batching():
+    from torch.utils.data import DataLoader
+
+    from devnet.data import ArrayDataset
+
+    images = np.zeros((6, 32, 32), dtype=np.uint8)
+    labels = np.arange(6, dtype=np.int64)
+    ds = ArrayDataset(images, labels, transform=None)
+    assert len(ds) == 6
+    x, y = ds[2]
+    assert x.shape == (1, 32, 32) and x.dtype == torch.uint8
+    assert y.item() == 2
+    xb, yb = next(iter(DataLoader(ds, batch_size=3)))
+    assert xb.shape == (3, 1, 32, 32) and yb.shape == (3,)
+
+    doubled = ArrayDataset(images, labels, transform=lambda t: t.float() * 2)
+    x2, _ = doubled[0]
+    assert x2.dtype == torch.float32
