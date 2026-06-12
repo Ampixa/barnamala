@@ -7,3 +7,4 @@ teacher_logits: results/teacher_logits.npz
 kd_temperature: 4.0
 kd_alpha: 0.7
 out_dir: results/student_distilled
+num_workers: 12

@@ -4,3 +4,4 @@ depths: [2, 2, 2]
 epochs: 300
 aug_tier: medium
 out_dir: results/student_supervised
+num_workers: 12

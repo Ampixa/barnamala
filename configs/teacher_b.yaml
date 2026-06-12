@@ -4,3 +4,4 @@ depths: [3, 3, 3]
 epochs: 300
 aug_tier: heavy
 out_dir: results/teacher_b
+num_workers: 12
