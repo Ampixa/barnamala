@@ -16,6 +16,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("checkpoints", nargs="+")
     ap.add_argument("--out", default="results/teacher_logits.npz")
+    ap.add_argument("--no-tta", action="store_true",
+                    help="average clean softmax instead of flip-TTA "
+                         "(flips are semantically wrong for Devanagari)")
     ap.add_argument("--data-root",
                     default="data/extracted/DevanagariHandwrittenCharacterDataset")
     args = ap.parse_args()
@@ -37,7 +40,7 @@ def main():
         ds = ArrayDataset(images, labels,
                           build_eval_transform(ckpt["mean"], ckpt["std"]))
         loader = DataLoader(ds, 512, shuffle=False, num_workers=2)
-        probs, _, _ = predict(model, loader, device, tta=True)
+        probs, _, _ = predict(model, loader, device, tta=not args.no_tta)
         acc = probs if acc is None else acc + probs
     mean_probs = acc / len(args.checkpoints)
     # store as log-probs so kd_loss temperature softening behaves like logits

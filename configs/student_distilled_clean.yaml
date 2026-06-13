@@ -1,0 +1,12 @@
+# Student distilled from the CLEAN (no-TTA) 15-teacher ensemble.
+# Flip-TTA is semantically wrong for Devanagari; this distils from clean
+# soft targets to remove that bias from the teaching signal.
+widths: [40, 80, 160]
+depths: [2, 2, 2]
+epochs: 300
+aug_tier: light          # distillation runs disable mixing internally
+teacher_logits: results/teacher_logits_clean.npz
+kd_temperature: 4.0
+kd_alpha: 0.7
+out_dir: results/student_distilled_clean
+num_workers: 12
