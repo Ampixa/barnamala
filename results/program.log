@@ -1,0 +1,473 @@
+=== TEACHERS (seeds 0 1 2) Fri Jun 12 06:21:55 UTC 2026 ===
+=== teacher_a seed 0 Fri Jun 12 06:21:55 UTC 2026 ===
+{"best_val_acc": 0.9973145780051151}
+=== teacher_a seed 1 Fri Jun 12 09:32:15 UTC 2026 ===
+{"best_val_acc": 0.9985933503836317}
+=== teacher_a seed 2 Fri Jun 12 12:42:50 UTC 2026 ===
+{"best_val_acc": 0.9988491048593351}
+=== teacher_b seed 0 Fri Jun 12 15:53:24 UTC 2026 ===
+{"best_val_acc": 0.9964194373401535}
+=== teacher_b seed 1 Fri Jun 12 19:03:46 UTC 2026 ===
+{"best_val_acc": 0.9975703324808184}
+=== teacher_b seed 2 Fri Jun 12 22:14:05 UTC 2026 ===
+{"best_val_acc": 0.9980818414322251}
+=== teacher_c seed 0 Sat Jun 13 01:24:48 UTC 2026 ===
+{"best_val_acc": 0.9971867007672635}
+=== teacher_c seed 1 Sat Jun 13 03:42:41 UTC 2026 ===
+{"best_val_acc": 0.9985933503836317}
+=== teacher_c seed 2 Sat Jun 13 06:00:28 UTC 2026 ===
+{"best_val_acc": 0.9985933503836317}
+=== TEACHER EVAL Sat Jun 13 08:18:17 UTC 2026 ===
+{
+  "accuracy": 0.9976811594202899,
+  "n": 13800,
+  "n_errors": 32,
+  "wilson_ci": [
+    0.996728395399048,
+    0.9983569147656239
+  ],
+  "macro_f1": 0.9976818451401535,
+  "ece": 0.14513674471149418
+}
+{
+  "accuracy": 0.9977536231884058,
+  "n": 13800,
+  "n_errors": 31,
+  "wilson_ci": [
+    0.9968132571379169,
+    0.9984169402297491
+  ],
+  "macro_f1": 0.9977551666943044,
+  "ece": 0.1470067849625712
+}
+{
+  "accuracy": 0.9976086956521739,
+  "n": 13800,
+  "n_errors": 33,
+  "wilson_ci": [
+    0.9966437219908787,
+    0.9982967009707989
+  ],
+  "macro_f1": 0.9976109368203742,
+  "ece": 0.1566446799806494
+}
+{
+  "accuracy": 0.9936231884057971,
+  "n": 13800,
+  "n_errors": 88,
+  "wilson_ci": [
+    0.9921508161477994,
+    0.9948208106491931
+  ],
+  "macro_f1": 0.9936236401300087,
+  "ece": 0.15013237562948387
+}
+{
+  "accuracy": 0.9968840579710145,
+  "n": 13800,
+  "n_errors": 43,
+  "wilson_ci": [
+    0.9958057836439871,
+    0.9976857672877479
+  ],
+  "macro_f1": 0.9968866785994518,
+  "ece": 0.14287406891800364
+}
+{
+  "accuracy": 0.9926086956521739,
+  "n": 13800,
+  "n_errors": 102,
+  "wilson_ci": [
+    0.9910361289643244,
+    0.9939070769907483
+  ],
+  "macro_f1": 0.9925981186372582,
+  "ece": 0.15498075429296151
+}
+{
+  "accuracy": 0.9977536231884058,
+  "n": 13800,
+  "n_errors": 31,
+  "wilson_ci": [
+    0.9968132571379169,
+    0.9984169402297491
+  ],
+  "macro_f1": 0.9977546928509454,
+  "ece": 0.15882830375130633
+}
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.997537526779925,
+  "ece": 0.15413732448565784
+}
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.9975368083764006,
+  "ece": 0.14834241527686082
+}
+=== LOGIT DUMP Sat Jun 13 08:21:46 UTC 2026 ===
+averaging 9 teacher checkpoints
+wrote results/teacher_logits.npz, shape (78200, 46)
+=== STUDENTS (5 seeds) Sat Jun 13 08:37:02 UTC 2026 ===
+=== configs/student_distilled.yaml seed 0 ===
+{"best_val_acc": 0.9975703324808184}
+=== configs/student_distilled.yaml seed 1 ===
+{"best_val_acc": 0.9983375959079284}
+=== configs/student_distilled.yaml seed 2 ===
+{"best_val_acc": 0.9982097186700767}
+=== configs/student_distilled.yaml seed 3 ===
+{"best_val_acc": 0.9988491048593351}
+=== configs/student_distilled.yaml seed 4 ===
+{"best_val_acc": 0.9989769820971867}
+=== configs/student.yaml seed 0 ===
+{"best_val_acc": 0.9971867007672635}
+=== configs/student.yaml seed 1 ===
+{"best_val_acc": 0.9978260869565218}
+=== configs/student.yaml seed 2 ===
+{"best_val_acc": 0.9983375959079284}
+=== configs/student.yaml seed 3 ===
+{"best_val_acc": 0.9982097186700767}
+=== configs/student.yaml seed 4 ===
+{"best_val_acc": 0.9979539641943734}
+=== STUDENT EVAL Sat Jun 13 18:47:36 UTC 2026 ===
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.9975355939061316,
+  "ece": 0.13262273168866182
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971024914185722,
+  "ece": 0.15793520511384465
+}
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971748373927387,
+  "ece": 0.13385992305974165
+}
+{
+  "accuracy": 0.9973188405797101,
+  "n": 13800,
+  "n_errors": 37,
+  "wilson_ci": [
+    0.9963067553027447,
+    0.9980541188469558
+  ],
+  "macro_f1": 0.9973207431951812,
+  "ece": 0.1533237383568632
+}
+{
+  "accuracy": 0.9974637681159421,
+  "n": 13800,
+  "n_errors": 35,
+  "wilson_ci": [
+    0.9964749077906268,
+    0.9981757407650624
+  ],
+  "macro_f1": 0.9974642252824044,
+  "ece": 0.13260300992839577
+}
+{
+  "accuracy": 0.9974637681159421,
+  "n": 13800,
+  "n_errors": 35,
+  "wilson_ci": [
+    0.9964749077906268,
+    0.9981757407650624
+  ],
+  "macro_f1": 0.997465040511291,
+  "ece": 0.13534557264136235
+}
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971737206682454,
+  "ece": 0.1329522156839569
+}
+{
+  "accuracy": 0.9973913043478261,
+  "n": 13800,
+  "n_errors": 36,
+  "wilson_ci": [
+    0.9963907522165091,
+    0.9981150091361858
+  ],
+  "macro_f1": 0.9973908913327858,
+  "ece": 0.14154478550821106
+}
+{
+  "accuracy": 0.9973913043478261,
+  "n": 13800,
+  "n_errors": 36,
+  "wilson_ci": [
+    0.9963907522165091,
+    0.9981150091361858
+  ],
+  "macro_f1": 0.9973929394555217,
+  "ece": 0.13135474376272463
+}
+{
+  "accuracy": 0.9973913043478261,
+  "n": 13800,
+  "n_errors": 36,
+  "wilson_ci": [
+    0.9963907522165091,
+    0.9981150091361858
+  ],
+  "macro_f1": 0.9973920962567355,
+  "ece": 0.1408369330046834
+}
+{
+  "accuracy": 0.9968840579710145,
+  "n": 13800,
+  "n_errors": 43,
+  "wilson_ci": [
+    0.9958057836439871,
+    0.9976857672877479
+  ],
+  "macro_f1": 0.9968850880138297,
+  "ece": 0.1385497786299042
+}
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971764012690028,
+  "ece": 0.15757925160013245
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971042949422371,
+  "ece": 0.1433076189955075
+}
+{
+  "accuracy": 0.9967391304347826,
+  "n": 13800,
+  "n_errors": 45,
+  "wilson_ci": [
+    0.9956398214014011,
+    0.9975619551243453
+  ],
+  "macro_f1": 0.9967413787526311,
+  "ece": 0.15564881060650385
+}
+{
+  "accuracy": 0.9969565217391304,
+  "n": 13800,
+  "n_errors": 42,
+  "wilson_ci": [
+    0.9958889463415914,
+    0.9977474917931377
+  ],
+  "macro_f1": 0.9969601957285422,
+  "ece": 0.14964711787476057
+}
+{
+  "accuracy": 0.9966666666666667,
+  "n": 13800,
+  "n_errors": 46,
+  "wilson_ci": [
+    0.9955570139778472,
+    0.9974998753449048
+  ],
+  "macro_f1": 0.9966703509347579,
+  "ece": 0.16030204794275166
+}
+{
+  "accuracy": 0.9974637681159421,
+  "n": 13800,
+  "n_errors": 35,
+  "wilson_ci": [
+    0.9964749077906268,
+    0.9981757407650624
+  ],
+  "macro_f1": 0.997465421720428,
+  "ece": 0.13428882934045103
+}
+{
+  "accuracy": 0.9973188405797101,
+  "n": 13800,
+  "n_errors": 37,
+  "wilson_ci": [
+    0.9963067553027447,
+    0.9980541188469558
+  ],
+  "macro_f1": 0.9973204984356454,
+  "ece": 0.15339542041330242
+}
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971756660140657,
+  "ece": 0.14021138948050965
+}
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.9975372793230918,
+  "ece": 0.15459192740636454
+}
+=== MCNEMAR (distilled seed0 vs MallaNet) Sat Jun 13 18:50:22 UTC 2026 ===
+{
+  "n10": 17,
+  "n01": 11,
+  "p_value": 0.34492845088243484,
+  "candidate_accuracy": 0.9975362318840579,
+  "candidate_n_errors": 34,
+  "baseline_accuracy": 0.9971014492753624,
+  "baseline_n_errors": 40
+}
+PROGRAM_COMPLETE Sat Jun 13 18:50:26 UTC 2026
+
+=== PHASE2 START Sat Jun 13 18:51:29 UTC 2026 ===
+=== teacher_a seed 3 Sat Jun 13 18:51:29 UTC 2026 ===
+{"best_val_acc": 0.9991048593350383}
+=== teacher_a seed 4 Sat Jun 13 22:02:10 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== teacher_b seed 3 Sun Jun 14 01:12:41 UTC 2026 ===
+{"best_val_acc": 0.9985933503836317}
+=== teacher_b seed 4 Sun Jun 14 04:23:30 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== teacher_c seed 3 Sun Jun 14 07:34:13 UTC 2026 ===
+{"best_val_acc": 0.9988491048593351}
+=== teacher_c seed 4 Sun Jun 14 09:52:08 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== CLEAN LOGIT DUMP Sun Jun 14 12:09:57 UTC 2026 ===
+averaging 15 teacher checkpoints
+wrote results/teacher_logits_clean.npz, shape (78200, 46)
+=== CLEAN STUDENTS (5 seeds) Sun Jun 14 12:15:13 UTC 2026 ===
+=== configs/student_distilled_clean.yaml seed 0 ===
+{"best_val_acc": 0.9968030690537084}
+=== configs/student_distilled_clean.yaml seed 1 ===
+{"best_val_acc": 0.9980818414322251}
+=== configs/student_distilled_clean.yaml seed 2 ===
+{"best_val_acc": 0.9982097186700767}
+=== configs/student_distilled_clean.yaml seed 3 ===
+{"best_val_acc": 0.9983375959079284}
+=== configs/student_distilled_clean.yaml seed 4 ===
+{"best_val_acc": 0.9987212276214834}
+=== CLEAN STUDENT EVAL Sun Jun 14 16:52:10 UTC 2026 ===
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971737476486343,
+  "ece": 0.00248028522384334
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971021291405046,
+  "ece": 0.0024716539572978476
+}
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.9975371493752863,
+  "ece": 0.002320328976797098
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971011546242453,
+  "ece": 0.0025605757685675202
+}
+{
+  "accuracy": 0.9972463768115942,
+  "n": 13800,
+  "n_errors": 38,
+  "wilson_ci": [
+    0.9962229108361543,
+    0.9979930761105519
+  ],
+  "macro_f1": 0.9972468166701628,
+  "ece": 0.002645130338876173
+}
+=== 15-TEACHER CLEAN ENSEMBLE Sun Jun 14 16:52:43 UTC 2026 ===
+ensemble (15 models, clean): 30 errors  acc 99.7826%   per-model errors [27, 28, 30, 30, 32, 34, 36, 37, 37, 39, 39, 40, 41, 42, 43]
+McNemar vs baseline: n10=18 n01=8 p=0.0755  not significant at 0.05
+=== CLEAN McNEMAR (clean distilled seed0 vs MallaNet) Sun Jun 14 16:53:44 UTC 2026 ===
+{
+  "n10": 16,
+  "n01": 15,
+  "p_value": 1.0,
+  "candidate_accuracy": 0.9971739130434782,
+  "candidate_n_errors": 39,
+  "baseline_accuracy": 0.9971014492753624,
+  "baseline_n_errors": 40
+}
+PROGRAM2_COMPLETE Sun Jun 14 16:53:47 UTC 2026

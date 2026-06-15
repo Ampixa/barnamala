@@ -1,0 +1,97 @@
+=== PHASE2 START Sat Jun 13 18:51:29 UTC 2026 ===
+=== teacher_a seed 3 Sat Jun 13 18:51:29 UTC 2026 ===
+{"best_val_acc": 0.9991048593350383}
+=== teacher_a seed 4 Sat Jun 13 22:02:10 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== teacher_b seed 3 Sun Jun 14 01:12:41 UTC 2026 ===
+{"best_val_acc": 0.9985933503836317}
+=== teacher_b seed 4 Sun Jun 14 04:23:30 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== teacher_c seed 3 Sun Jun 14 07:34:13 UTC 2026 ===
+{"best_val_acc": 0.9988491048593351}
+=== teacher_c seed 4 Sun Jun 14 09:52:08 UTC 2026 ===
+{"best_val_acc": 0.9982097186700767}
+=== CLEAN LOGIT DUMP Sun Jun 14 12:09:57 UTC 2026 ===
+averaging 15 teacher checkpoints
+wrote results/teacher_logits_clean.npz, shape (78200, 46)
+=== CLEAN STUDENTS (5 seeds) Sun Jun 14 12:15:13 UTC 2026 ===
+=== configs/student_distilled_clean.yaml seed 0 ===
+{"best_val_acc": 0.9968030690537084}
+=== configs/student_distilled_clean.yaml seed 1 ===
+{"best_val_acc": 0.9980818414322251}
+=== configs/student_distilled_clean.yaml seed 2 ===
+{"best_val_acc": 0.9982097186700767}
+=== configs/student_distilled_clean.yaml seed 3 ===
+{"best_val_acc": 0.9983375959079284}
+=== configs/student_distilled_clean.yaml seed 4 ===
+{"best_val_acc": 0.9987212276214834}
+=== CLEAN STUDENT EVAL Sun Jun 14 16:52:10 UTC 2026 ===
+{
+  "accuracy": 0.9971739130434782,
+  "n": 13800,
+  "n_errors": 39,
+  "wilson_ci": [
+    0.9961392129996104,
+    0.9979318867441015
+  ],
+  "macro_f1": 0.9971737476486343,
+  "ece": 0.00248028522384334
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971021291405046,
+  "ece": 0.0024716539572978476
+}
+{
+  "accuracy": 0.9975362318840579,
+  "n": 13800,
+  "n_errors": 34,
+  "wilson_ci": [
+    0.9965592286731528,
+    0.9982363070855305
+  ],
+  "macro_f1": 0.9975371493752863,
+  "ece": 0.002320328976797098
+}
+{
+  "accuracy": 0.9971014492753624,
+  "n": 13800,
+  "n_errors": 40,
+  "wilson_ci": [
+    0.9960556563375591,
+    0.9978705562031587
+  ],
+  "macro_f1": 0.9971011546242453,
+  "ece": 0.0025605757685675202
+}
+{
+  "accuracy": 0.9972463768115942,
+  "n": 13800,
+  "n_errors": 38,
+  "wilson_ci": [
+    0.9962229108361543,
+    0.9979930761105519
+  ],
+  "macro_f1": 0.9972468166701628,
+  "ece": 0.002645130338876173
+}
+=== 15-TEACHER CLEAN ENSEMBLE Sun Jun 14 16:52:43 UTC 2026 ===
+ensemble (15 models, clean): 30 errors  acc 99.7826%   per-model errors [27, 28, 30, 30, 32, 34, 36, 37, 37, 39, 39, 40, 41, 42, 43]
+McNemar vs baseline: n10=18 n01=8 p=0.0755  not significant at 0.05
+=== CLEAN McNEMAR (clean distilled seed0 vs MallaNet) Sun Jun 14 16:53:44 UTC 2026 ===
+{
+  "n10": 16,
+  "n01": 15,
+  "p_value": 1.0,
+  "candidate_accuracy": 0.9971739130434782,
+  "candidate_n_errors": 39,
+  "baseline_accuracy": 0.9971014492753624,
+  "baseline_n_errors": 40
+}
+PROGRAM2_COMPLETE Sun Jun 14 16:53:47 UTC 2026

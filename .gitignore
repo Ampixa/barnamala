@@ -3,6 +3,12 @@ __pycache__/
 *.egg-info/
 data/raw/
 data/extracted/
-results/*/checkpoints/
+
+# Model files and prediction dumps are ignored by default everywhere...
 *.pth
 *.npz
+# ...but the published evidence artifacts under results/ are committed so every
+# figure in results/SUMMARY.md is recomputable. (Checkpoints are <38MB each;
+# kept in plain git rather than LFS to avoid clone-bandwidth limits.)
+!results/**/*.pth
+!results/**/*.npz

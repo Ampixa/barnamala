@@ -14,8 +14,10 @@
 #   COMPLETE_LOG log file holding it            (default program.log)
 # e.g. MARKER=PROGRAM2_COMPLETE COMPLETE_LOG=program2.log ./pull_results.sh --loop
 set -uo pipefail
-BOX=ubuntu@44.200.193.172
-KEY="$HOME/.ssh/devnet-train-key.pem"
+# Set BOX and KEY for your training host, e.g.:
+#   BOX=ubuntu@<your-ec2-public-ip> KEY=~/.ssh/<your-key>.pem ./scripts/pull_results.sh
+BOX="${BOX:?set BOX=user@host for your training box}"
+KEY="${KEY:-$HOME/.ssh/id_rsa}"
 SSH_CMD="ssh -i $KEY -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MARKER="${MARKER:-PROGRAM_COMPLETE}"

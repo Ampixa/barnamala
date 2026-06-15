@@ -1,4 +1,8 @@
-# DevNet — Experiment Summary
+# Barnamala — Experiment Summary
+
+> "Barnamala" (वर्णमाला, "the alphabet") is the model/paper name; the student
+> class is `DevNet` in code.
+
 
 Handwritten Devanagari (DHCD, 46 classes). Test set evaluated once per final
 configuration; model selection on a 10% stratified validation carve-out.

@@ -1,0 +1,36 @@
+{
+  "widths": [
+    96,
+    192,
+    384
+  ],
+  "depths": [
+    3,
+    3,
+    3
+  ],
+  "dropout": 0.1,
+  "epochs": 300,
+  "batch_size": 256,
+  "lr": 0.003,
+  "weight_decay": 0.0005,
+  "warmup_epochs": 5,
+  "label_smoothing": 0.1,
+  "ema_decay": 0.999,
+  "mixup_alpha": 0.2,
+  "cutmix_alpha": 1.0,
+  "mix_prob": 0.5,
+  "aug_tier": "heavy",
+  "data_root": "data/extracted/DevanagariHandwrittenCharacterDataset",
+  "val_fraction": 0.1,
+  "seed": 2,
+  "num_workers": 12,
+  "device": "auto",
+  "out_dir": "results/teacher_b_seed2",
+  "teacher_logits": null,
+  "kd_temperature": 4.0,
+  "kd_alpha": 0.7,
+  "git_sha": "c406cab",
+  "mean": 0.24000466326836023,
+  "std": 0.3865301147677279
+}
