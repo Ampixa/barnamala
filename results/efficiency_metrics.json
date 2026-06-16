@@ -1,0 +1,43 @@
+{
+  "models": [
+    {
+      "model": "student (compact)",
+      "params": 1109116,
+      "params_millions": 1.1091,
+      "model_size_mb_fp32": 4.44,
+      "macs": 164232800,
+      "macs_millions": 164.23,
+      "peak_activation_mb_est": 2.75,
+      "cpu_latency_ms_b1_mean": 8.28,
+      "cpu_latency_ms_b1_std": 0.204,
+      "throughput_img_per_s": 151.2
+    },
+    {
+      "model": "MallaNet (baseline)",
+      "params": 17320579,
+      "params_millions": 17.3206,
+      "model_size_mb_fp32": 69.28,
+      "macs": 2434007040,
+      "macs_millions": 2434.01,
+      "peak_activation_mb_est": 26.13,
+      "cpu_latency_ms_b1_mean": 78.768,
+      "cpu_latency_ms_b1_std": 0.893,
+      "throughput_img_per_s": 13.6
+    }
+  ],
+  "comparison": {
+    "param_reduction_x": 15.6,
+    "mac_reduction_x": 14.8,
+    "speedup_b1_x": 9.5
+  },
+  "settings": {
+    "threads": 1,
+    "input": [
+      1,
+      1,
+      32,
+      32
+    ],
+    "runs": 40
+  }
+}
