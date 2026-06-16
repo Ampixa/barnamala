@@ -108,10 +108,13 @@ ICDAR rejects non-anonymized manuscripts **without review**. Two layers:
 
 ## 7. Publication strategy and timeline
 
-- **Milestone 1 — arXiv preprint (non-anonymous).** Once the draft + new experiments are
-  solid: post to arXiv (cs.CV) under real names with the real repo link. Stakes priority,
-  citable now. Check whether an arXiv endorsement is needed for first-time cs.CV submitters.
-  arXiv is permanent (withdrawal leaves a tombstone) → post only when solid.
+- **Milestone 0 — new experiments.** Run all three (efficiency metrics, DHCD→CMATERdb
+  digit transfer, corruption robustness) and fold their results into the manuscript.
+- **Milestone 1 — arXiv preprint (non-anonymous).** *Decision (2026-06-17): experiments-first*
+  — a **single** arXiv post once the draft + all three new experiments are solid (no interim
+  results-only v1). Post to arXiv (cs.CV) under real names with the real repo link; stakes
+  priority, citable. Check whether an arXiv endorsement is needed for first-time cs.CV
+  submitters. arXiv is permanent (withdrawal leaves a tombstone) → post only when solid.
 - **Milestone 2 — ICDAR 2027 submission (anonymized).** By 2027-01-31: LNCS ≤17pp,
   anonymized manuscript + anonymized artifact mirror. Do not advertise the arXiv preprint
   during review.
