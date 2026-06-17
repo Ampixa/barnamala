@@ -79,7 +79,10 @@ Status: **#1 efficiency metrics — DONE** (`results/efficiency_metrics.json`: 1
 (`results/digit_transfer.json`: pHash guard 0 near-dupes <=5 bits over 20k DHCD refs;
 zero-shot distilled 76.6%+-3.7% vs supervised control 62.7% — distillation transfers
 +14pts better under shift; linear probe 85.4%; light full fine-tune 97.8%). **#3
-corruption robustness — pending** (needs re-cloned MallaNet checkpoint).
+corruption robustness — DONE** (`results/robustness.json`: clean parity 99.75/99.71;
+overall mCA student 75.7% vs MallaNet 38.7%. Nuanced, NOT a clean sweep — student far
+better on blur (97.0 vs 37.6) and contrast (75.5 vs 11.5), MallaNet better on additive
+noise (66.9 vs 54.7). Report honestly.). **All three new experiments complete.**
 
 All run from existing checkpoints; only the transfer fine-tune needs a GPU (small).
 
