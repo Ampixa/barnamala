@@ -74,6 +74,13 @@ against an ~11-error intrinsic floor: DHCD is saturated.
 
 ## 5. New experiments to run (before the draft is complete)
 
+Status: **#1 efficiency metrics — DONE** (`results/efficiency_metrics.json`: 15.6x params,
+14.8x MACs, 9.5x CPU speedup). **#2 DHCD->CMATERdb digit transfer — DONE**
+(`results/digit_transfer.json`: pHash guard 0 near-dupes <=5 bits over 20k DHCD refs;
+zero-shot distilled 76.6%+-3.7% vs supervised control 62.7% — distillation transfers
++14pts better under shift; linear probe 85.4%; light full fine-tune 97.8%). **#3
+corruption robustness — pending** (needs re-cloned MallaNet checkpoint).
+
 All run from existing checkpoints; only the transfer fine-tune needs a GPU (small).
 
 1. **Efficiency metrics (CPU, local).** Compute params (have), FLOPs/MACs (e.g. `fvcore`/

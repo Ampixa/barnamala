@@ -1,0 +1,65 @@
+{
+  "dataset": "CMATERdb 3.2.1 Devanagari numerals (Das et al. 2012)",
+  "n_train": 2500,
+  "n_test": 500,
+  "classes": 10,
+  "polarity_inverted_to_match_dhcd": {
+    "train": true,
+    "test": true
+  },
+  "provenance_guard_phash": {
+    "dhcd_digit_refs": 20000,
+    "cmaterdb_images": 3000,
+    "min_hamming_min": 6,
+    "min_hamming_mean": 15.63,
+    "near_dupes_le5bits": 0,
+    "near_dupes_le10bits": 143
+  },
+  "zero_shot": {
+    "distilled_seeds": [
+      0.712,
+      0.824,
+      0.752,
+      0.782,
+      0.758
+    ],
+    "distilled_mean": 0.7656,
+    "distilled_std": 0.0369,
+    "distilled_seed0_ci": {
+      "acc": 0.712,
+      "n": 500,
+      "wilson_ci": [
+        0.6708,
+        0.75
+      ]
+    },
+    "supervised_seeds": [
+      0.696,
+      0.532,
+      0.626,
+      0.604,
+      0.676
+    ],
+    "supervised_mean": 0.6268
+  },
+  "adaptation_distilled_seed0": {
+    "linear_probe": {
+      "acc": 0.854,
+      "n": 500,
+      "wilson_ci": [
+        0.8204,
+        0.8823
+      ]
+    },
+    "full_finetune": {
+      "acc": 0.978,
+      "n": 500,
+      "wilson_ci": [
+        0.961,
+        0.9877
+      ]
+    },
+    "epochs_probe": 40,
+    "epochs_ft": 30
+  }
+}
