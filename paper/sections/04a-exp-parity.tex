@@ -5,30 +5,29 @@
 
 \paragraph{Dataset.}
 All experiments use the Devanagari Handwritten Character Dataset
-(DHCD)~\cite{acharya2015dhcd}, which covers 46 character classes
+(DHCD)~\cite{acharya2015dhcd}, covering 46 character classes
 (36 consonants and 10 numerals).  The official split provides
 78,200 training images and 13,800 test images, each stored as a
 $32{\times}32$ greyscale PNG.
 
 \paragraph{Reproducing the MallaNet baseline.}
-To obtain a reliable reference point for statistical comparison, we
-re-implemented the MallaNet architecture of~\cite{malla2025} from the
-published description and reproduced their training procedure,
-including the exact normalisation
+For statistical comparison, we needed a baseline with sample-level
+predictions.  We re-implemented the MallaNet architecture
+of~\cite{malla2025} from the published description and reproduced the
+reported training procedure, including the exact normalisation
 ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and the class-index
 permutation implied by their data loader.  Running this reproduction
 with seed~0 yields \textbf{40 errors} on the held-out test
 set — an accuracy of \textbf{99.7101\%}, in agreement with the
 99.71\% figure reported in~\cite{malla2025}.  We use this reproduced
-checkpoint (seed 0) as the baseline in all McNemar tests so that
-per-sample correctness vectors are directly comparable.
+checkpoint (seed 0) as the baseline in all McNemar tests, keeping the
+per-sample correctness vectors directly comparable.
 
 \subsection{Main Parity Result}
 \label{sec:parity}
 
 Table~\ref{tab:main} shows error counts across five independent seeds
-for three \modelname{} configurations alongside the MallaNet
-reproduction.
+for three \modelname{} configurations and the MallaNet reproduction.
 
 \begin{table}[t]\centering
 \caption{Main result on DHCD test ($n{=}13{,}800$). Errors over 5
@@ -43,8 +42,8 @@ MallaNet \cite{malla2025} (repro) & 17.32M & 40 & --- & 99.710 & --- \\\bottomru
 \end{tabular}
 \end{table}
 
-The \emph{primary} configuration (\textbf{distilled, TTA targets})
-trains the student by distilling from 9 teacher checkpoints
+In the \emph{primary} configuration (\textbf{distilled, TTA targets}),
+the student is distilled from 9 teacher checkpoints
 (configurations A, B, C $\times$ seeds 0--2) whose soft labels are
 produced with flip-averaged test-time augmentation over each training
 image, as described in Section~\ref{sec:kd}.  This row achieves a
@@ -56,11 +55,12 @@ Wilson 95\% confidence interval of \textbf{[99.656\%, 99.824\%]}.
 At 1.11\,M parameters versus 17.32\,M for MallaNet, this represents
 a \textbf{15.6$\times$} reduction in model size at matched accuracy.
 
-The \emph{ablation} row (distilled, clean targets) replaces the
-flip-averaged targets with clean single-pass logits drawn from a
-15-teacher pool; it obtains $p = 1.000$ against MallaNet, consistent
-with the same accuracy level but with no benefit from TTA targets.
-Crucially, the \emph{supervised control} — trained without any
+The \emph{ablation} row (distilled, clean targets) uses clean
+single-pass logits drawn from a 15-teacher pool instead of
+flip-averaged targets; it obtains $p = 1.000$ against MallaNet,
+consistent with the same accuracy level but no benefit from TTA
+targets.  The
+\emph{supervised control} — trained without any
 teacher signal — also ties MallaNet ($p = 0.701$).  The parity
 result is therefore not dependent on knowledge distillation; the
 compact architecture alone is sufficient to match the larger model.
@@ -99,6 +99,6 @@ smaller on disk (4.4\,MB vs.\ 69.3\,MB), and occupies \textbf{9.5$\times$}
 less peak activation memory (2.8\,MB vs.\ 26.1\,MB).  CPU latency
 on a single thread is \textbf{9.5$\times$} lower (8.28\,ms vs.\
 78.8\,ms), and single-image throughput is \textbf{11.1$\times$}
-higher (151\,img/s vs.\ 13.6\,img/s).  These gains are achieved
-without any quantisation or pruning, and while maintaining accuracy
-parity with MallaNet on the 13,800-sample test set.
+higher (151\,img/s vs.\ 13.6\,img/s).  The comparison uses no
+quantisation or pruning; accuracy remains at parity with MallaNet on
+the 13,800-sample test set.
