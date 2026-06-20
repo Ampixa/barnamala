@@ -1,1 +1,70 @@
-% intro — filled in Task 6
+\section{Introduction}
+\label{sec:intro}
+
+The DHCD dataset~\cite{acharya2015dhcd} has emerged as the standard benchmark
+for 46-class handwritten Devanagari character recognition, with reported
+top-1 accuracies now clustered tightly above 99.7\,\%.
+MallaNet~\cite{malla2025}, the current state-of-the-art, achieves 99.71\,\%
+with a \textbf{17.32\,M}-parameter convolutional architecture;
+Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly
+large model.
+These results are impressive, yet they expose a structural tension: the
+accuracy improvements from one generation of models to the next amount to
+\emph{hundredths of a percent}, while parameter budgets remain an order of
+magnitude larger than what a compact on-device model can afford.
+Whether the residual gap between large and small models is real---or merely
+measurement noise---has not been tested rigorously.
+
+Prior work reports point accuracies, without paired statistical testing.
+On a test set of $n{=}13{,}800$ samples at 99.7\,\% accuracy, overlapping
+unpaired confidence intervals are unavoidable, and raw-accuracy rankings carry
+no inferential weight.
+What is required is a \emph{paired} evaluation: given the same test images,
+do two models make different errors?
+This paper applies the exact McNemar test---the standard paired
+binary-classification significance test---to every student--teacher pair we
+evaluate, together with Wilson confidence intervals on each model's accuracy.
+This is the protocol that prior DHCD work omitted, and applying it changes
+the conclusions substantially.
+
+Our central finding is that a \textbf{1.11\,M}-parameter student network
+reaches statistical parity with MallaNet (McNemar $p=0.345$) at
+\textbf{15.6\(\times\)} fewer parameters, and that this parity holds
+\emph{even without knowledge distillation}.
+Moreover, exhaustive ablation over distillation configurations, teacher
+ensemble sizes, and label smoothing schedules reveals that \emph{no lever}
+yields a statistically significant improvement: every model tested converges
+to the same \textbf{11-error intrinsic floor}, beyond which DHCD's label
+noise and handwriting ambiguity dominate.
+The benchmark, in other words, is saturated; future progress requires either
+a harder evaluation set or substantially different modelling assumptions.
+
+\medskip
+\noindent\textbf{Contributions.}
+\begin{itemize}
+  \item[\textbf{C1.}] A compact \modelname{} student (\textbf{1.11\,M}
+    parameters) that matches MallaNet~\cite{malla2025} at 99.73\,\% on
+    DHCD---\textbf{15.6\(\times\)} smaller and at statistical parity
+    (McNemar $p=0.345$)---and ties it \emph{even without distillation}.
+
+  \item[\textbf{C2.}] A rigorous paired evaluation protocol (exact McNemar
+    tests, Wilson CIs) applied systematically across all configurations,
+    revealing that DHCD is \textbf{saturated} at an
+    \textbf{11-error intrinsic floor} shared by every model.
+
+  \item[\textbf{C3.}] Comprehensive ablations over distillation temperature,
+    teacher ensemble size ($1$--$9$ teachers), and label targets, showing
+    which design choices matter and which do not once statistical noise is
+    properly controlled.
+
+  \item[\textbf{C4.}] Efficiency, transfer, and robustness profiling:
+    \modelname{} is \textbf{15.6\(\times\)} smaller and faster than
+    MallaNet, transfers to CMATERdb digits (zero-shot \textbf{76.6\%};
+    fine-tuned \textbf{97.8\%}), and is far more robust to common
+    corruptions (mCA \textbf{75.7\%} vs.\ \textbf{38.7\%}).
+
+  \item[\textbf{C5.}] Fully reproducible artifacts---training code, model
+    weights, distillation scripts, and evaluation harnesses---released at
+    \repourl{} to facilitate future work on Devanagari recognition and
+    benchmark saturation.
+\end{itemize}

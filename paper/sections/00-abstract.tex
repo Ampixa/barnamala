@@ -1,1 +1,19 @@
-\begin{abstract}\end{abstract}
+\begin{abstract}
+We present \modelname{}, a compact convolutional student network with
+\textbf{1.11\,M} parameters that achieves \textbf{99.73\%} accuracy on the
+DHCD Devanagari handwriting benchmark~\cite{acharya2015dhcd}---statistically
+indistinguishable (McNemar \(p=0.345\)) from the \textbf{17.32\,M}-parameter
+MallaNet~\cite{malla2025} at \textbf{15.6\(\times\)} smaller, and it ties
+MallaNet \emph{even without knowledge distillation}.
+Applying a rigorous paired evaluation protocol (exact McNemar tests with
+Wilson confidence intervals) across all student--teacher configurations, we
+find that \emph{no} configuration achieves a statistically significant win:
+DHCD sits at an \textbf{11-error intrinsic floor} shared by every model tested,
+indicating the benchmark is \textbf{saturated}.
+Beyond DHCD, \modelname{} transfers to CMATERdb digit recognition
+(zero-shot \textbf{76.6\%}; after light fine-tuning \textbf{97.8\%}) and
+proves substantially more robust to blur and contrast corruptions than
+MallaNet (overall mean corruption accuracy \textbf{75.7\%} vs.\
+\textbf{38.7\%}).
+All code, model weights, and experimental artifacts are available at~\repourl.
+\end{abstract}
