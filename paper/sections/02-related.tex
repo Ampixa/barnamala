@@ -1,1 +1,51 @@
-% related — filled in Task 6
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Indic and Devanagari handwritten character recognition.}
+The DHCD dataset~\cite{acharya2015dhcd}, introduced in 2015, established the
+standard 46-class benchmark for handwritten Devanagari character recognition
+and has driven a sustained sequence of architectural improvements.
+MallaNet~\cite{malla2025}, the current state-of-the-art on DHCD, couples
+residual branch merging with homogeneous filter capsule (HFC) layers to reach
+99.71\,\% at 17.32\,M parameters.
+Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with a
+comparably large architecture.
+Across this line of work, each successive generation of models achieves
+accuracy improvements measured in hundredths of a percent, while model size
+remains large; the trend of ever-larger networks producing ever-smaller gains
+motivates a careful examination of whether reported improvements are
+statistically distinguishable from measurement noise.
+
+\paragraph{Knowledge distillation and compact model design.}
+Hinton et al.~\cite{hinton2015distill} showed that a student network trained
+on soft probability outputs (``dark knowledge'') of a larger teacher can match
+or approach the teacher's accuracy at substantially lower capacity.
+Residual identity mappings~\cite{he2016identity} and
+squeeze-and-excitation channel re-weighting~\cite{hu2018senet} have since
+become standard building blocks that enable compact architectures to retain
+representational power while reducing parameter counts.
+Despite the maturity of these techniques, knowledge distillation has rarely
+been evaluated on saturated benchmarks where the performance gap between large
+and small models is already within the noise of sampling variation; the
+question of whether distillation provides a statistically significant
+advantage over direct supervised training in this regime remains open.
+
+\paragraph{Statistical significance and benchmark saturation.}
+On test sets where top models err on fewer than 0.3\,\% of examples, small
+sample counts make raw accuracy rankings unreliable.
+McNemar's test~\cite{mcnemar1947} provides the appropriate paired framework:
+it conditions on the subset of examples where two models disagree, making it
+sensitive to genuine error-pattern differences while being robust to the high
+base-rate correct predictions shared by both classifiers.
+Wilson score intervals~\cite{wilson1927} give calibrated single-model
+accuracy bounds, and calibration analysis~\cite{guo2017calibration}
+connects model confidence to empirical accuracy---a prerequisite for
+interpreting soft distillation targets.
+Applying this suite of tools systematically to a Devanagari recognition
+benchmark reveals a methodological gap in prior work: published rankings
+have been based on point estimates alone, without paired testing that would
+support causal claims about architectural superiority.
+\modelname{} fills this gap by reporting exact McNemar $p$-values and Wilson
+confidence intervals across every model comparison, demonstrating that the
+benchmark is saturated and that statistical parity, rather than raw accuracy
+rank, is the appropriate evaluation criterion at this operating point.
