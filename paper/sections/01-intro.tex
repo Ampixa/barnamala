@@ -31,8 +31,7 @@ Our central finding is that a \textbf{1.11\,M}-parameter student network
 reaches statistical parity with MallaNet (McNemar $p=0.345$) at
 \textbf{15.6\(\times\)} fewer parameters, and that this parity holds
 \emph{even without knowledge distillation}.
-Exhaustive ablation over distillation configurations, teacher ensemble sizes,
-and label smoothing schedules finds that \emph{no lever} yields a
+Ablations over distillation targets (TTA-softened vs.\ clean no-TTA targets, and a supervised control) and teacher ensemble size (9 vs.\ 15 teachers) find that \emph{no lever} yields a
 statistically significant improvement: every model tested converges to the
 same \textbf{11-error intrinsic floor}, beyond which DHCD's label noise and
 handwriting ambiguity dominate.
@@ -52,10 +51,7 @@ harder evaluation set or substantially different modelling assumptions.
     showing that DHCD is \textbf{saturated} at an
     \textbf{11-error intrinsic floor} shared by every model.
 
-  \item[\textbf{C3.}] Comprehensive ablations over distillation temperature,
-    teacher ensemble size ($1$--$9$ teachers), and label targets, showing
-    which design choices matter and which do not once statistical noise is
-    properly controlled.
+  \item[\textbf{C3.}] Ablations over distillation targets (TTA-softened vs.\ clean no-TTA targets vs.\ supervised control), teacher ensemble size (9 vs.\ 15 teachers), and test-time augmentation, showing which design choices matter and which do not once statistical noise is properly controlled.
 
   \item[\textbf{C4.}] Efficiency, transfer, and robustness profiling:
     \modelname{} is \textbf{15.6\(\times\)} smaller and faster than

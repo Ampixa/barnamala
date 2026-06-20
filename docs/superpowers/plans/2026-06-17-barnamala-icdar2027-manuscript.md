@@ -828,4 +828,4 @@ git commit -m "test: paper numbers audit + anonymity + page-count gates"
 
 ## Execution Handoff
 
-(Filled at handoff — see skill's two options: subagent-driven vs inline.)
+**Chosen (2026-06-20): Subagent-Driven Development**, with a Codex humanization pass woven into the prose tasks (6–12). Branch `paper/icdar2027-manuscript` off `main@9f46ec6`. Per prose task: implementer writes → build check → Codex humanizes prose only (numbers/macros/cites/tables frozen) → build + number grep → task reviewer validates the humanized text. Task 13's numbers-audit + anonymity gates are the final net. SDD ledger at `.git/sdd/progress.md`.
