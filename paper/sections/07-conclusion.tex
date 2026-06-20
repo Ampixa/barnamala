@@ -1,1 +1,30 @@
-% conclusion — filled in Task 6
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper demonstrates that a \textbf{1.11\,M}-parameter compact student,
+\modelname{}, matches the 17.32\,M-parameter MallaNet~\cite{malla2025}
+at statistical parity on DHCD (McNemar $p = 0.345$, C1), and that this
+parity holds even without knowledge distillation.  Rigorous paired
+evaluation (C2) reveals an 11-image intrinsic floor shared by every
+model tested — including large teacher ensembles — identifying DHCD as a
+saturated benchmark rather than a task with room for meaningful
+architectural progress at current resolution.  Ablations (C3) confirm
+that no lever — distillation target cleanliness, ensemble size, or TTA —
+produces a statistically significant gain; efficiency profiling (C4)
+shows a 15.6$\times$ size and latency advantage that comes at no accuracy
+cost within the saturation regime; and full reproducible artifacts are
+released (C5).
+
+Compact models are not merely adequate at saturation; they are the
+appropriate tool: given that error reduction is bounded by label noise
+and handwriting ambiguity rather than model capacity, deploying a model
+that is an order of magnitude smaller and faster carries no penalty.
+
+Future work should prioritise two directions: first, \emph{paired
+evaluation protocols} (McNemar or similar) as a community standard,
+so that accuracy gains of a few hundredths of a percent are not
+reported without a significance test; and second, \emph{fresh,
+harder benchmarks} for Devanagari — higher-resolution scans, genuinely
+independent writer pools, or multi-script character inventories — that
+do not share DHCD's provenance and can support discrimination between
+models that DHCD can no longer distinguish.

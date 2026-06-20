@@ -1,1 +1,32 @@
-% discussion — filled in Task 6
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Scope of transfer results.}
+The transfer experiment (Section~\ref{sec:transfer}) covers only the
+\textbf{digit subset} (10 of 46 DHCD classes).  Extending transfer to the
+full 36-consonant inventory is not currently possible: the only publicly
+available Devanagari handwriting collections that share DHCD's consonant
+label taxonomy — principally the Acharya~\cite{acharya2015dhcd} and
+Pant datasets — are same-provenance splits of DHCD itself, and using them
+as held-out targets would reintroduce contamination between training and
+evaluation.  Genuinely independent consonant-level benchmarks do not yet
+exist in the public literature; this limits the breadth of transferability
+claims to digits.
+
+\paragraph{Single-benchmark evaluation.}
+All consonant-level accuracy results in this paper are reported on a
+single held-out split of DHCD.  While the McNemar test controls for
+within-split variability via paired comparison, the absence of a second,
+independent consonant benchmark means that findings may not generalise
+beyond this split.  The saturation conclusion depends on properties of
+DHCD (image resolution, label noise, class ambiguity) that another
+dataset might not share.
+
+\paragraph{Efficiency versus accuracy.}
+The \textbf{15.6$\times$} parameter reduction and \textbf{9.5$\times$}
+latency improvement come at no measurable accuracy cost on DHCD at its
+current saturation point.  Whether this efficiency advantage persists
+under a more discriminative benchmark — one where larger models could
+exploit additional capacity to push below the 11-error floor — is an
+open question this work cannot answer.  The efficiency results are
+therefore most useful as a deployment argument rather than a generalisation claim.
