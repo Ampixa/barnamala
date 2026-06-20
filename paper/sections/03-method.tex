@@ -3,15 +3,15 @@
 \subsection{Compact Student Architecture}
 
 Our student network, \modelname{}, is a pre-activation squeeze-and-excitation
-residual network~\cite{he2016identity,hu2018senet} designed to operate on
-single-channel $32{\times}32$ images.  The architecture consists of a $3{\times}3$
-stem convolution followed by three stages of PreAct SE blocks with channel widths
-$(40, 80, 160)$ and depths $(2, 2, 2)$.  Each stage except the first downsamples
-spatially by a factor of two via a strided convolution in the first block.  Within
-each block, a standard squeeze-and-excitation module (reduction ratio 8) recalibrates
-channel responses after the second convolution.  Global average pooling (GAP)
-collapses the spatial dimensions, and a single dropout layer ($p = 0.1$) precedes
-the linear classifier, which maps to 46 classes (the DHCD character inventory).
+residual network~\cite{he2016identity,hu2018senet} for single-channel
+$32{\times}32$ images.  A $3{\times}3$ stem convolution feeds three stages of
+PreAct SE blocks with channel widths $(40, 80, 160)$ and depths $(2, 2, 2)$.
+Each stage except the first downsamples spatially by a factor of two using a
+strided convolution in the first block.  A standard squeeze-and-excitation module
+(reduction ratio 8) recalibrates channel responses after the second convolution
+in each block.  Global average pooling (GAP) collapses the spatial dimensions;
+a single dropout layer ($p = 0.1$) then precedes the linear classifier, which
+maps to 46 classes (the DHCD character inventory).
 The total trainable parameter count is \textbf{1,109,116}.
 
 \begin{figure}[t]
@@ -27,25 +27,25 @@ The total trainable parameter count is \textbf{1,109,116}.
 
 \subsection{Teacher Ensemble}
 
-We train an ensemble of 15 teachers by crossing three architecture configurations
-with five independent random seeds (seeds 0--4).  Two configurations share widths
-$(96, 192, 384)$ with depths $(3, 3, 3)$ but differ in data-augmentation
-intensity (medium vs.\ heavy tier; see Section~\ref{sec:training}); a third uses
-widths $(64, 128, 256)$ with depths $(4, 4, 4)$ and medium augmentation.
-This yields parameter counts of 5.97\,M and 9.90\,M per teacher respectively,
-spanning a 5.97--9.90\,M range across the ensemble.
-All teachers use the same \modelname{} codebase (the \texttt{DevNet} class) and
-are trained without distillation; their logits are dumped once and stored in a
-single NumPy archive that is reused across student runs.
+We train an ensemble of 15 teachers from three architecture configurations and
+five independent random seeds (seeds 0--4).  Two
+configurations share widths $(96, 192, 384)$ with depths $(3, 3, 3)$ but use
+different data-augmentation intensities (medium vs.\ heavy tier; see
+Section~\ref{sec:training}); the third uses widths $(64, 128, 256)$ with depths
+$(4, 4, 4)$ and medium augmentation.  These choices yield parameter counts of
+5.97\,M and 9.90\,M per teacher respectively, spanning a 5.97--9.90\,M range
+across the ensemble.  All teachers use the same \modelname{} codebase (the
+\texttt{DevNet} class) and are trained without distillation.  Their logits are
+dumped once and stored in a single NumPy archive reused across student runs.
 
 \subsection{Ensemble Knowledge Distillation}
 \label{sec:kd}
 
 We follow the knowledge distillation framework of Hinton et al.\
-\cite{hinton2015distill}.  For each training image the ensemble logit is the
-mean of the 15 teacher logits computed at inference time on the raw (no
-test-time augmentation) input.  The distillation loss combines a
-temperature-softened KL divergence with a hard cross-entropy term:
+\cite{hinton2015distill}.  For each training image, the ensemble logit is the
+mean of the 15 teacher logits computed at inference time on the raw input, with
+no test-time augmentation.  The distillation objective combines a
+temperature-softened KL divergence and a hard cross-entropy term:
 \begin{equation}
   \mathcal{L} = \alpha \cdot T^{2}\,
     \mathrm{KL}\!\left(
@@ -57,47 +57,47 @@ temperature-softened KL divergence with a hard cross-entropy term:
 \end{equation}
 where $z_{s}$ and $z_{t}$ are student and (mean) teacher logits, $\sigma$
 denotes the softmax, $T = 4.0$ is the temperature, and $\alpha = 0.7$ weights
-the soft target relative to the hard label.  The label-smoothing coefficient
-($\varepsilon = 0.1$) is applied to the hard cross-entropy term.
-Teacher logits are pre-computed without any test-time augmentation so that they
+the soft target relative to the hard label.  We apply the label-smoothing
+coefficient ($\varepsilon = 0.1$) to the hard cross-entropy term.  Because the
+teacher logits are pre-computed without any test-time augmentation, they
 represent clean, unbiased soft targets.
 
 \subsection{Script-Aware Training}
 \label{sec:training}
 
 Devanagari script is not horizontally symmetric: reflecting a glyph produces an
-invalid character.  We therefore \emph{exclude} horizontal flips entirely from
-the augmentation pipeline.  The training transform instead applies affine
-perturbations (rotation, translation, scale, shear) followed by elastic
-deformation; the intensity is controlled by an augmentation tier
-(\texttt{light}/\texttt{medium}/\texttt{heavy}) selected per configuration.
+invalid character.  For this reason, we \emph{exclude} horizontal flips entirely
+from the augmentation pipeline.  The training transform applies affine perturbations
+(rotation, translation, scale, shear) followed by elastic deformation; an
+augmentation tier (\texttt{light}/\texttt{medium}/\texttt{heavy}) selected per
+configuration controls the intensity.
 Random erasing ($p = 0.25$, area 2--10\%) provides additional regularisation.
 
-At the batch level we apply mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
-CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$) with equal probability, each
-activated with overall probability 0.5 per batch.  Mixing is disabled during
-distillation runs because per-image teacher logits cannot be linearly combined
-without introducing a bias in the soft-target distribution; the KD loss
-(Equation~\ref{eq:kdloss}) uses clean, unaugmented teacher predictions for every
-training sample.
+At the batch level, mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
+CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$) are selected with equal
+probability, each activated with overall probability 0.5 per batch.  We disable
+mixing during distillation runs because per-image teacher logits cannot be
+linearly combined without introducing bias in the soft-target distribution; the
+KD loss (Equation~\ref{eq:kdloss}) uses clean, unaugmented teacher predictions
+for every training sample.
 
 Optimisation uses AdamW with a cosine learning-rate schedule preceded by a
-5-epoch linear warm-up.  Weight exponential moving average (EMA, decay 0.999)
-tracks a shadow copy of the model; the EMA weights are used for validation and
-saved as the final checkpoint.
+5-epoch linear warm-up.  A weight exponential moving average (EMA, decay 0.999)
+tracks a shadow copy of the model; validation and the final checkpoint use the
+EMA weights.
 
 \subsection{Evaluation Protocol}
 
-All reported accuracies are obtained from a single forward pass over the DHCD
-held-out test split; no test-time augmentation is used.  Model selection during
-training relies on a 10\% stratified-held-out validation set carved from the
-official training split before any augmentation, ensuring class balance is
-preserved throughout.
+All reported accuracies come from a single forward pass over the DHCD held-out
+test split; no test-time augmentation is used.  For model selection during
+training, we use a 10\% stratified-held-out validation set carved from the
+official training split before any augmentation, preserving class balance
+throughout.
 
 Statistical comparisons between \modelname{} and the MallaNet
 baseline~\cite{malla2025} use the exact two-sided McNemar
-test~\cite{mcnemar1947} applied to per-sample binary correctness indicators on
-the same test set.  Confidence intervals for accuracy and error rate are Wilson
-score intervals at 95\%~\cite{wilson1927}.  Calibration quality is measured by
-Expected Calibration Error (ECE)~\cite{guo2017calibration} computed with 15
+test~\cite{mcnemar1947} on per-sample binary correctness indicators from the
+same test set.  Confidence intervals for accuracy and error rate are Wilson
+score intervals at 95\%~\cite{wilson1927}.  We measure calibration quality with
+Expected Calibration Error (ECE)~\cite{guo2017calibration}, computed with 15
 equal-width bins on the held-out test set.
