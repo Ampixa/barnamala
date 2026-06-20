@@ -36,7 +36,7 @@ Wilson 95% CI [99.656, 99.824].
 
 ## Teacher ensembles (test, n = 13,800)
 
-Teachers: 15 models (3 architectures × 5 seeds), 5.98M–9.90M params each.
+Teachers: 15 models (3 architectures × 5 seeds), 5.97M–9.89M params each.
 The ensemble is used to generate distillation targets; it is *also* scored
 here as a predictor (the original program never did this).
 

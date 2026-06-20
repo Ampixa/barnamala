@@ -33,7 +33,7 @@ configurations share widths $(96, 192, 384)$ with depths $(3, 3, 3)$ but use
 different data-augmentation intensities (medium vs.\ heavy tier; see
 Section~\ref{sec:training}); the third uses widths $(64, 128, 256)$ with depths
 $(4, 4, 4)$ and medium augmentation.  These choices yield parameter counts of
-5.97\,M and 9.90\,M per teacher respectively, spanning a 5.97--9.90\,M range
+5.97\,M and 9.89\,M per teacher respectively, spanning a 5.97--9.89\,M range
 across the ensemble.  All teachers use the same \modelname{} codebase (the
 \texttt{DevNet} class) and are trained without distillation.  Their logits are
 dumped once and stored in a single NumPy archive reused across student runs.
@@ -42,15 +42,16 @@ dumped once and stored in a single NumPy archive reused across student runs.
 \label{sec:kd}
 
 We follow the knowledge distillation framework of Hinton et al.\
-\cite{hinton2015distill}.  For each training image, the ensemble logit is the
-mean of the 15 teacher logits computed at inference time on the raw input, with
-no test-time augmentation.  The distillation objective combines a
+\cite{hinton2015distill}.  For each training image, the ensemble target is the
+mean softmax of 9 teacher checkpoints (configs A, B, C $\times$ seeds 0--2),
+where each teacher's softmax is computed with horizontal-flip test-time
+averaging over the training image.  The distillation objective combines a
 temperature-softened KL divergence and a hard cross-entropy term:
 \begin{equation}
   \mathcal{L} = \alpha \cdot T^{2}\,
     \mathrm{KL}\!\left(
-      \sigma\!\left(\tfrac{z_{s}}{T}\right) \,\Big\|\,
-      \sigma\!\left(\tfrac{z_{t}}{T}\right)
+      \sigma\!\left(\tfrac{z_{t}}{T}\right) \,\Big\|\,
+      \sigma\!\left(\tfrac{z_{s}}{T}\right)
     \right)
     + (1-\alpha)\cdot\mathrm{CE}(z_{s}, y),
   \label{eq:kdloss}
@@ -58,9 +59,11 @@ temperature-softened KL divergence and a hard cross-entropy term:
 where $z_{s}$ and $z_{t}$ are student and (mean) teacher logits, $\sigma$
 denotes the softmax, $T = 4.0$ is the temperature, and $\alpha = 0.7$ weights
 the soft target relative to the hard label.  We apply the label-smoothing
-coefficient ($\varepsilon = 0.1$) to the hard cross-entropy term.  Because the
-teacher logits are pre-computed without any test-time augmentation, they
-represent clean, unbiased soft targets.
+coefficient ($\varepsilon = 0.1$) to the hard cross-entropy term.
+The KL is computed in the teacher-to-student direction (teacher as reference
+distribution), consistent with standard KD practice~\cite{hinton2015distill}.
+The choice of target-generation scheme (clean no-TTA vs.\ flip-averaged targets)
+and ensemble size (9 vs.\ 15 teachers) are examined in our ablations.
 
 \subsection{Script-Aware Training}
 \label{sec:training}
