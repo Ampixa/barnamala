@@ -1,0 +1,42 @@
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\ifanon
+  \newcommand{\modelname}{CDN}
+  \newcommand{\repourl}{\url{https://anonymous.4open.science/r/cdn-dhcd}}
+\else
+  \newcommand{\modelname}{Barnamala}
+  \newcommand{\repourl}{\url{https://github.com/Ampixa/barnamala}}
+\fi
+
+\begin{document}
+\title{\modelname: Parameter-Efficient Handwritten Devanagari Recognition at Benchmark Saturation}
+\ifanon
+  \author{Anonymous}
+  \institute{Anonymous Institution}
+\else
+  \author{Ashish Thapa}
+  \institute{Ampixa \\ \email{ashish.thapa477@gmail.com}}
+\fi
+\maketitle
+
+\input{sections/00-abstract}
+\input{sections/01-intro}
+\input{sections/02-related}
+\input{sections/03-method}
+\input{sections/04a-exp-parity}
+\input{sections/04b-exp-ablation}
+\input{sections/04c-exp-transfer}
+\input{sections/05-analysis}
+\input{sections/06-discussion}
+\input{sections/07-conclusion}
+
+\bibliographystyle{splncs04}
+\bibliography{refs}
+\end{document}
