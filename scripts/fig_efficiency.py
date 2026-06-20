@@ -11,7 +11,8 @@ s = eff["models"][0]
 pts = [
     ("Barnamala/CDN (ours)", s["params_millions"], 99.735, "*"),
     ("MallaNet [Malla 2025]", eff["models"][1]["params_millions"], 99.710, "o"),
-    ("Mishra et al. 2021", 39.0, 99.72, "s"),
+    # Mishra et al. 2021 (INDISCON) accuracy 99.72% confirmed; parameter count
+    # (~39 M) could not be verified from the primary source — point omitted.
 ]
 fig, ax = plt.subplots(figsize=(4.2, 3.0))
 for label, p, acc, m in pts:
