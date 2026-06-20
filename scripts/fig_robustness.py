@@ -9,7 +9,7 @@ kinds = ["noise", "blur", "contrast"]
 sev = list(range(6))
 fig, axes = plt.subplots(1, 3, figsize=(9.0, 2.8), sharey=True)
 for ax, kind in zip(axes, kinds):
-    for name, lab in [("student", "Barnamala/CDN"), ("mallanet", "MallaNet")]:
+    for name, lab in [("student", "CDN (ours)"), ("mallanet", "MallaNet")]:
         ys = [v * 100 for v in rob[name]["per_corruption"][kind]["by_severity"]]
         ax.plot(sev, ys, marker="o", ms=3, label=lab)
     ax.set_title(kind)
