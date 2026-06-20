@@ -1,0 +1,114 @@
+{
+  "models": [
+    "student_distilled_clean_seed0",
+    "student_distilled_clean_seed1",
+    "student_distilled_clean_seed2",
+    "student_distilled_clean_seed3",
+    "student_distilled_clean_seed4",
+    "student_distilled_seed0",
+    "student_distilled_seed1",
+    "student_distilled_seed2",
+    "student_distilled_seed3",
+    "student_distilled_seed4",
+    "student_supervised_seed0",
+    "student_supervised_seed1",
+    "student_supervised_seed2",
+    "student_supervised_seed3",
+    "student_supervised_seed4",
+    "mallanet_baseline"
+  ],
+  "n_models": 16,
+  "shared_by_k": [
+    13701,
+    21,
+    14,
+    5,
+    11,
+    7,
+    6,
+    4,
+    6,
+    1,
+    2,
+    1,
+    1,
+    1,
+    3,
+    5,
+    11
+  ],
+  "floor_all_models": 11,
+  "mean_pairwise_jaccard": 0.4755,
+  "per_class_errors_distilled": {
+    "character_11_taamatar": 13,
+    "character_12_thaa": 1,
+    "character_13_daa": 1,
+    "character_14_dhaa": 7,
+    "character_16_tabala": 5,
+    "character_17_tha": 4,
+    "character_18_da": 9,
+    "character_19_dha": 23,
+    "character_20_na": 6,
+    "character_21_pa": 1,
+    "character_23_ba": 23,
+    "character_24_bha": 7,
+    "character_26_yaw": 9,
+    "character_27_ra": 6,
+    "character_28_la": 2,
+    "character_29_waw": 18,
+    "character_30_motosaw": 1,
+    "character_34_chhya": 2,
+    "character_35_tra": 16,
+    "character_3_ga": 2,
+    "character_4_gha": 2,
+    "character_7_chha": 7,
+    "digit_1": 5,
+    "digit_4": 1,
+    "digit_5": 2,
+    "digit_6": 4,
+    "digit_8": 1,
+    "digit_9": 5
+  },
+  "top_confusions": [
+    [
+      "character_23_ba",
+      "character_29_waw",
+      17
+    ],
+    [
+      "character_29_waw",
+      "character_16_tabala",
+      16
+    ],
+    [
+      "character_35_tra",
+      "character_23_ba",
+      15
+    ],
+    [
+      "character_19_dha",
+      "character_4_gha",
+      13
+    ],
+    [
+      "character_18_da",
+      "character_14_dhaa",
+      9
+    ],
+    [
+      "character_19_dha",
+      "character_17_tha",
+      8
+    ],
+    [
+      "character_14_dhaa",
+      "character_18_da",
+      7
+    ],
+    [
+      "character_11_taamatar",
+      "character_16_tabala",
+      5
+    ]
+  ]
+}
