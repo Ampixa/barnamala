@@ -4,13 +4,13 @@
 \subsection{The Shared Error Floor}
 
 Across all 15 \modelname{} students and the reproduced MallaNet
-baseline~\cite{malla2025}, every model fails on a common core of
-\textbf{11 images} — samples that \emph{no} configuration classifies
-correctly regardless of architecture, training strategy, or random seed.
+baseline~\cite{malla2025}, the same core of \textbf{11 images} defeats
+every model.  \emph{No} configuration classifies these samples correctly,
+regardless of architecture, training strategy, or random seed.
 Figure~\ref{fig:floor} visualises the cumulative error-sharing
-distribution: the steep drop from the universal 11-image floor through
-the tail of model-specific errors illustrates that most residual errors
-are concentrated in this irreducible core.
+distribution: the steep drop from the universal 11-image floor into the
+tail of model-specific errors shows that most residual errors are
+concentrated in this irreducible core.
 
 \begin{figure}[t]
   \centering
@@ -25,28 +25,28 @@ are concentrated in this irreducible core.
   \label{fig:floor}
 \end{figure}
 
-The existence of an 11-image floor shared by a 1.11\,M-parameter compact
-student and a 17.32\,M-parameter baseline is strong evidence that these
-samples are \emph{mislabelled or fundamentally ambiguous} in DHCD, rather
-than representatively hard examples that a better model could eventually
-learn.  Beyond this floor, most errors are model-specific: the mean
-pairwise Jaccard similarity of error sets across models is
+An 11-image floor shared by a 1.11\,M-parameter compact student and a
+17.32\,M-parameter baseline points to samples that are \emph{mislabelled
+or fundamentally ambiguous} in DHCD, rather than representative hard
+examples that a better model could eventually learn.  Outside this floor,
+most errors are model-specific: the mean pairwise Jaccard similarity of
+error sets across models is
 $\mathbf{0.48}$, indicating that seeds and configurations shuffle which
 images fall in the error tail without reliably reducing it.  Ensembling
-or adding training seeds reduces \emph{variance} but does not address the
+or adding training seeds reduces \emph{variance}; it does not address the
 underlying \emph{bias} imposed by the floor.
 
 \subsection{Confusable Character Pairs}
 
-Table~\ref{tab:confusions} lists the top confusion pairs drawn from the
-distilled-student error analysis (aggregated across the 10 distilled seeds).
-The leading pair, \textbf{ba / waw} (17 cross-confusions), is followed by
-\textbf{waw / tabala} (16) and \textbf{tra / ba} (15).  These three pairs
-alone account for roughly 48 errors across the distilled student pool.
-The \textbf{dha / gha} confusion (13 instances) arises from near-identical
-looped ascenders that differ only by a subtle curve in the lower body of
-the glyph; the \textbf{da / dhaa} pair (9 instances) involves glyphs
-distinguished by a single horizontal hairline.
+Table~\ref{tab:confusions} lists the top confusion pairs from the
+distilled-student error analysis, aggregated across the 10 distilled seeds.
+\textbf{ba / waw} leads with 17 cross-confusions, followed by
+\textbf{waw / tabala} (16) and \textbf{tra / ba} (15).  Together these
+three pairs account for roughly 48 errors across the distilled student
+pool.  The \textbf{dha / gha} confusion (13 instances) arises from
+near-identical looped ascenders that differ only by a subtle curve in the
+lower body of the glyph; the \textbf{da / dhaa} pair (9 instances)
+involves glyphs distinguished by a single horizontal hairline.
 
 \begin{table}[t]\centering
 \caption{Top confusion pairs in the distilled student pool (aggregate
@@ -62,45 +62,43 @@ da $\leftrightarrow$ dhaa   & 9  & Single hairline distinguishes the pair \\\bot
 \end{tabular}
 \end{table}
 
-These pairs are structurally inherent to the Devanagari script: the
+These pairs reflect structural properties of the Devanagari script.  The
 confusable glyphs differ by strokes finer than a few pixels at
-$32{\times}32$ resolution.  Resolving them would require either
-higher-resolution inputs or a richer annotation that marks which specific
-stroke is present, neither of which is available in DHCD.
+$32{\times}32$ resolution.  Resolving them would require
+higher-resolution inputs or richer annotation marking which specific
+stroke is present; DHCD provides neither.
 
 \subsection{Significance Frontier}
 \label{sec:sig-frontier}
 
-To claim a statistically significant improvement over the reproduced
-MallaNet baseline (40 errors) under the exact two-sided McNemar
-test~\cite{mcnemar1947} at $\alpha = 0.05$, a model must make at most
-\textbf{25 errors} on the same 13,800-sample test set (corresponding to
+Under the exact two-sided McNemar test~\cite{mcnemar1947} at
+$\alpha = 0.05$, a statistically significant improvement over the
+reproduced MallaNet baseline (40 errors) requires at most \textbf{25
+errors} on the same 13,800-sample test set (corresponding to
 $\geq$99.82\% accuracy).  A comfortable margin would require
 $\leq$\textbf{20 errors} ($\geq$99.855\%).
-Our best single result is \textbf{28 errors} — the 9-teacher ensemble
-with (semantically invalid) flip-TTA applied at test time, a result we
-explicitly exclude on methodological grounds
-(Section~\ref{sec:flip-tta}).  The best defensible single seed reaches
-\textbf{34 errors}; the best ensemble without flip-TTA reaches
-\textbf{30 errors}.
+The best single result is \textbf{28 errors}: the 9-teacher ensemble with
+(semantically invalid) flip-TTA applied at test time, a result excluded
+on methodological grounds (Section~\ref{sec:flip-tta}).  The best
+defensible single seed reaches \textbf{34 errors}; the best ensemble
+without flip-TTA reaches \textbf{30 errors}.
 
 \textbf{No lever tested in this study achieved a statistically
-significant improvement over MallaNet.}  Neither scaling the teacher
-pool from 9 to 15, nor applying TTA-softened distillation targets, nor
-running five independent seeds brings any configuration within the
-significance frontier.  This is not a failure of experimental design; it
-is the defining property of a saturated benchmark.
+significant improvement over MallaNet.}  Scaling the teacher pool from 9
+to 15, applying TTA-softened distillation targets, and running five
+independent seeds all leave the configurations outside the significance
+frontier.  This is not a failure of experimental design; it is the
+defining property of a saturated benchmark.
 
 \subsection{Calibration}
 
-Expected Calibration Error (ECE)~\cite{guo2017calibration} measured
-with 15 equal-width bins on the held-out DHCD test set falls in the
+Expected Calibration Error (ECE)~\cite{guo2017calibration}, measured
+with 15 equal-width bins on the held-out DHCD test set, falls in the
 range \textbf{0.13--0.16} across all \modelname{} student configurations.
 These ECE values are typical of softmax classifiers without post-hoc
-temperature scaling, confirming that the students are moderately
-over-confident — a consequence of training on a near-clean benchmark
-where the label noise is concentrated in the ambiguous floor images
-rather than spread across the distribution.  Calibration is consistent
-across seeds and does not co-vary with accuracy, reinforcing the
-conclusion that the error floor is a data-level property rather than a
-model-level property.
+temperature scaling.  They indicate moderate over-confidence, consistent
+with training on a near-clean benchmark whose label noise is concentrated
+in the ambiguous floor images rather than spread across the distribution.
+Calibration remains stable across seeds and does not co-vary with
+accuracy, reinforcing the conclusion that the error floor is a data-level
+property rather than a model-level property.

@@ -9,16 +9,16 @@ available Devanagari handwriting collections that share DHCD's consonant
 label taxonomy — principally the Acharya~\cite{acharya2015dhcd} and
 Pant datasets — are same-provenance splits of DHCD itself, and using them
 as held-out targets would reintroduce contamination between training and
-evaluation.  Genuinely independent consonant-level benchmarks do not yet
-exist in the public literature; this limits the breadth of transferability
-claims to digits.
+evaluation.  Public literature does not yet provide genuinely independent
+consonant-level benchmarks, so transferability claims are limited to
+digits.
 
 \paragraph{Single-benchmark evaluation.}
 All consonant-level accuracy results in this paper are reported on a
-single held-out split of DHCD.  While the McNemar test controls for
-within-split variability via paired comparison, the absence of a second,
-independent consonant benchmark means that findings may not generalise
-beyond this split.  The saturation conclusion depends on properties of
+single held-out split of DHCD.  The McNemar test controls for
+within-split variability via paired comparison, but without a second,
+independent consonant benchmark the findings may not generalise beyond
+this split.  The saturation conclusion depends on properties of
 DHCD (image resolution, label noise, class ambiguity) that another
 dataset might not share.
 
@@ -28,5 +28,6 @@ latency improvement come at no measurable accuracy cost on DHCD at its
 current saturation point.  Whether this efficiency advantage persists
 under a more discriminative benchmark — one where larger models could
 exploit additional capacity to push below the 11-error floor — is an
-open question this work cannot answer.  The efficiency results are
-therefore most useful as a deployment argument rather than a generalisation claim.
+open question this work cannot answer.  These results therefore support
+deployment on DHCD more directly than they support a general claim about
+efficiency under harder benchmarks.
