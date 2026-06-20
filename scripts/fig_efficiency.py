@@ -9,7 +9,7 @@ eff = json.load(open("results/efficiency_metrics.json"))
 s = eff["models"][0]
 # (label, params_millions, accuracy_pct, marker)
 pts = [
-    ("CDN (ours)", s["params_millions"], 99.735, "*"),
+    ("Ours", s["params_millions"], 99.735, "*"),
     ("MallaNet [Malla 2025]", eff["models"][1]["params_millions"], 99.710, "o"),
     # Mishra et al. 2021 (INDISCON) accuracy 99.72% confirmed; parameter count
     # (~39 M) could not be verified from the primary source — point omitted.
