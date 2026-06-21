@@ -10,7 +10,7 @@ No fine-tuning or parameter adaptation is applied in either case.
 \paragraph{NHCD (Pant 2012).}
 The Nepali Handwritten Character Dataset~\cite{pant2012nhcd} was assembled at
 Tribhuvan University, Nepal, in 2012 as part of an independent research
-programme---three years before DHCD and with no overlap in
+programme, three years before DHCD, and with no overlap in
 writers (40 named contributors, identifiers encoded in filenames).
 It covers the same 46-class inventory (36 consonants\,+\,10 digits) in
 $28{\times}28$ JPEG images with dark-ink-on-white polarity.
@@ -21,7 +21,7 @@ Table~\ref{tab:ood} summarises the outcome.
 \modelname{} achieves \textbf{78.92\%} zero-shot overall
 (95.80\% on digits, 72.33\% on consonants).
 MallaNet collapses to \textbf{23.99\%}
-(58.85\% on digits, 10.38\% on consonants)---a \textbf{55\,pp gap}
+(58.85\% on digits, 10.38\% on consonants), a \textbf{55\,pp gap}
 despite identical in-distribution performance on DHCD.
 The disparity on consonants (+62\,pp) is the most striking:
 MallaNet's homogeneous filter capsule (HFC) layers and fixed
@@ -36,7 +36,7 @@ For both models, the four dental/retroflex consonant pairs
 near-zero accuracy with systematic cross-class confusion.
 These pairs are visually distinguished by a single diacritic stroke
 whose rendering conventions differ between Indian and Nepali handwriting
-traditions---a script-level domain gap that neither model resolves,
+traditions, a script-level domain gap that neither model resolves,
 but that \modelname{} handles better everywhere else.
 
 \paragraph{Prashanth et al.\ 2021.}
@@ -51,7 +51,7 @@ CMATERdb transfer result reported in Section~\ref{sec:transfer},
 confirming that the digit representation gap is reproducible across
 independent datasets.
 Devanagari digit~5 confuses with digit~7 at high rates for both
-models---a genuine visual similarity in the script rather than a
+models, reflecting a genuine visual similarity in the script rather than a
 model-specific artefact.
 
 \begin{table}[t]\centering

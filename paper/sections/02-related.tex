@@ -42,7 +42,7 @@ sensitive to genuine error-pattern differences while being robust to the high
 base-rate correct predictions shared by both classifiers.
 Wilson score intervals~\cite{wilson1927} give calibrated single-model
 accuracy bounds, and calibration analysis~\cite{guo2017calibration}
-connects model confidence to empirical accuracy---a prerequisite for
+connects model confidence to empirical accuracy, a prerequisite for
 interpreting soft distillation targets.
 When applied systematically to a Devanagari recognition benchmark, this suite
 of tools exposes a methodological gap in prior work.
@@ -52,6 +52,6 @@ exact $p$-values, and draws no inference about saturation; earlier work reports
 point estimates alone.
 Against that backdrop, \modelname{} closes this gap by reporting exact McNemar
 $p$-values and Wilson confidence intervals across every model
-comparison---including the nearest competitor---demonstrating that the
+comparison, including the nearest competitor, and showing that the
 benchmark is saturated and that statistical parity, rather than raw accuracy
 rank, is the appropriate evaluation criterion at this operating point.

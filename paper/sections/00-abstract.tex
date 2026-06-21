@@ -1,14 +1,14 @@
 \begin{abstract}
 We present \modelname{}, a compact convolutional network with \textbf{1.11\,M}
 parameters, and show that it reaches \textbf{99.73\,\%} top-1 accuracy on the 46-class
-DHCD Devanagari handwriting benchmark~\cite{acharya2015dhcd}---the highest
+DHCD Devanagari handwriting benchmark~\cite{acharya2015dhcd}, the highest
 reported result on the standard split, with a \textbf{15.6\(\times\)} smaller
 footprint than prior state-of-the-art models.
 We apply a rigorous paired evaluation protocol (exact McNemar tests with Wilson
 confidence intervals) systematically across all student--teacher
 configurations and find that \emph{no} configuration achieves a statistically
-significant win over any other: every tested model---including large teacher
-ensembles---converges to the same \textbf{11-error intrinsic floor},
+significant win over any other: every tested model, including large teacher
+ensembles, converges to the same \textbf{11-error intrinsic floor},
 which indicates that DHCD is \textbf{saturated} at current resolution.
 The nearest large-model baseline (17.32\,M parameters) is statistically
 indistinguishable from \modelname{} (McNemar \(p=0.345\)), and parity holds

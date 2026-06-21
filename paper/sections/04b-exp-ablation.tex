@@ -61,7 +61,7 @@ provides no improvement.
 \label{sec:flip-tta}
 
 The third row of Table~\ref{tab:ensemble} applies horizontal-flip test-time
-augmentation to the 9-teacher ensemble at \emph{evaluation time} — averaging
+augmentation to the 9-teacher ensemble at \emph{evaluation time}, averaging
 each teacher's predictions over the original and horizontally-flipped test
 image before taking the majority vote.  This lowers ensemble errors to
 \textbf{28} ($p = 0.029$), the only entry in our study that crosses the 0.05
@@ -77,7 +77,7 @@ systematic bias with data-dependent, uncontrolled direction.
 
 The apparent gain is also fragile.  When flip-TTA is applied to
 \emph{individual} teachers rather than the ensemble, errors increase
-dramatically — reaching \textbf{88} and \textbf{102} on the worst-affected
+dramatically, reaching \textbf{88} and \textbf{102} on the worst-affected
 checkpoints, up from clean baselines of 30--43.  The ensemble partially
 masks this variance because individual teachers' errors correlate in ways that
 happen to cancel on this particular test split.  The McNemar margin itself is
@@ -85,7 +85,7 @@ only 2 samples (30 vs.\ 28 errors) on a test set of 13,800 images, giving a
 Wilson interval that nearly straddles parity.
 
 The important distinction is that the student distillation targets in
-Section~\ref{sec:kd} are \emph{also} generated with flip-averaging — but over
+Section~\ref{sec:kd} are \emph{also} generated with flip-averaging, but over
 \emph{training} images, where the flip is applied to the source document being
 transcribed, not to a held-out test sample.  That use is a target-smoothing
 device during training, not a prediction strategy, and is not affected by the

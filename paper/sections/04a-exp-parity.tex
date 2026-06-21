@@ -38,7 +38,7 @@ Configuration & Params & Errors (5 seeds) & Mean$\pm$std & Acc \% & McNemar $p$ 
 \modelname, distilled (TTA)   & 1.11M & 34,39,35,39,36 & \textbf{36.6$\pm$2.1} & 99.735 & 0.345 \\
 \modelname, distilled (clean) & 1.11M & 39,40,34,40,38 & 38.2$\pm$2.2 & 99.723 & 1.000 \\
 \modelname, supervised        & 1.11M & 43,40,42,35,39 & 39.8$\pm$2.8 & 99.712 & 0.701 \\
-MallaNet \cite{malla2025} (repro) & 17.32M & 40 & --- & 99.710 & --- \\\bottomrule
+MallaNet \cite{malla2025} (repro) & 17.32M & 40 & n/a & 99.710 & n/a \\\bottomrule
 \end{tabular}
 \end{table}
 
@@ -59,7 +59,7 @@ The \emph{ablation} row (distilled, clean targets) uses clean
 single-pass logits from a 15-teacher pool instead of flip-averaged
 targets; it obtains $p = 1.000$ against MallaNet, consistent with the
 same accuracy level but no added benefit from TTA targets.  The
-\emph{supervised control} — trained without any teacher signal — also
+\emph{supervised control}, trained without any teacher signal, also
 ties MallaNet ($p = 0.701$).  Thus, parity is not carried by knowledge
 distillation alone; the compact architecture itself is sufficient to
 match the larger model.
@@ -87,7 +87,7 @@ Model & Year & Params & Accuracy & Architecture \\\midrule
 \modelname{} (ours, mean 5 seeds) & 2027 & \textbf{1.11\,M} & \textbf{99.735\,\%} & Compact SE-ResNet \\
 Mishra et al.~\cite{mishra2021}   & 2021 & ${\approx}39$\,M & 99.72\,\%  & ResNet-85 \\
 MallaNet~\cite{malla2025}         & 2025 & 17.32\,M         & 99.71\,\%  & Branch-merge CNN \\
-Kumar et al.~\cite{kumar2023vit}  & 2023 & ---              & 99.68\,\%  & Vision Transformer \\
+Kumar et al.~\cite{kumar2023vit}  & 2023 & not reported     & 99.68\,\%  & Vision Transformer \\
 Yadav et al.~\cite{yadav2024mlcnn}& 2024 & ${\approx}0.4$\,M& 99.21\,\%  & Modified LeNet-5 \\
 Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & CNN baseline \\\bottomrule
 \end{tabular}
@@ -96,7 +96,7 @@ Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & C
 The result is about size, not a new accuracy ceiling.  \modelname{} is
 the only model in this table with both a verified parameter budget
 under 2\,M \emph{and} accuracy above 99.5\,\%.  The next lightest model
-above 99.5\,\% is MallaNet at 17.32\,M parameters~\cite{malla2025}---a
+above 99.5\,\% is MallaNet at 17.32\,M parameters~\cite{malla2025}, a
 \textbf{15.6$\times$} gap.  Prior compact models (Yadav et al.,
 0.4\,M) fall 0.5\,\% below the saturation floor; much larger models
 (Mishra et al., 39\,M) gain nothing over \modelname{} once the

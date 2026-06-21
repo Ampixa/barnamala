@@ -20,14 +20,13 @@ overlapping unpaired confidence intervals are inevitable, so raw-accuracy
 rankings alone have little inferential value.
 The decisive question is \emph{paired}: on the same test images, do two models
 actually fail on different examples?
-We answer that question with the exact McNemar test---the standard paired
-binary-classification significance test---for every student--teacher pair we
+We answer that question with the exact McNemar test, the standard paired
+binary-classification significance test, for every student--teacher pair we
 evaluate, alongside Wilson confidence intervals for each model's accuracy.
 Because prior DHCD work omits paired testing or applies it selectively without
 exact $p$-values and without testing the nearest competitor, applying the test
 systematically changes the interpretation of the leaderboard.
 
-The result is sharper than a smaller model matching a larger one.
 A \textbf{1.11\,M}-parameter student reaches statistical parity with MallaNet
 (McNemar $p=0.345$) using \textbf{15.6\(\times\)} fewer parameters, and the
 same parity appears \emph{even without knowledge distillation}.
@@ -39,8 +38,8 @@ a harder evaluation set or substantially different modelling assumptions.
 \noindent\textbf{Contributions.}
 \begin{itemize}
   \item[\textbf{C1.}] A compact \modelname{} student (\textbf{1.11\,M}
-    parameters) achieving \textbf{99.73\,\%} on DHCD---the highest reported
-    accuracy on the standard 46-class split---at \textbf{15.6\(\times\)}
+    parameters) achieving \textbf{99.73\,\%} on DHCD, the highest reported
+    accuracy on the standard 46-class split, at \textbf{15.6\(\times\)}
     smaller footprint than prior state-of-the-art, with statistical parity
     against the nearest large baseline confirmed by McNemar ($p=0.345$), and
     tying it \emph{even without distillation}.
@@ -58,8 +57,8 @@ a harder evaluation set or substantially different modelling assumptions.
     fine-tuned \textbf{97.8\%}), and remains far more robust to common
     corruptions (mCA \textbf{75.7\%} vs.\ \textbf{38.7\%}).
 
-  \item[\textbf{C5.}] Fully reproducible artifacts---training code, model
-    weights, distillation scripts, and evaluation harnesses---released at
+  \item[\textbf{C5.}] Fully reproducible artifacts, including training code,
+    model weights, distillation scripts, and evaluation harnesses, released at
     \repourl{} to facilitate future work on Devanagari recognition and
     benchmark saturation.
 \end{itemize}
