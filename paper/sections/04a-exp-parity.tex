@@ -65,6 +65,43 @@ teacher signal — also ties MallaNet ($p = 0.701$).  The parity
 result is therefore not dependent on knowledge distillation; the
 compact architecture alone is sufficient to match the larger model.
 
+\subsection{Comparison with Prior Work}
+\label{sec:sota}
+
+Table~\ref{tab:sota} places \modelname{} in context of all published results
+on the standard 46-class DHCD test split.
+Our mean accuracy of 99.735\,\% is the highest reported on this split.
+The gap between the top four models spans only 0.07\,\%, well within sampling
+noise on a 13,800-image test set; the saturation finding (Section~\ref{sec:parity})
+explains why.
+McNemar tests require per-sample predictions and are therefore available only
+for MallaNet, the single prior model we re-implemented.
+
+\begin{table}[t]\centering
+\caption{Published results on the standard 46-class DHCD test split
+  (78,200 train / 13,800 test). All accuracies from the primary sources.
+  $\dagger$~McNemar test requires per-sample predictions; only available
+  for the re-implemented MallaNet baseline (Table~\ref{tab:main}).}
+\label{tab:sota}
+\begin{tabular}{llrrl}\toprule
+Model & Year & Params & Accuracy & Architecture \\\midrule
+\modelname{} (ours, mean 5 seeds) & 2027 & \textbf{1.11\,M} & \textbf{99.735\,\%} & Compact SE-ResNet \\
+Mishra et al.~\cite{mishra2021}   & 2021 & ${\approx}39$\,M & 99.72\,\%  & ResNet-85 \\
+MallaNet~\cite{malla2025}         & 2025 & 17.32\,M         & 99.71\,\%  & Branch-merge CNN \\
+Kumar et al.~\cite{kumar2023vit}  & 2023 & ---              & 99.68\,\%  & Vision Transformer \\
+Yadav et al.~\cite{yadav2024mlcnn}& 2024 & ${\approx}0.4$\,M& 99.21\,\%  & Modified LeNet-5 \\
+Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & CNN baseline \\\bottomrule
+\end{tabular}
+\end{table}
+
+\modelname{} is the only model in this table with both a verified
+parameter budget under 2\,M \emph{and} accuracy above 99.5\,\%.
+The next lightest model above 99.5\,\% is MallaNet at 17.32\,M
+parameters~\cite{malla2025}---a \textbf{15.6$\times$} gap.
+Prior compact models (Yadav et al., 0.4\,M) fall 0.5\,\% below the
+saturation floor, while much larger models (Mishra et al., 39\,M) gain
+nothing over \modelname{} once the benchmark is saturated.
+
 \subsection{Efficiency}
 \label{sec:efficiency}
 
@@ -86,10 +123,11 @@ MallaNet   & 17.32M & 2434M & 69.3MB & 26.1MB & 78.8$\pm$0.89\,ms & 13.6\,img/s 
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.6\linewidth]{figures/efficiency_frontier.pdf}
-  \caption{Accuracy–parameter trade-off on DHCD.
-    \modelname{} (1.11\,M) matches MallaNet (17.32\,M) accuracy at
-    15.6$\times$ fewer parameters.
-    Each marker for \modelname{} is an independent seed.}
+  \caption{Accuracy–parameter trade-off across all models with published
+    results on the standard 46-class DHCD split (Table~\ref{tab:sota}).
+    Wilson 95\,\% CI bars shown for \modelname{} and MallaNet.
+    The dashed red line marks the label-noise ceiling implied by the
+    11-error intrinsic floor (99.92\,\%).}
   \label{fig:frontier}
 \end{figure}
 
