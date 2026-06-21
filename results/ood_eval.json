@@ -1,0 +1,32 @@
+{
+  "nhcd": {
+    "citation": "Pant et al. AH-ICI 2012, Kaggle: ashokpant/devanagari-character-dataset",
+    "n_classes": 46,
+    "n_images": 10260,
+    "polarity_inverted": true,
+    "resize": "28x28 -> 32x32 bilinear",
+    "ours_distilled_seed0": {
+      "overall": 0.7892,
+      "consonants": 0.7233,
+      "digits": 0.9580
+    },
+    "mallanet_repro": {
+      "overall": 0.2399,
+      "consonants": 0.1038,
+      "digits": 0.5885
+    }
+  },
+  "prashanth2021": {
+    "citation": "Prashanth et al. Data in Brief 2021, Mendeley: pxrnvp4yy8",
+    "n_classes": 10,
+    "n_images": 22500,
+    "polarity_inverted": false,
+    "resize": "28x28 -> 32x32 bilinear",
+    "ours_distilled_seed0": {
+      "digits": 0.7931
+    },
+    "mallanet_repro": {
+      "digits": 0.7260
+    }
+  }
+}
