@@ -66,7 +66,22 @@ Y_LABELS = {
     "MallaNet (baseline)":                  Y_BASELINE,
 }
 
-rng = np.random.default_rng(42)
+def beeswarm_y(xs, center, step=0.13):
+    """Return y-offsets that spread duplicate x-values symmetrically."""
+    from collections import Counter
+    counts = Counter(xs)
+    seen = Counter()
+    ys = []
+    for x in xs:
+        n = counts[x]
+        i = seen[x]
+        if n == 1:
+            ys.append(center)
+        else:
+            offsets = [(k - (n - 1) / 2) * step for k in range(n)]
+            ys.append(center + offsets[i])
+        seen[x] += 1
+    return np.array(ys)
 
 # ---------------------------------------------------------------------------
 # Plot
@@ -79,7 +94,7 @@ plt.rcParams.update({
     "font.family":    "sans-serif",
 })
 
-fig, ax = plt.subplots(figsize=(7.0, 3.5))
+fig, ax = plt.subplots(figsize=(7.0, 3.8))
 
 # --- Reference lines --------------------------------------------------------
 ax.axvline(FLOOR,     color="#888888", linestyle="-",  linewidth=1.2, zorder=1)
@@ -94,13 +109,12 @@ ax.text(THRESHOLD + 0.5, 3.65, "p<0.05\nthreshold",   fontsize=7.5,
 ax.text(BASELINE - 0.5,  3.65, "MallaNet",            fontsize=7.5,
         color="#555555", va="top", ha="right")
 
-# --- Individual teachers (jittered) ----------------------------------------
-jitter = rng.uniform(-0.18, 0.18, size=len(teacher_errors))
-y_teachers = Y_TEACHERS + jitter
+# --- Individual teachers (beeswarm — no overlap on duplicate x) -------------
+y_teachers = beeswarm_y(sorted(teacher_errors), center=Y_TEACHERS, step=0.16)
 ax.scatter(
-    teacher_errors, y_teachers,
-    color="#5B9BD5", alpha=0.75, s=40, zorder=3,
-    linewidths=0.4, edgecolors="#2a6099",
+    sorted(teacher_errors), y_teachers,
+    color="#5B9BD5", alpha=0.85, s=50, zorder=3,
+    linewidths=0.5, edgecolors="#2a6099",
 )
 
 # --- Ensemble dots ----------------------------------------------------------
@@ -142,7 +156,7 @@ ax.annotate(
 # --- Insight text box -------------------------------------------------------
 ax.text(
     0.01, 0.03,
-    "Ensembling ↓ variance but cannot break\nthe data-quality floor (11 errors).",
+    "Ensembling reduces variance but cannot break\nthe data-quality floor (11 errors).",
     transform=ax.transAxes,
     fontsize=7.5, va="bottom", ha="left",
     bbox=dict(boxstyle="round,pad=0.35", facecolor="white",
