@@ -1,16 +1,29 @@
-\documentclass[tikz,border=2pt]{standalone}
-\usetikzlibrary{positioning,fit,backgrounds}
+\documentclass[tikz,border=3pt]{standalone}
+\usetikzlibrary{arrows.meta,positioning}
 \begin{document}
-\begin{tikzpicture}[node distance=4mm,
-  blk/.style={draw,rounded corners,minimum height=8mm,minimum width=15mm,font=\scriptsize,align=center}]
-  \node[blk] (in)  {Input\\$1{\times}32{\times}32$};
-  \node[blk,right=of in]  (stem) {Stem\\Conv $3{\times}3$\\$\to 40$};
-  \node[blk,right=of stem] (s1) {Stage 1\\$2{\times}$SE-Block\\$40$, $32^2$};
-  \node[blk,right=of s1]   (s2) {Stage 2\\$2{\times}$SE-Block\\$80$, $16^2$};
-  \node[blk,right=of s2]   (s3) {Stage 3\\$2{\times}$SE-Block\\$160$, $8^2$};
-  \node[blk,right=of s3]   (gap){BN+ReLU\\GAP};
-  \node[blk,right=of gap]  (fc) {Dropout\\FC $160{\to}46$};
+\begin{tikzpicture}[
+  font=\scriptsize,
+  node distance=5mm,
+  flow/.style={-{Latex[length=1.8mm]},line width=0.45pt,rounded corners=2pt},
+  blk/.style={draw,rounded corners=2pt,minimum height=10mm,minimum width=17mm,align=center,inner sep=3pt},
+  stem/.style={blk,fill=gray!20},
+  se/.style={blk,fill=blue!15,minimum width=20mm},
+  gap/.style={blk,fill=green!15},
+  fc/.style={blk,fill=orange!15},
+  note/.style={draw,rounded corners=2pt,fill=white,align=center,inner sep=3pt,font=\tiny}
+]
+  \node[blk,fill=white] (in) {Input\\$1{\times}32{\times}32$};
+  \node[stem,right=of in] (stem) {Stem\\$3{\times}3$ Conv\\$40{\times}32{\times}32$};
+  \node[se,right=of stem] (s1) {Stage 1\\$2{\times}$ SE block\\$40{\times}32{\times}32$\\[1pt]\textbf{39k params}};
+  \node[se,right=of s1] (s2) {Stage 2\\$2{\times}$ SE block\\$80{\times}16{\times}16$\\[1pt]\textbf{154k params}};
+  \node[se,right=of s2] (s3) {Stage 3\\$2{\times}$ SE block\\$160{\times}8{\times}8$\\[1pt]\textbf{616k params}};
+  \node[gap,right=of s3] (gap) {BN + ReLU\\Global AvgPool\\$160$};
+  \node[fc,right=of gap] (fc) {Dropout\\FC $160{\to}46$};
+
   \foreach \a/\b in {in/stem,stem/s1,s1/s2,s2/s3,s3/gap,gap/fc}
-    \draw[->] (\a) -- (\b);
+    \draw[flow] (\a.east) -- (\b.west);
+
+  \node[note,below=7mm of s2] (legend) {SE block detail: Squeeze $\rightarrow$ FC $\rightarrow$ FC $\rightarrow$ Scale};
+  \draw[flow] (legend.north) -- ++(0,2mm) -| (s2.south);
 \end{tikzpicture}
 \end{document}
