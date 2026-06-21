@@ -1,75 +1,77 @@
 \subsection{DHCD$\to$CMATERdb Digit Transfer}
 \label{sec:transfer}
 
-We test the DHCD-trained distilled student's representations on
-CMATERdb~3.2.1 \cite{das2012cmaterdb}, an independently collected dataset
-of handwritten Devanagari \emph{numerals} (digits 0--9; 10 classes).
-CMATERdb comes from a separate scanner workflow, with different writers,
-paper stocks, and binarisation pipeline; even for the overlapping numeral
-classes, it is a genuine distribution shift from DHCD.
+We test whether the DHCD-trained distilled student has learned digit
+structure or the visual habits of one collection pipeline by evaluating
+its representations on CMATERdb~3.2.1 \cite{das2012cmaterdb}, an
+independently collected dataset of handwritten Devanagari \emph{numerals}
+(digits 0--9; 10 classes).  CMATERdb changes the scanner workflow,
+writers, paper stocks, and binarisation pipeline, so the overlapping
+labels arrive from a visibly different source distribution.
 
 \paragraph{Provenance guard.}
-Before evaluation, we check that no CMATERdb image appears in the DHCD
-training split.  Perceptual hashes (pHash) are computed for all CMATERdb
-samples and compared with 20,000 DHCD digit references using Hamming
-distance.  This yields \textbf{0 near-duplicate pairs at a threshold of
-$\leq$5\,bits}; the minimum observed Hamming distance is
-\textbf{6\,bits}.  The absence of cross-dataset contamination supports
-the interpretation of this evaluation as a genuine domain shift.
+We first rule out accidental overlap: before evaluation, we check that no
+CMATERdb image appears in the DHCD training split.  Perceptual hashes
+(pHash) are computed for all CMATERdb samples and compared with 20,000
+DHCD digit references using Hamming distance.  This yields
+\textbf{0 near-duplicate pairs at a threshold of $\leq$5\,bits}; the
+minimum observed Hamming distance is \textbf{6\,bits}.  With contamination ruled
+out, the transfer result reflects domain shift rather than memorisation.
 
 \paragraph{Polarity alignment.}
-CMATERdb stores black ink on a white background, the inverse of DHCD's
-white-on-black convention.  An automatic polarity inversion is applied to
-all CMATERdb images before evaluation so that foreground intensity matches
-the training distribution; the step is uniform across the dataset and is
-not dataset-specific tuning.
+The remaining setup difference is photometric: CMATERdb stores black ink
+on a white background, the inverse of DHCD's white-on-black convention.
+An automatic polarity inversion is applied to all CMATERdb images before
+evaluation so foreground intensity matches training; the step is uniform
+across the dataset and is not dataset-specific tuning.
 
 \paragraph{Results.}
 Table~\ref{tab:transfer} (upper rows) summarises the transfer outcomes.
-In the \emph{zero-shot} setting, the DHCD-trained distilled student is
-applied directly to CMATERdb without any CMATERdb training data and
-achieves \textbf{76.6$\pm$3.7\%} accuracy.  A supervised baseline trained
-on DHCD digit images \emph{only} (matching the same 10-class head) reaches
-\textbf{62.7\%} zero-shot on CMATERdb.  Under distribution shift,
-knowledge distillation transfers \textbf{+14 percentage points} more
-effectively, despite the two models reaching statistical parity on the
-in-distribution DHCD test set.
+The most stringent test is \emph{zero-shot}: the DHCD-trained distilled
+student is applied directly to CMATERdb, with no CMATERdb training images,
+and achieves \textbf{76.6$\pm$3.7\%} accuracy.  A supervised baseline
+trained on DHCD digit images \emph{only} with the same 10-class head
+reaches \textbf{62.7\%}.  The models are statistically tied on the
+in-distribution DHCD test set, but once the scanner, writers, paper, and
+binarisation change, knowledge distillation carries a
+\textbf{+14 percentage points} advantage into CMATERdb.
 
-A \emph{linear probe}, with the distilled backbone frozen and only a fresh
-10-class linear head trained on CMATERdb, improves accuracy to
-\textbf{85.4\%}.  This result indicates that the backbone encodes
-transferable digit representations.  Light full \emph{fine-tuning}
-(30 epochs on CMATERdb with a low learning rate) reaches
-\textbf{97.8\%}, establishing the ceiling for this dataset given the model
-capacity.
+A \emph{linear probe} localises that advantage.  With the distilled
+backbone frozen and only a fresh 10-class linear head trained on CMATERdb,
+accuracy improves to \textbf{85.4\%}, showing that the frozen features
+already support a small CMATERdb-specific head.  Light full
+\emph{fine-tuning} (30 epochs on CMATERdb with a low learning rate)
+reaches \textbf{97.8\%}, the upper end once the whole model can adapt.
 
-This experiment covers only the \textbf{digit subset} (10 of 46 DHCD
-classes); it does not evaluate transfer of the full Devanagari character
-inventory.
+The interpretation is deliberately narrow.  This experiment covers only
+the \textbf{digit subset} (10 of 46 DHCD classes); it does not evaluate
+transfer of the full Devanagari character inventory.  Within that scope,
+after contamination and polarity controls, the distilled student preserves
+substantially more useful digit structure under dataset shift than the
+supervised DHCD-only baseline.
 
 \subsection{Corruption Robustness}
 \label{sec:robustness}
 
-Out-of-distribution robustness is measured with three standard corruption
-families: additive Gaussian \emph{noise}, Gaussian \emph{blur}, and
-\emph{contrast} reduction.  Each is applied at five severity levels
-(following the ImageNet-C protocol adapted to $32{\times}32$ greyscale
-images).  We report mean accuracy across severities 1--5 (mCA) for each
-corruption family and as an overall average.
+Out-of-distribution robustness is measured with additive Gaussian
+\emph{noise}, Gaussian \emph{blur}, and \emph{contrast} reduction.  Each
+is applied at five severity levels (following the ImageNet-C protocol
+adapted to $32{\times}32$ greyscale images).  We report mean accuracy
+across severities 1--5 (mCA) for each corruption family and overall.
 
 \paragraph{Fair evaluation protocol.}
 Each model uses its \emph{own} training-time normalisation on the same
 corrupted $[0,1]$ input images.  For \modelname{} this is the learned
 per-channel statistics from DHCD training; for MallaNet it is the fixed
 mean/std of $(0.5, 0.5)$ reported in \cite{malla2025}.  The corrupted
-inputs are identical; only the normalisation differs.  This paired protocol
-keeps the comparison focused on robustness properties of the architecture
-and training procedure, rather than an asymmetric preprocessing advantage.
+inputs are identical; only the normalisation differs, keeping the
+comparison focused on robustness rather than an asymmetric preprocessing
+advantage.
 
 \paragraph{Results.}
 Table~\ref{tab:transfer} (lower rows) shows the outcome; Figure~\ref{fig:robust}
-plots per-severity accuracy curves.  Robustness is \emph{not} uniform
-across corruption types.
+plots accuracy by severity.  Robustness is \emph{not} uniform across
+corruption types.
 
 \begin{table}[t]\centering\caption{Transfer and corruption robustness. mCA = mean accuracy over severities 1--5.}\label{tab:transfer}
 \begin{tabular}{lcc}\toprule
@@ -96,10 +98,10 @@ mCA overall & \textbf{75.7\%} & 38.7\% \\\bottomrule
 \modelname{} is approximately \textbf{2$\times$} more robust overall
 (mCA 75.7\% vs.\ 38.7\%) and leads by wide margins under \emph{blur}
 (97.0\% vs.\ 37.6\%) and \emph{contrast} reduction (75.5\% vs.\ 11.5\%).
-MallaNet's collapse under these corruptions likely reflects two compounding
-factors: its high-frequency convolutional (HFC) design amplifies the effect
-of blur, and its fixed $(0.5, 0.5)$ normalisation is sensitive to global
-intensity shifts introduced by contrast corruption.
+MallaNet's collapse under these corruptions likely reflects two factors:
+its high-frequency convolutional (HFC) design amplifies blur, and its
+fixed $(0.5, 0.5)$ normalisation is sensitive to global intensity shifts
+introduced by contrast corruption.
 
 \modelname{} is \textbf{not} uniformly superior.  Under \emph{additive
 noise}, MallaNet is more robust (mCA 66.9\% vs.\ 54.7\%), suggesting that
@@ -108,5 +110,4 @@ when the corruption is high-frequency rather than low-frequency.  We do
 not claim an across-the-board robustness win; the relative ordering is
 corruption-type-dependent and neither model is dominated in every respect.
 Overall mCA favours \modelname{} ($+37.0$ pts), but the noise result is a
-clear exception that should be noted when selecting a model for
-noise-heavy deployment environments.
+clear exception for noise-heavy deployment environments.

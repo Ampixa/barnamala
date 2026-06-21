@@ -4,15 +4,19 @@
 \paragraph{Indic and Devanagari handwritten character recognition.}
 The DHCD dataset~\cite{acharya2015dhcd}, introduced in 2015, established the
 standard 46-class benchmark for handwritten Devanagari character recognition
-and has supported a long line of architectural refinements.
-MallaNet~\cite{malla2025} couples residual branch merging with homogeneous filter capsule (HFC) layers to reach 99.71\,\% at 17.32\,M parameters, while Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with a comparably large architecture; reported accuracies now sit within hundredths of a percent of one another.
-Across this line of work, recent gains are measured in hundredths of a
-percent, while model size remains large.
+and has since supported a long line of architectural refinements.
+Within that line, MallaNet~\cite{malla2025} couples residual branch merging
+with homogeneous filter capsule (HFC) layers to reach 99.71\,\% at
+17.32\,M parameters, while Mishra et al.~\cite{mishra2021} independently
+report 99.72\,\% with a comparably large architecture; reported accuracies now
+sit within hundredths of a percent of one another.
+Recent gains across this literature are therefore measured in hundredths of a
+percent, yet model size remains large.
 A concurrent preprint reports 99.80\,\% on the 10-class Devanagari
 \emph{digit} subset~\cite{malla2025digit}; digit-only results are not
 comparable to the 46-class task addressed here.
-That pattern motivates a careful test of whether reported improvements are
-statistically distinguishable from measurement noise.
+Together, these results motivate a careful test of whether reported
+improvements are statistically distinguishable from measurement noise.
 
 \paragraph{Knowledge distillation and compact model design.}
 Hinton et al.~\cite{hinton2015distill} showed that a student network trained
@@ -22,10 +26,10 @@ Residual identity mappings~\cite{he2016identity} and
 squeeze-and-excitation channel re-weighting~\cite{hu2018senet} have since
 become common building blocks for compact architectures that must retain
 representational power while reducing parameter counts.
-These techniques are mature; to our knowledge, knowledge distillation has not
-previously been applied to the 46-class DHCD benchmark, and has rarely been
-evaluated on saturated benchmarks where the performance gap between large and
-small models is already within the noise of sampling variation.
+Although these techniques are mature, to our knowledge, knowledge distillation
+has not previously been applied to the 46-class DHCD benchmark, and has rarely
+been evaluated on saturated benchmarks where the performance gap between large
+and small models is already within the noise of sampling variation.
 Whether distillation provides a statistically significant advantage over
 direct supervised training in this regime therefore remains open.
 
@@ -33,21 +37,21 @@ direct supervised training in this regime therefore remains open.
 On test sets where top models err on fewer than 0.3\,\% of examples, small
 sample counts can make raw accuracy rankings unstable.
 McNemar's test~\cite{mcnemar1947} provides the appropriate paired framework:
-it conditions on the subset of examples where two models disagree, making it
+by conditioning on the subset of examples where two models disagree, it remains
 sensitive to genuine error-pattern differences while being robust to the high
 base-rate correct predictions shared by both classifiers.
 Wilson score intervals~\cite{wilson1927} give calibrated single-model
 accuracy bounds, and calibration analysis~\cite{guo2017calibration}
 connects model confidence to empirical accuracy---a prerequisite for
 interpreting soft distillation targets.
-Applied systematically to a Devanagari recognition benchmark, this suite
+When applied systematically to a Devanagari recognition benchmark, this suite
 of tools exposes a methodological gap in prior work.
 MallaNet~\cite{malla2025} applies McNemar against four weaker baselines but
 does not test its nearest competitor (Mishra et al., 99.72\,\%), reports no
 exact $p$-values, and draws no inference about saturation; earlier work reports
 point estimates alone.
-\modelname{} closes this gap by reporting exact McNemar $p$-values and Wilson
-confidence intervals across every model comparison---including the nearest
-competitor---demonstrating that the benchmark is saturated and that statistical
-parity, rather than raw accuracy rank, is the appropriate evaluation criterion
-at this operating point.
+Against that backdrop, \modelname{} closes this gap by reporting exact McNemar
+$p$-values and Wilson confidence intervals across every model
+comparison---including the nearest competitor---demonstrating that the
+benchmark is saturated and that statistical parity, rather than raw accuracy
+rank, is the appropriate evaluation criterion at this operating point.

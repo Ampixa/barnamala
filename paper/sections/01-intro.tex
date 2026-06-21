@@ -1,42 +1,39 @@
 \section{Introduction}
 \label{sec:intro}
 
-The DHCD dataset~\cite{acharya2015dhcd} has emerged as the standard benchmark
-for 46-class handwritten Devanagari character recognition, with reported
-top-1 accuracies now clustered tightly above 99.7\,\%.
-Recent models cluster at the top of this range: MallaNet~\cite{malla2025} achieves 99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture, and Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly large model.
-These results are strong, but they expose a structural tension: the
-accuracy gains from one model generation to the next amount to
-\emph{hundredths of a percent}, while parameter budgets remain an order of
-magnitude larger than what a compact on-device model can afford.
-Whether the residual gap between large and small models is real---or merely
-measurement noise---has not been tested rigorously.
+The DHCD dataset~\cite{acharya2015dhcd} is now the standard benchmark for
+46-class handwritten Devanagari character recognition, and reported top-1
+accuracies have compressed into a narrow band above 99.7\,\%.
+The leading results sit inside that band: MallaNet~\cite{malla2025} reaches 99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture, while Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly large model.
+At this level, the benchmark no longer rewards the usual tradeoff in a clear
+way: successive accuracy gains are measured in \emph{hundredths of a
+percent}, yet the models claiming them still use parameter budgets far beyond
+what a compact on-device recognizer can reasonably carry.
+The field therefore needs to know whether the remaining gap between large and
+small models is a real performance difference or just measurement noise.
 
-Prior work either reports point accuracies alone or applies McNemar only
-against weaker baselines, without testing the nearest competitor or reporting
-exact $p$-values.
-On a test set of $n{=}13{,}800$ samples at 99.7\,\% accuracy, overlapping
-unpaired confidence intervals are unavoidable, and raw-accuracy rankings carry
-no inferential weight.
-The relevant question is \emph{paired}: given the same test images, do two
-models make different errors?
-This paper applies the exact McNemar test---the standard paired
-binary-classification significance test---to every student--teacher pair we
-evaluate, together with Wilson confidence intervals on each model's accuracy.
-Prior DHCD work either omits paired testing entirely or applies it selectively
-without exact $p$-values and without testing the nearest competitor; applying
-it systematically to every model pair changes the conclusions substantially.
+Existing DHCD papers leave that question unresolved.
+They typically report point accuracies, or use McNemar only against weaker
+baselines, without testing the nearest competitor or giving exact $p$-values.
+With a test set of $n{=}13{,}800$ samples and accuracies near 99.7\,\%,
+overlapping unpaired confidence intervals are inevitable, so raw-accuracy
+rankings alone have little inferential value.
+The decisive question is \emph{paired}: on the same test images, do two models
+actually fail on different examples?
+We answer that question with the exact McNemar test---the standard paired
+binary-classification significance test---for every student--teacher pair we
+evaluate, alongside Wilson confidence intervals for each model's accuracy.
+Because prior DHCD work omits paired testing or applies it selectively without
+exact $p$-values and without testing the nearest competitor, applying the test
+systematically changes the interpretation of the leaderboard.
 
-Our central finding is that a \textbf{1.11\,M}-parameter student network
-reaches statistical parity with MallaNet (McNemar $p=0.345$) at
-\textbf{15.6\(\times\)} fewer parameters, and that this parity holds
-\emph{even without knowledge distillation}.
-Ablations over distillation targets (TTA-softened vs.\ clean no-TTA targets, and a supervised control) and teacher ensemble size (9 vs.\ 15 teachers) find that \emph{no lever} yields a
-statistically significant improvement: every model tested converges to the
-same \textbf{11-error intrinsic floor}, beyond which DHCD's label noise and
-handwriting ambiguity dominate.
-The benchmark is therefore saturated; future progress requires either a
-harder evaluation set or substantially different modelling assumptions.
+The result is sharper than a smaller model matching a larger one.
+A \textbf{1.11\,M}-parameter student reaches statistical parity with MallaNet
+(McNemar $p=0.345$) using \textbf{15.6\(\times\)} fewer parameters, and the
+same parity appears \emph{even without knowledge distillation}.
+Across distillation targets (TTA-softened vs.\ clean no-TTA targets, and a supervised control) and teacher ensemble size (9 vs.\ 15 teachers), \emph{no lever} produces a statistically significant improvement: every model tested converges to the same \textbf{11-error intrinsic floor}, where DHCD's label noise and handwriting ambiguity dominate.
+The benchmark is therefore saturated; meaningful progress now requires either
+a harder evaluation set or substantially different modelling assumptions.
 
 \medskip
 \noindent\textbf{Contributions.}

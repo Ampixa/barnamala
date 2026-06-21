@@ -1,30 +1,31 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The results show that a \textbf{1.11\,M}-parameter compact student,
-\modelname{}, matches the 17.32\,M-parameter MallaNet~\cite{malla2025} at
-statistical parity on DHCD (McNemar $p = 0.345$, C1), even without
-knowledge distillation.  Paired evaluation (C2) reveals an 11-image
-intrinsic floor shared by every model tested, including large teacher
-ensembles.  At current resolution, DHCD behaves as a saturated benchmark,
-not as a task with room for meaningful architectural progress.  Ablations
-(C3) confirm that no lever — distillation target cleanliness, ensemble
-size, or TTA — produces a statistically significant gain.  Efficiency
-profiling (C4) shows a 15.6$\times$ reduction in parameters and memory and
-a 9.5$\times$ CPU-latency reduction at no accuracy cost within the
-saturation regime, and full reproducible artifacts are released (C5).
+DHCD has reached the point where a larger recognizer no longer buys a
+better recognizer.  At current resolution, the benchmark is saturated:
+the remaining mistakes are governed more by label noise and handwriting
+ambiguity than by model capacity.  In that setting, compactness is not a
+compromise.  It is the right operating point.
 
-When error reduction is bounded by label noise and handwriting ambiguity
-rather than model capacity, compactness is not a compromise — it is the
-appropriate design choice.  An order-of-magnitude smaller and faster
-model incurs no accuracy penalty precisely because the remaining errors
-are irreducible by any model.
+That conclusion is visible only under paired evaluation.  A
+\textbf{1.11\,M}-parameter compact student, \modelname{}, matches the
+17.32\,M-parameter MallaNet~\cite{malla2025} at statistical parity on
+DHCD (McNemar $p = 0.345$, C1), even without knowledge distillation.
+Paired evaluation (C2) exposes the same 11-image intrinsic floor across
+every model tested, including large teacher ensembles.  Ablations (C3)
+then close the obvious escape routes: distillation target cleanliness,
+ensemble size, and TTA do not produce a statistically significant gain.
+Within this saturation regime, efficiency profiling (C4) gives the
+practical result: a 15.6$\times$ reduction in parameters and memory and a
+9.5$\times$ CPU-latency reduction at no accuracy cost, with full
+reproducible artifacts released (C5).
 
-Two directions merit priority in future work.  First, \emph{paired
-evaluation protocols} (McNemar or similar) should become standard, so
-that accuracy gains of a few hundredths of a percent are not reported
-without a significance test.  Second, Devanagari recognition needs
+The lesson for Devanagari recognition is therefore not to keep polishing
+architectures against DHCD, but to measure more honestly and move to
+harder evidence.  For that reason, \emph{paired evaluation protocols}
+(McNemar or similar) should be standard before gains of a few hundredths
+of a percent are treated as progress.  The field also needs
 \emph{fresh, harder benchmarks}: higher-resolution scans, genuinely
 independent writer pools, or multi-script character inventories that do
-not share DHCD's provenance and can discriminate between models that
-DHCD can no longer separate.
+not share DHCD's provenance and can separate models that DHCD can no
+longer separate.

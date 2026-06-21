@@ -4,30 +4,30 @@
 \label{sec:setup}
 
 \paragraph{Dataset.}
-All experiments use the Devanagari Handwritten Character Dataset
-(DHCD)~\cite{acharya2015dhcd}, covering 46 character classes
-(36 consonants and 10 numerals).  The official split provides
-78,200 training images and 13,800 test images, each stored as a
-$32{\times}32$ greyscale PNG.
+We use the standard Devanagari Handwritten Character Dataset
+(DHCD)~\cite{acharya2015dhcd}, a 46-class benchmark (36 consonants and
+10 numerals) for testing whether a much smaller model can match prior
+high-accuracy systems.  The official split provides 78,200 training
+images and 13,800 test images, each stored as a $32{\times}32$
+greyscale PNG.
 
 \paragraph{Reproducing the MallaNet baseline.}
-For statistical comparison, we needed a baseline with sample-level
-predictions.  We re-implemented the MallaNet architecture
-of~\cite{malla2025} from the published description and reproduced the
-reported training procedure, including the exact normalisation
-($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and the class-index
-permutation implied by their data loader.  Running this reproduction
-with seed~0 yields \textbf{40 errors} on the held-out test
-set — an accuracy of \textbf{99.7101\%}, in agreement with the
-99.71\% figure reported in~\cite{malla2025}.  We use this reproduced
-checkpoint (seed 0) as the baseline in all McNemar tests, keeping the
-per-sample correctness vectors directly comparable.
+For sample-level comparison with MallaNet, we re-implemented the
+MallaNet architecture of~\cite{malla2025} from the published
+description and reproduced the reported training procedure, including
+the exact normalisation ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and
+the class-index permutation implied by their data loader.  With seed~0,
+this reproduction yields \textbf{40 errors} on the held-out test set,
+or \textbf{99.7101\%} accuracy, matching the 99.71\% figure reported
+in~\cite{malla2025}.  We use this checkpoint (seed 0) as the baseline
+in all McNemar tests, with directly comparable per-sample correctness
+vectors.
 
 \subsection{Main Parity Result}
 \label{sec:parity}
 
-Table~\ref{tab:main} shows error counts across five independent seeds
-for three \modelname{} configurations and the MallaNet reproduction.
+Table~\ref{tab:main} compares each \modelname{} configuration across
+five independent seeds with the reproduced MallaNet baseline.
 
 \begin{table}[t]\centering
 \caption{Main result on DHCD test ($n{=}13{,}800$). Errors over 5
@@ -43,39 +43,38 @@ MallaNet \cite{malla2025} (repro) & 17.32M & 40 & --- & 99.710 & --- \\\bottomru
 \end{table}
 
 In the \emph{primary} configuration (\textbf{distilled, TTA targets}),
-the student is distilled from 9 teacher checkpoints
-(configurations A, B, C $\times$ seeds 0--2) whose soft labels are
-produced with flip-averaged test-time augmentation over each training
-image, as described in Section~\ref{sec:kd}.  This row achieves a
-mean of \textbf{36.6$\pm$2.1} errors (99.735\%) with a two-sided
-McNemar $p = 0.345$, indicating statistical parity with the
-reproduced MallaNet baseline at $\alpha = 0.05$.
-The best single seed reaches \textbf{34 errors} (99.754\%), with a
-Wilson 95\% confidence interval of \textbf{[99.656\%, 99.824\%]}.
-At 1.11\,M parameters versus 17.32\,M for MallaNet, this represents
-a \textbf{15.6$\times$} reduction in model size at matched accuracy.
+the student learns from 9 teacher checkpoints (configurations A, B, C
+$\times$ seeds 0--2), with soft labels from flip-averaged test-time
+augmentation over each training image (Section~\ref{sec:kd}).  This
+yields \textbf{36.6$\pm$2.1} errors (99.735\%) with a two-sided
+McNemar $p = 0.345$, making the compact student statistically
+indistinguishable from the reproduced MallaNet baseline at
+$\alpha = 0.05$.  The best single seed reaches \textbf{34 errors}
+(99.754\%), with a Wilson 95\% confidence interval of
+\textbf{[99.656\%, 99.824\%]}.  At 1.11\,M parameters versus 17.32\,M
+for MallaNet, the same accuracy regime is reached with a
+\textbf{15.6$\times$} smaller model.
 
 The \emph{ablation} row (distilled, clean targets) uses clean
-single-pass logits drawn from a 15-teacher pool instead of
-flip-averaged targets; it obtains $p = 1.000$ against MallaNet,
-consistent with the same accuracy level but no benefit from TTA
-targets.  The
-\emph{supervised control} — trained without any
-teacher signal — also ties MallaNet ($p = 0.701$).  The parity
-result is therefore not dependent on knowledge distillation; the
-compact architecture alone is sufficient to match the larger model.
+single-pass logits from a 15-teacher pool instead of flip-averaged
+targets; it obtains $p = 1.000$ against MallaNet, consistent with the
+same accuracy level but no added benefit from TTA targets.  The
+\emph{supervised control} — trained without any teacher signal — also
+ties MallaNet ($p = 0.701$).  Thus, parity is not carried by knowledge
+distillation alone; the compact architecture itself is sufficient to
+match the larger model.
 
 \subsection{Comparison with Prior Work}
 \label{sec:sota}
 
-Table~\ref{tab:sota} places \modelname{} in context of all published results
-on the standard 46-class DHCD test split.
-Our mean accuracy of 99.735\,\% is the highest reported on this split.
-The gap between the top four models spans only 0.07\,\%, well within sampling
-noise on a 13,800-image test set; the saturation finding (Section~\ref{sec:parity})
-explains why.
-McNemar tests require per-sample predictions and are therefore available only
-for MallaNet, the single prior model we re-implemented.
+Table~\ref{tab:sota} places \modelname{} beside all published results
+on the standard 46-class DHCD test split.  Its mean accuracy of
+99.735\,\% is the highest reported on this split, but the top four
+models are separated by only 0.07\,\%, well within sampling noise on a
+13,800-image test set; the saturation finding (Section~\ref{sec:parity})
+explains why.  McNemar tests require per-sample predictions, so they
+are available only for MallaNet, the single prior model we
+re-implemented.
 
 \begin{table}[t]\centering
 \caption{Published results on the standard 46-class DHCD test split
@@ -94,19 +93,20 @@ Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & C
 \end{tabular}
 \end{table}
 
-\modelname{} is the only model in this table with both a verified
-parameter budget under 2\,M \emph{and} accuracy above 99.5\,\%.
-The next lightest model above 99.5\,\% is MallaNet at 17.32\,M
-parameters~\cite{malla2025}---a \textbf{15.6$\times$} gap.
-Prior compact models (Yadav et al., 0.4\,M) fall 0.5\,\% below the
-saturation floor, while much larger models (Mishra et al., 39\,M) gain
-nothing over \modelname{} once the benchmark is saturated.
+The result is about size, not a new accuracy ceiling.  \modelname{} is
+the only model in this table with both a verified parameter budget
+under 2\,M \emph{and} accuracy above 99.5\,\%.  The next lightest model
+above 99.5\,\% is MallaNet at 17.32\,M parameters~\cite{malla2025}---a
+\textbf{15.6$\times$} gap.  Prior compact models (Yadav et al.,
+0.4\,M) fall 0.5\,\% below the saturation floor; much larger models
+(Mishra et al., 39\,M) gain nothing over \modelname{} once the
+benchmark is saturated.
 
 \subsection{Efficiency}
 \label{sec:efficiency}
 
-Table~\ref{tab:eff} and Figure~\ref{fig:frontier} summarise the
-computational gap between \modelname{} and MallaNet.
+Finally, Table~\ref{tab:eff} and Figure~\ref{fig:frontier} give the
+matched-accuracy computational gap between \modelname{} and MallaNet.
 
 \begin{table}[t]\centering
 \caption{Efficiency (single $32{\times}32$ image; CPU latency
@@ -131,12 +131,13 @@ MallaNet   & 17.32M & 2434M & 69.3MB & 26.1MB & 78.8$\pm$0.89\,ms & 13.6\,img/s 
   \label{fig:frontier}
 \end{figure}
 
+This deployment gap does not change the accuracy conclusion.
 \modelname{} requires \textbf{14.8$\times$} fewer multiply-accumulate
 operations (164\,M vs.\ 2,434\,M MACs), is \textbf{15.6$\times$}
-smaller on disk (4.4\,MB vs.\ 69.3\,MB), and occupies \textbf{9.5$\times$}
-less peak activation memory (2.8\,MB vs.\ 26.1\,MB).  CPU latency
-on a single thread is \textbf{9.5$\times$} lower (8.28\,ms vs.\
-78.8\,ms), and single-image throughput is \textbf{11.1$\times$}
-higher (151\,img/s vs.\ 13.6\,img/s).  The comparison uses no
-quantisation or pruning; accuracy remains at parity with MallaNet on
-the 13,800-sample test set.
+smaller on disk (4.4\,MB vs.\ 69.3\,MB), and occupies
+\textbf{9.5$\times$} less peak activation memory (2.8\,MB vs.\
+26.1\,MB).  CPU latency on a single thread is \textbf{9.5$\times$}
+lower (8.28\,ms vs.\ 78.8\,ms), and single-image throughput is
+\textbf{11.1$\times$} higher (151\,img/s vs.\ 13.6\,img/s).  The
+comparison uses no quantisation or pruning; the 13,800-sample test set
+still shows accuracy at parity with MallaNet.
