@@ -7,18 +7,20 @@ the remaining mistakes are governed more by label noise and handwriting
 ambiguity than by model capacity.  In that setting, compactness is not a
 compromise.  It is the right operating point.
 
-That conclusion is visible only under paired evaluation.  A
-\textbf{1.11\,M}-parameter compact student, \modelname{}, matches the
-17.32\,M-parameter MallaNet~\cite{malla2025} at statistical parity on
-DHCD (McNemar $p = 0.345$, C1), even without knowledge distillation.
-Paired evaluation (C2) exposes the same 11-image intrinsic floor across
-every model tested, including large teacher ensembles.  Ablations (C3)
-then close the obvious escape routes: distillation target cleanliness,
-ensemble size, and TTA do not produce a statistically significant gain.
-Within this saturation regime, efficiency profiling (C4) gives the
-practical result: a 15.6$\times$ reduction in parameters and memory and a
-9.5$\times$ CPU-latency reduction at no accuracy cost, with full
-reproducible artifacts released (C5).
+\modelname{} (C1) makes the case concretely: \textbf{1.11\,M} parameters,
+\textbf{99.73\,\%} accuracy, and statistical parity with the leading
+large-model baseline (McNemar $p = 0.345$), even without knowledge
+distillation.
+Rigorous paired evaluation (C2) then exposes why no model can pull ahead:
+the same 11-image intrinsic floor defeats every configuration tested,
+large teacher ensembles included.
+Ablations (C3) close the obvious escape routes: distillation target
+cleanliness, ensemble size, and test-time augmentation produce no
+statistically significant gain once sampling noise is controlled.
+Efficiency profiling (C4) gives the practical upshot: a 15.6$\times$
+reduction in parameters and memory and a 9.5$\times$ CPU-latency
+reduction at no accuracy cost, with fully reproducible artifacts
+released (C5).
 
 The lesson for Devanagari recognition is therefore not to keep polishing
 architectures against DHCD, but to measure more honestly and move to
