@@ -11,23 +11,36 @@ Pant datasets — are same-provenance splits of DHCD itself, and using them
 as held-out targets would reintroduce contamination between training and
 evaluation.  Public literature does not yet provide genuinely independent
 consonant-level benchmarks, so transferability claims are limited to
-digits.
+digits.  This constraint itself underscores a broader infrastructure gap:
+the Devanagari recognition community currently lacks the diversity of
+held-out corpora that would allow systematic transfer studies, and the
+digit result — where the compact model outperforms a supervised baseline
+by \textbf{+14\,pp} under domain shift — suggests such benchmarks would
+be worth building.
 
 \paragraph{Single-benchmark evaluation.}
 All consonant-level accuracy results in this paper are reported on a
 single held-out split of DHCD.  The McNemar test controls for
 within-split variability via paired comparison, but without a second,
 independent consonant benchmark the findings may not generalise beyond
-this split.  The saturation conclusion depends on properties of
-DHCD (image resolution, label noise, class ambiguity) that another
-dataset might not share.
+this split.  The saturation conclusion depends on properties specific to
+DHCD — its $32{\times}32$ resolution, its concentrated label noise, and
+its writer pool — that another dataset might not share.  This is not a
+weakness peculiar to this study; it reflects the current state of public
+Devanagari corpora.  Readers should interpret the saturation claim as a
+property of DHCD at this resolution and provenance, not necessarily of
+Devanagari recognition as a problem class.
 
 \paragraph{Efficiency versus accuracy.}
 The \textbf{15.6$\times$} parameter reduction and \textbf{9.5$\times$}
 latency improvement come at no measurable accuracy cost on DHCD at its
-current saturation point.  Whether this efficiency advantage persists
-under a more discriminative benchmark — one where larger models could
-exploit additional capacity to push below the 11-error floor — is an
-open question this work cannot answer.  These results therefore support
+current saturation point.  This finding supports a general principle: on
+saturated benchmarks, compactness is not a compromise but a rational
+choice, since the errors that remain are inaccessible to any model
+regardless of capacity.  Whether this efficiency advantage persists under
+a more discriminative benchmark — one where larger models could exploit
+additional capacity to push below the 11-error floor — is an open
+question this work cannot answer.  These results therefore support
 deployment on DHCD more directly than they support a general claim about
-efficiency under harder benchmarks.
+efficiency under harder conditions, and they motivate the construction of
+such harder benchmarks as the most productive next step for the field.

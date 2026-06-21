@@ -14,15 +14,17 @@ profiling (C4) shows a 15.6$\times$ reduction in parameters and memory and
 a 9.5$\times$ CPU-latency reduction at no accuracy cost within the
 saturation regime, and full reproducible artifacts are released (C5).
 
-At saturation, compact models are not merely adequate; they are the
-appropriate tool.  When error reduction is bounded by label noise and
-handwriting ambiguity rather than model capacity, an order-of-magnitude
-smaller and faster model carries no penalty.
+When error reduction is bounded by label noise and handwriting ambiguity
+rather than model capacity, compactness is not a compromise — it is the
+appropriate design choice.  An order-of-magnitude smaller and faster
+model incurs no accuracy penalty precisely because the remaining errors
+are irreducible by any model.
 
-Future work should move in two directions.  First, \emph{paired
+Two directions merit priority in future work.  First, \emph{paired
 evaluation protocols} (McNemar or similar) should become standard, so
 that accuracy gains of a few hundredths of a percent are not reported
-without a significance test.  Second, Devanagari needs \emph{fresh,
-harder benchmarks}: higher-resolution scans, genuinely independent writer
-pools, or multi-script character inventories that do not share DHCD's
-provenance and can distinguish models that DHCD can no longer separate.
+without a significance test.  Second, Devanagari recognition needs
+\emph{fresh, harder benchmarks}: higher-resolution scans, genuinely
+independent writer pools, or multi-script character inventories that do
+not share DHCD's provenance and can discriminate between models that
+DHCD can no longer separate.

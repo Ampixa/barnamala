@@ -38,6 +38,17 @@ Ensemble & Errors & Acc \% & McNemar $p$ & Sig.? \\\midrule
 9 teachers, +flip-TTA & 28 & 99.797 & 0.029 & fragile \\\bottomrule
 \end{tabular}\end{table}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.9\linewidth]{figures/teacher_diversity.pdf}
+  \caption{Individual teacher error counts span 27--43, but both the 9-teacher
+    and 15-teacher ensembles collapse to the same 30-error ceiling.
+    Adding six more teachers provides no gain because the remaining errors
+    are concentrated in the 11-image irreducible floor, not in
+    model-specific variance.}
+  \label{fig:teacher-div}
+\end{figure}
+
 Individual teachers span a wide range: clean per-model error counts are
 27, 28, 30, 30, 32, 34, 36, 37, 37, 39, 39, 40, 41, 42, and 43.
 Both the 9-teacher and the 15-teacher majority-vote pools plateau at
