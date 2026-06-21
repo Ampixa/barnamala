@@ -8,6 +8,9 @@ and has supported a long line of architectural refinements.
 MallaNet~\cite{malla2025} couples residual branch merging with homogeneous filter capsule (HFC) layers to reach 99.71\,\% at 17.32\,M parameters, while Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with a comparably large architecture; reported accuracies now sit within hundredths of a percent of one another.
 Across this line of work, recent gains are measured in hundredths of a
 percent, while model size remains large.
+A concurrent preprint reports 99.80\,\% on the 10-class Devanagari
+\emph{digit} subset~\cite{malla2025digit}; digit-only results are not
+comparable to the 46-class task addressed here.
 That pattern motivates a careful test of whether reported improvements are
 statistically distinguishable from measurement noise.
 
@@ -19,7 +22,8 @@ Residual identity mappings~\cite{he2016identity} and
 squeeze-and-excitation channel re-weighting~\cite{hu2018senet} have since
 become common building blocks for compact architectures that must retain
 representational power while reducing parameter counts.
-These techniques are mature, but knowledge distillation has rarely been
+These techniques are mature; to our knowledge, knowledge distillation has not
+previously been applied to the 46-class DHCD benchmark, and has rarely been
 evaluated on saturated benchmarks where the performance gap between large and
 small models is already within the noise of sampling variation.
 Whether distillation provides a statistically significant advantage over
@@ -37,10 +41,13 @@ accuracy bounds, and calibration analysis~\cite{guo2017calibration}
 connects model confidence to empirical accuracy---a prerequisite for
 interpreting soft distillation targets.
 Applying this suite of tools systematically to a Devanagari recognition
-benchmark reveals a methodological gap in prior work: published rankings
-have been based on point estimates alone, without paired testing that would
-support causal claims about architectural superiority.
-\modelname{} addresses this gap by reporting exact McNemar $p$-values and Wilson
-confidence intervals across every model comparison, demonstrating that the
-benchmark is saturated and that statistical parity, rather than raw accuracy
-rank, is the appropriate evaluation criterion at this operating point.
+benchmark reveals a methodological gap in prior work.
+MallaNet~\cite{malla2025} applies McNemar against four weaker baselines but
+does not test its nearest competitor (Mishra et al., 99.72\,\%), reports no
+exact $p$-values, and draws no inference about saturation; earlier work reports
+point estimates alone.
+\modelname{} closes this gap by reporting exact McNemar $p$-values and Wilson
+confidence intervals across every model comparison---including the nearest
+competitor---demonstrating that the benchmark is saturated and that statistical
+parity, rather than raw accuracy rank, is the appropriate evaluation criterion
+at this operating point.

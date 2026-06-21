@@ -12,7 +12,9 @@ magnitude larger than what a compact on-device model can afford.
 Whether the residual gap between large and small models is real---or merely
 measurement noise---has not been tested rigorously.
 
-Prior work reports point accuracies, without paired statistical testing.
+Prior work either reports point accuracies alone or applies McNemar only
+against weaker baselines, without testing the nearest competitor or reporting
+exact $p$-values.
 On a test set of $n{=}13{,}800$ samples at 99.7\,\% accuracy, overlapping
 unpaired confidence intervals are unavoidable, and raw-accuracy rankings carry
 no inferential weight.
@@ -21,8 +23,9 @@ models make different errors?
 This paper applies the exact McNemar test---the standard paired
 binary-classification significance test---to every student--teacher pair we
 evaluate, together with Wilson confidence intervals on each model's accuracy.
-Prior DHCD work omitted this protocol; applying it changes the conclusions
-substantially.
+Prior DHCD work either omits paired testing entirely or applies it selectively
+without exact $p$-values and without testing the nearest competitor; applying
+it systematically to every model pair changes the conclusions substantially.
 
 Our central finding is that a \textbf{1.11\,M}-parameter student network
 reaches statistical parity with MallaNet (McNemar $p=0.345$) at
