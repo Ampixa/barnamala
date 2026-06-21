@@ -18,8 +18,9 @@ The total trainable parameter count is \textbf{1,109,116}.
   \centering
   \includegraphics[width=\linewidth]{figures/architecture.pdf}
   \caption{%
-    \modelname{} architecture: stem $\to$ three PreAct SE-ResNet stages
-    (widths 40/80/160, depths 2/2/2) $\to$ GAP $\to$ Dropout(0.1) $\to$ FC(46).
+    \modelname{} architecture: a stem feeds three PreAct SE-ResNet stages
+    (widths 40/80/160, depths 2/2/2), followed by global average pooling,
+    Dropout(0.1), and a 46-class linear head.
     Squeeze-and-excitation modules are shown as \textbf{SE} blocks within each stage.
   }
   \label{fig:arch}
