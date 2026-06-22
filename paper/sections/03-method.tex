@@ -17,11 +17,10 @@ of depth $(2, 2, 2)$; Stages~2 and~3 downsample by stride~2
     \textbf{(a)}~Full pipeline: a stem convolution feeds three stages of
     PreAct SE-ResBlocks with channel widths $(40, 80, 160)$; a BN--ReLU--GAP
     head produces a 160-dim descriptor before the linear classifier.
-    \textbf{(b)}~Unravelled PreAct SE-ResBlock: the input splits into a main
-    path (BN$\to$ReLU$\to$Conv\,$3{\times}3\to$BN$\to$ReLU$\to$Conv\,$3{\times}3$)
-    and an identity skip (or $1{\times}1$ Conv with stride~2 when downsampling).
-    After the second convolution an SE module (GAP$\to$FC/$C\!8\to$ReLU$\to$FC/$C\to\sigma$)
-    re-weights channels; the scaled features and the skip are summed at~$\oplus$.
+    \textbf{(b)}~Unravelled PreAct SE-ResBlock: the main path runs two rounds of
+    BN, ReLU, and Conv\,$3{\times}3$.  The SE module then squeezes channel weights
+    with a GAP followed by two FCs (ratio $r{=}8$) and a sigmoid; the re-weighted
+    features sum with an identity skip (or $1{\times}1$ Conv when downsampling) at~$\oplus$.
   }
   \label{fig:arch}
 \end{figure}

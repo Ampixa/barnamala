@@ -56,12 +56,12 @@ mCA overall & \textbf{75.7\%} & 38.7\% \\\bottomrule
 \end{tabular}\end{table}
 
 \paragraph{Results.}
-\modelname{} is approximately \textbf{2$\times$} more robust overall
+\modelname{} fares approximately \textbf{2$\times$} better overall
 (mCA 75.7\% vs.\ 38.7\%); the blur and contrast gaps are striking
 (97.0\% vs.\ 37.6\% under \emph{blur}; 75.5\% vs.\ 11.5\% under
 \emph{contrast}), likely reflecting the baseline's HFC design amplifying blur
 and its fixed $(0.5, 0.5)$ normalisation being sensitive to the global
 intensity shifts that contrast corruption introduces.  One clear reversal:
-under \emph{additive noise}, the baseline is more robust
+under \emph{additive noise}, the baseline holds up better
 (mCA 66.9\% vs.\ 54.7\%)---practitioners targeting noise-heavy deployment
 environments should note that the noise ranking goes the other way.

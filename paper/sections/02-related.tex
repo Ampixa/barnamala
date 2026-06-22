@@ -26,7 +26,7 @@ When top models err on fewer than 0.3\,\% of examples, raw accuracy rankings
 can shift run-to-run without any real difference in model quality.
 McNemar's test~\cite{mcnemar1947} is the appropriate paired framework:
 conditioning on disagreement examples, it stays sensitive to genuine
-error-pattern differences while remaining robust to the high base-rate of
+error-pattern differences while staying insensitive to the high base-rate of
 shared correct predictions.
 Wilson score intervals~\cite{wilson1927} provide calibrated single-model
 accuracy bounds; calibration analysis~\cite{guo2017calibration} connects
