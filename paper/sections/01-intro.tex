@@ -1,10 +1,18 @@
 \section{Introduction}
 \label{sec:intro}
 
-The DHCD dataset ~\cite{acharya2015dhcd} is a standard benchmark for 46 classes of handwritten Devanagari character recognition. The top-1 accuracy is concentrated in a narrow band above 99.7\,\%. MallaNet~\cite{malla2025} reaches 99.71\,\% in the convolutional architecture with \textbf{17.32\,M} parameters. Mishra ~\cite{mishra2021} independently reported 99.72\,\% for a similarly large model. At this level, continuous gain is measured at \emph{hundredths of a
-percent}. The model still has a parameter budget that far exceeds what a compact on-device recognizer can maintain.
+The DHCD dataset~\cite{acharya2015dhcd} is the standard benchmark for Devanagari and
+broader Indic character recognition; the handwriting samples come from school students.
+Top-1 accuracies have crowded into a narrow band above 99.7\,\%: MallaNet~\cite{malla2025}
+reaches 99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture; Mishra
+et al.~\cite{mishra2021} independently report 99.72\,\% with a similarly large model.
+At this level successive gains are measured in \emph{hundredths of a percent}, yet
+models still carry parameter budgets far beyond what an on-device recognizer can sustain.
 
-Whether these benefits are genuine remains an open question in existing DHCD papers. Point accuracy dominates. When McNemar test appears, it is applied selectively against a weaker baseline without having an exact $p$ value. $n{=}13{,}800$ When test samples are close to 99.7\,\%, raw accuracy rankings alone have little inferential weight.
+Existing DHCD papers have not applied the scrutiny that 99\%-range results demand.
+Point accuracy dominates; when McNemar testing appears at all, it is applied selectively
+against weaker baselines without exact $p$-values. Especially near 99.7\,\%, with
+$n{=}13{,}800$ test samples, raw accuracy rankings carry little inferential weight.
 
 The crucial issue is \emph{paired}. Do the two models fail in the \emph{different} example? The exact McNemar test across all student-teacher pairs answers directly, with Wilson confidence interval bounding the accuracy of each model. Once this discipline is applied, the leaderboard will look different.
 
@@ -16,6 +24,9 @@ makes a statistically significant difference. Every configuration tested
 converges to the same \textbf{11-error intrinsic floor}; progress now
 requires a harder evaluation set or substantially different modelling
 assumptions.
+
+Beyond accuracy numbers, a compact convolution network trained on one recognition
+task transfers. The pipeline can be reproduced for other character recognition problems.
 
 \medskip
 \noindent\textbf{Contributions.}

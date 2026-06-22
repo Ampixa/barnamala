@@ -86,9 +86,9 @@ def backtranslate(para):
     if len(plain.strip()) < 40: return para
     protected, slots = protect(para)
     ja  = translate(protected, 'en', 'ja')
-    en  = translate(ja, 'ja', 'en')
+    zh  = translate(ja,        'ja', 'zh-CN')
+    en  = translate(zh,        'zh-CN', 'en')
     result = restore(en, slots)
-    # Sanity: if any placeholder leaked through, fall back
     if re.search(r'\[P\d+P\]', result):
         leaked = re.findall(r'\[P\d+P\]', result)
         print(f'  [fallback] {len(leaked)} placeholder(s) leaked', file=sys.stderr)

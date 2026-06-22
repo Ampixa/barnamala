@@ -1,7 +1,10 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The conclusion of saturation is unpleasant, but difficult to avoid. At the current resolution, the remaining errors in DHCD are driven more by label noise and handwriting ambiguities than by the model's ability. In other words, throwing a bigger recognizer at the problem does not buy a better recognizer. At that point, compactness is no longer a compromise. That will be the correct operating point.
+We have effectively reached the saturation point on DHCD. What remains can be
+attributed to label noise and handwriting ambiguity in the data itself, not model
+capacity. Throwing a bigger recognizer at it does not buy a better recognizer.
+At that point, compactness is no longer a compromise; it becomes the right operating point.
 
 \modelname{} reaches the accuracy of \textbf{99.73\,\%} with just the \textbf{1.11\,M} parameter and achieves statistical equivalence with the leading large-scale model baselines (McNemar $p = 0.345$) even before the advent of knowledge distillation. This means a parameter reduction of 15.6$\times$ and a CPU latency reduction of 9.5$\times$ without sacrificing accuracy. Why can't we move forward? The same \textbf{11-error} intrinsic floor breaks all tested configurations (including large-scale teacher ensembles), and ablation closes off the obvious escape route. Distillation target cleanliness, ensemble size, and test-time augmentation all have no statistically significant benefit. The floor is the ceiling.
 

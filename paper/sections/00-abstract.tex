@@ -1,17 +1,14 @@
 \begin{abstract}
-\modelname{} is a compact convolutional network (\textbf{1.11\,M} parameters)
-reaching \textbf{99.73\,\%} top-1 accuracy on the 46-class DHCD Devanagari
-benchmark~\cite{acharya2015dhcd}---the highest reported, at \textbf{15.6\(\times\)}
-smaller footprint than prior state-of-the-art. The catch: every model
-tested---large teacher ensembles included---hits the same
-\textbf{11-error intrinsic floor}. No configuration achieves a statistically
-clear win under exact McNemar tests with Wilson confidence intervals.
-DHCD is \textbf{saturated}.
-Even without knowledge distillation, the student matches the nearest
-large-model baseline (17.32\,M parameters; McNemar \(p=0.345\)).
-Outside DHCD the picture changes: \modelname{} reaches \textbf{76.6\,\%}
-zero-shot on CMATERdb digits (\textbf{97.8\,\%} after fine-tuning) and
-survives image corruptions far better than large baselines do
-(mean corruption accuracy \textbf{75.7\,\%} vs.\ \textbf{38.7\,\%}).
+We built a compact convolutional network (\textbf{1.11\,M} parameters) for 46-class
+DHCD Devanagari recognition and reached \textbf{99.73\,\%}~\cite{acharya2015dhcd},
+the highest reported at \textbf{15.6\(\times\)} smaller than prior state-of-the-art.
+We have effectively reached the saturation point: every model tested, large teacher
+ensembles included, hits the same \textbf{11-error intrinsic floor}.
+No configuration achieves a statistically clear win under exact McNemar tests
+with Wilson confidence intervals. Even without knowledge distillation, our student
+matches the nearest large-model baseline (17.32\,M parameters; McNemar \(p=0.345\)).
+Outside of DHCD, zero-shot on CMATERdb digits gives \textbf{76.6\,\%} and fine-tuning
+reaches \textbf{97.8\,\%}; corruption robustness is also far better than large
+baselines (mean corruption accuracy \textbf{75.7\,\%} vs.\ \textbf{38.7\,\%}).
 All artifacts are at~\repourl.
 \end{abstract}

@@ -6,17 +6,17 @@ The DHCD dataset~\cite{acharya2015dhcd} has been the standard 46-class benchmark
 since 2015. MallaNet~\cite{malla2025} couples residual branch merging with
 homogeneous filter capsule (HFC) layers to reach 99.71\,\% at 17.32\,M
 parameters; Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with
-a comparably large architecture---for practical purposes, indistinguishable.
+a comparably large architecture; for practical purposes, indistinguishable.
 A concurrent preprint puts 99.80\,\% on the 10-class digit subset~\cite{malla2025digit}; digit-only results do not transfer to the 46-class task.
 
 \paragraph{Knowledge distillation and compact model design.}
 Hinton et al.~\cite{hinton2015distill} showed that soft probability
-outputs---``dark knowledge''---transfer accuracy from a large teacher to a smaller student
+outputs (``dark knowledge'') transfer accuracy from a large teacher to a smaller student
 at substantially lower capacity.
 He et al.~\cite{he2016identity} introduced residual identity mappings; Hu et al.~\cite{hu2018senet} added squeeze-and-excitation channel re-weighting.
 Both are now routine components in compact architectures that trade parameter count for retained discriminative power.
 No prior work has applied knowledge distillation to the 46-class DHCD task.
-Stress-testing distillation on a saturated benchmark---where the performance gap sits inside sampling variation---is likewise unexplored.
+Stress-testing distillation on a saturated benchmark, where the performance gap sits inside sampling variation, is likewise unexplored.
 
 \paragraph{Statistical significance and benchmark saturation.}
 Raw accuracy rankings on DHCD can flip between runs with no change in model quality, once the best models err on fewer than 0.3\,\% of examples.
