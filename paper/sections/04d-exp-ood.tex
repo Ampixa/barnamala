@@ -14,7 +14,7 @@ disparity being the most striking number.
 
 The dental/retroflex pair is the most obvious failure mode. Each of the four pairs (ta/\d{t}a, tha/\d{t}ha, da/\d{d}a, dha/\d{d}ha) collapses to near-zero precision, caused by interclass confusion between strokes with different rendering rules between Indian and Nepali handwriting traditions. This is a character-level domain gap that neither model can resolve. Outside this cluster, \modelname{} and the baseline diverge sharply.
 
-\paragraph{Prashanth et al.\ 2021.} $32{\times}32$ After resizing, \modelname{} achieves \textbf{79.31\%} zero-shot ~\cite{prashanth2021} on this 22{,}500 image digit dataset. The baseline achieves \textbf{72.60\%}. These numbers track the NHCD digit results and the CMATERdb results from sections ~\ref{sec:transfer}. The high rate of confusion of digit~5 with digit~7 is due to pure visual similarity in the Devanagari script and is not a training artifact.
+\paragraph{Prashanth et al.\ 2021.} After resizing to $32{\times}32$, \modelname{} achieves \textbf{79.31\%} zero-shot ~\cite{prashanth2021} on this 22{,}500 image digit dataset. The baseline achieves \textbf{72.60\%}. These numbers track the NHCD digit results and the CMATERdb results from sections ~\ref{sec:transfer}. The high rate of confusion of digit~5 with digit~7 is due to pure visual similarity in the Devanagari script and is not a training artifact.
 
 \begin{table}[t]\centering
 \caption{Zero-shot cross-dataset accuracy. Both models trained on DHCD
@@ -33,4 +33,4 @@ MallaNet~\cite{malla2025} & 23.99\%         & 10.38\%          & 58.85\%        
 Gap                       & $+$54.9\,pp     & $+$61.9\,pp      & $+$36.9\,pp      & $+$6.7\,pp       \\\bottomrule
 \end{tabular}\end{table}
 
-Matching precision within the distribution hides where the gaps are. Both out-of-distribution evaluations favor \modelname{}. The consequences of corruption in sections ~ and \ref{sec:robustness} are similar. This pattern across the three withheld assessments suggests that drawing from a diverse teacher ensemble transfers better across writer and scanner variations than the raw DHCD scores indicate.
+Matching precision within the distribution hides where the gaps are. Both out-of-distribution evaluations favor \modelname{}. The corruption results in Section~\ref{sec:robustness} show a similar pattern. This pattern across the three withheld assessments suggests that drawing from a diverse teacher ensemble transfers better across writer and scanner variations than the raw DHCD scores indicate.

@@ -3,7 +3,7 @@
 
 \subsection{The Shared Error Floor}
 
-DHCD now has a shared error floor instead of just a hard example. All 15 \modelname{} students and the replicated baseline ~\cite{malla2025}, \textbf{11 images} broke all models. The \emph{No} configuration classifies these samples correctly. There is no difference in architecture or training strategy.
+Both the 15 student models and the reproduced baseline~\cite{malla2025} fail on the same \textbf{11 images}. No configuration classifies any of them correctly; there is no difference in architecture or training strategy.
 
 \begin{figure}[t]
   \centering
@@ -33,7 +33,7 @@ Table~\ref{tab:confusions} lists the top distillation-student confusion pairs
 aggregated across the 10 distillation seeds. We are not entirely sure what drives
 the \textbf{ba/waw} pair specifically (17 mutual confusions across all seeds); at
 $32{\times}32$ resolution both glyphs collapse to nearly identical stroke profiles
-and only a handful of pixels separate one from the other. \textbf{waw / tabala} is in 16th place, \textbf{tra / ba} is in 15th place, and \textbf{dha / gha} (13) and \textbf{da / dhaa} (9) make up the top five.
+and only a handful of pixels separate one from the other. \textbf{waw / tabala} (16) is second, \textbf{tra / ba} (15) third, with \textbf{dha / gha} (13) and \textbf{da / dhaa} (9) rounding out the top five.
 
 \begin{table}[t]\centering
 \caption{Top confusion pairs in the distilled student pool (aggregate

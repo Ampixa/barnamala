@@ -5,9 +5,9 @@ Do distilled students learn the structure of numbers, or just the visual habits 
 
 With Hamming distance $\leq$5\,bits (minimum observed: 6\,bits), no near-overlapping pairs were detected and contamination was ruled out. Before evaluation, the image in CMATERdb is polarized to match the black-on-white convention of DHCD.
 
-\paragraph{Results.} Table ~\ref{tab:transfer} (upper row) summarizes the transfer results. \emph{Zero-shot} --- DHCD applied directly to CMATERdb without training images DHCD trained student -- DHCD using the same 10 class head achieves \textbf{76.6$\pm$3.7\%} versus \textbf{62.7\%} in a supervised baseline trained on digit images only. For in-distribution DHCD, the two are statistically tied, but under domain shift, knowledge distillation has an advantage over \textbf{+14 percentage points}. Freezing the backbone and training a fresh 10 class head with CMATERdb (\emph{linear probe}) increases the accuracy to \textbf{85.4\%}. 30 epochs of lightful \emph{fine-tuning} at low learning rate reach \textbf{97.8\%}.
+\paragraph{Results.} Table~\ref{tab:transfer} (upper rows) summarises the transfer results. The DHCD-trained distilled student zero-shots at \textbf{76.6$\pm$3.7\%} on CMATERdb using the same 10-class head, versus \textbf{62.7\%} for a supervised baseline trained on CMATERdb images only---\textbf{+14 percentage points} under domain shift despite being tied on in-distribution DHCD. Freezing the backbone and fitting a fresh 10-class head (\emph{linear probe}) reaches \textbf{85.4\%}; 30 epochs of \emph{fine-tuning} at a low learning rate reaches \textbf{97.8\%}.
 
-There is one caveat. This experiment only covers \textbf{digit subset} (10 out of 46 DHCD classes). Devanagari Nothing is said about transferring the entire character inventory. Within that narrow range, after contamination and polarity control, the distilled Student preserves more order structure under dataset shifts than the supervised DHCD-only baseline.
+There is one caveat: this experiment covers only the \textbf{digit subset} (10 of 46 DHCD classes). Nothing is claimed about transferring the full character inventory. Within that scope, after contamination and polarity control, the distilled student preserves more structure under dataset shift than the supervised DHCD-only baseline.
 
 \subsection{Corruption Robustness}
 \label{sec:robustness}
