@@ -3,17 +3,9 @@
 \subsection{Experimental Setup}
 \label{sec:setup}
 
-\paragraph{Dataset.}
-We use DHCD~\cite{acharya2015dhcd}, the standard 46-class Devanagari
-handwriting benchmark (36 consonants, 10 numerals): 78,200 training images
-and 13,800 test images, each $32{\times}32$ greyscale.
+\paragraph{Dataset.} Standard 46 class Devanagari Uses DHCD~\cite{acharya2015dhcd}, which is a handwriting benchmark (36 consonants, 10 digits). 78,200 training images and 13,800 test images, each $32{\times}32$ grayscale.
 
-\paragraph{Reproducing the baseline.}
-To enable sample-level McNemar comparison, we re-implemented the
-architecture of~\cite{malla2025} from the published description,
-including the exact normalisation ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and
-the class-index permutation implied by their data loader.  Seed~0 yields
-\textbf{40 errors} (\textbf{99.7101\%}), matching the reported figure.
+\paragraph{Reproducing the baseline.} To enable sample-level McNemar comparisons, we reimplemented the architecture of ~\cite{malla2025} from the published description, including exact normalization ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and class index replacement implied by the data loader. Seed~0 produces \textbf{40 errors} (\textbf{99.7101\%}), which matches the reported number.
 
 \subsection{Main Parity Result}
 \label{sec:parity}
@@ -40,8 +32,7 @@ detectable gap at $\alpha = 0.05$.  Best seed: \textbf{34 errors} (99.754\%),
 Wilson 95\% CI \textbf{[99.656\%, 99.824\%]}, at \textbf{15.6$\times$} fewer
 parameters.
 
-$p = 1.000$ for clean single-pass logits (15-teacher pool); $p = 0.701$ for the
-supervised control with no teacher.  Distillation is not the source of parity.
+$p = 1.000$ Clean single-pass logit (15 teacher pool). $p = 0.701$ For unsupervised supervised control. Distillation is not the source of parity.
 
 \subsection{Comparison with Prior Work}
 \label{sec:sota}
@@ -62,10 +53,7 @@ Yadav et al.~\cite{yadav2024mlcnn}& 2024 & ${\approx}0.4$\,M& 99.21\,\%  & Modif
 Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & CNN baseline \\\bottomrule
 \end{tabular}\end{table}
 
-0.07\,\% separates the top four---one or two test images.  No other entry
-simultaneously clears 99.5\,\% accuracy and stays under 2\,M parameters;
-\cite{malla2025} is the next-lightest model above that threshold at 17.32\,M,
-a \textbf{15.6$\times$} difference in parameter count.
+0.07\,\% separates the top four, i.e. one or two test images. There is no other entry that simultaneously clears 99.5\,\% accuracy and stays below the 2\,M parameter. \cite{malla2025} is the next lightest model with 17.32\,M above that threshold, and is the difference between \textbf{15.6$\times$} in number of parameters.
 
 \subsection{Efficiency}
 \label{sec:efficiency}
@@ -81,5 +69,4 @@ MallaNet   & 17.32M & 2434M & 69.3MB & 26.1MB & 78.8$\pm$0.89\,ms & 13.6\,img/s 
 \midrule Ratio & 15.6$\times$ & 14.8$\times$ & 15.6$\times$ & 9.5$\times$ & 9.5$\times$ & 11.1$\times$ \\\bottomrule
 \end{tabular}\end{table}
 
-\textbf{9.5$\times$} lower CPU latency, \textbf{14.8$\times$} fewer MACs,
-no quantisation or pruning; accuracy parity holds.
+\textbf{9.5$\times$} Low CPU latency, \textbf{14.8$\times$} Low MAC, no quantization or pruning. The accuracy is the same.

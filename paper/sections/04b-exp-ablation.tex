@@ -13,23 +13,9 @@ the soft labels come from a single clean forward pass through a larger
 \textbf{38.2$\pm$2.2} errors.  The \emph{supervised control}, trained with no
 teacher signal at all, obtains \textbf{39.8$\pm$2.8} errors.
 
-Three errors separate the best distilled student from the supervised
-baseline---modest, and none of the three McNemar $p$-values approach $0.05$
-(Table~\ref{tab:main}).  Distillation helps, but only a little.  More
-telling is how little the target recipe matters: clean-target and TTA-target
-students are statistically indistinguishable (38.2 vs.\ 36.6, with substantial
-seed overlap in the error distributions).  Flip-averaged targets
-do not beat a clean single-pass forward pass through the same teacher.  The useful signal
-is the teacher itself.  We keep the smaller 9-teacher pool with
-flip-averaged targets as the primary configuration for simplicity, though the
-result does not hinge on that choice.
+Three errors separate the best extracted Student and the supervised baseline -- moderate, and none of the three McNemar $p$ values approach $0.05$ (tables ~ \ref{tab:main}). Distillation helps, but only a little. What's more, is how unimportant the target recipe is. Students in the clean target and those in the TTA target are statistically indistinguishable (38.2 vs. 36.6, with significant seed overlap in the error distributions). A flipped average target cannot beat a clean single pass forward pass through the same teacher. A useful signal is the teacher itself. For simplicity, we keep a small 9-teacher pool with a flipped average target as the primary configuration, but the results do not depend on that choice.
 
-\paragraph{Teacher ensemble size.}
-A natural follow-up: is the plateau at 30 errors a ceiling imposed by having
-only 9 teachers?  To check, we ran the ensemble as a \emph{direct predictor}
-on the test set---not as a source of training-time soft targets---and
-compared 9 teachers against 15.  The answer from Table~\ref{tab:ensemble} is
-blunt: more teachers do not move the ceiling.
+\paragraph{Teacher ensemble size.} Natural follow-up: Is the plateau of 30 errors an upper limit imposed by having only 9 teachers? To find out, we ran the ensemble as \emph{direct predictor} on the test set, rather than as the source of training time soft targets, and compared 9 teachers to 15 teachers. The answer from table ~ \ref{tab:ensemble} is straightforward. More teachers do not move the ceiling.
 
 \begin{table}[t]\centering
 \caption{Teacher ensembles on DHCD test ($n{=}13{,}800$). Rows 1--2: scaling from 9 to 15 teachers does not move the 30-error plateau. Row 3: adding flip-TTA crosses $p{<}0.05$ but is methodologically invalid (Section~\ref{sec:flip-tta}).}\label{tab:ensemble}
@@ -40,26 +26,9 @@ Ensemble & Errors & Acc\,\% & McNemar $p$ & $p{<}0.05$? \\\midrule
 9 teachers, flip-TTA  & 28 & 99.797 & 0.029  & fragile \\\bottomrule
 \end{tabular}\end{table}
 
-Individual teachers disagree enough to make the test meaningful---clean
-per-model error counts span 27--43.  Yet both majority-vote pools plateau at
-\textbf{30 errors} (99.783\%), with an identical McNemar $p = 0.0755$.  Adding
-six more teachers changes nothing.  The remaining errors sit in an
-irreducible floor: additional models vote the same wrong answer regardless
-of how many are included.
+Individual teachers do not have enough input to make the tests meaningful -- the number of clean errors per model ranges from 27 to 43. However, both majority pools reach a ceiling at \textbf{30 errors} (99.783\%), and McNemar and $p = 0.0755$ are the same. Adding 6 more teachers doesn't change anything. The remaining errors are at the non-reducible lower bound. Additional models will vote for the same incorrect answer, regardless of the number of errors it contains.
 
 \subsection{Flip-TTA at Test Time}
 \label{sec:flip-tta}
 
-Averaging each teacher's logits over the original and horizontally-flipped test
-image drops errors to \textbf{28} ($p = 0.029$)---the only result in our study
-that crosses the 0.05 threshold---and we do not treat it as a positive result.
-Horizontal reflection of Devanagari produces characters absent from the script; the
-training distribution deliberately excludes such flips (Section~\ref{sec:training}).
-The gain is also fragile.  Applied to \emph{individual} teachers, flip-TTA raises
-errors to \textbf{88} and \textbf{102} on the worst-affected checkpoints, up
-from clean baselines of 30--43; the ensemble masks this variance only by accident
-on this split.  The student's training-time targets (Section~\ref{sec:kd}) also use
-flip-averaging, but over \emph{training} images as a target-smoothing device---a
-distinct use, unaffected by the invalidity of flip-TTA as a test-time predictor.
-We therefore exclude the $p = 0.029$ result and report the 30-error clean
-ensemble as the upper-bound reference for teacher performance.
+If we average each teacher's logit over the original horizontally flipped test image, the error drops to \textbf{28} ($p = 0.029$). This is the only result in our study that exceeds the 0.05 threshold. This result is not treated as a positive result. Horizontal reflection of Devanagari produces characters that are not in the script. In the training distribution, such inversions are intentionally excluded (sections ~\ref{sec:training}). Gain is also vulnerable. When applied to the \emph{individual} teacher, the flip TTA causes errors in \textbf{88} and \textbf{102} at the most affected checkpoints, increasing from 30-43 in the clean baseline. It is only by chance at this split that the ensemble masks this difference. The student training time targets (sections ~\ref{sec:kd}) also use flipped averaging, but use the \emph{training} image as the target smoothing device. This is a clear application that is not affected by the invalidity of flip TTA as a test time predictor. Therefore, we exclude the results for $p = 0.029$ and report a clean ensemble of 30 errors as an upper criterion for teacher performance.

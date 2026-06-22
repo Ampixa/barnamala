@@ -2,12 +2,7 @@
 
 \subsection{Compact Student Architecture}
 
-\modelname{} is a pre-activation squeeze-and-excitation residual
-network~\cite{he2016identity,hu2018senet} designed for single-channel
-$32{\times}32$ images.  Channel widths run $(40, 80, 160)$ across three stages
-of depth $(2, 2, 2)$; Stages~2 and~3 downsample by stride~2
-(Figure~\ref{fig:arch}).  The total trainable parameter count is
-\textbf{1,109,116}.
+\modelname{} is a pre-activation squeeze-and-excitation residual network ~\cite{he2016identity,hu2018senet} designed for single-channel $32{\times}32$ images. The channel width is $(40, 80, 160)$ over three depths $(2, 2, 2)$. Stages ~2 and ~3 are downsampled by stride ~2 (Figures ~\ref{fig:arch}). The total number of learnable parameters is \textbf{1,109,116}.
 
 \begin{figure}[t]
   \centering
@@ -27,25 +22,12 @@ of depth $(2, 2, 2)$; Stages~2 and~3 downsample by stride~2
 
 \subsection{Teacher Ensemble}
 
-The ensemble comprises 15 teachers drawn from three architecture configurations
-crossed with five independent random seeds (seeds 0--4).  Two of those
-configurations share widths $(96, 192, 384)$ and depths $(3, 3, 3)$ but differ
-in augmentation intensity (medium vs.\ heavy tier; see
-Section~\ref{sec:training}); the third uses widths $(64, 128, 256)$ with depths
-$(4, 4, 4)$ under medium augmentation.  Parameter counts land at 5.97\,M and
-9.89\,M---the spread across configs is intentional, to reduce mode collapse in
-the soft targets.  All teachers share the same \modelname{} codebase (the
-\texttt{DevNet} class) and are trained without distillation.  Their logits are
-dumped once into a single NumPy archive reused across all student runs.
+The ensemble consists of 15 teachers drawn from three architectural configurations intersected with five independent random seeds (seeds 0 to 4). Two of these configurations share width $(96, 192, 384)$ and depth $(3, 3, 3)$ but differ in expansion strength (intermediate and overlying, see sections ~ \ref{sec:training}). The third uses width $(64, 128, 256)$ and depth $(4, 4, 4)$ with medium expansion. The number of parameters is 5.97\,M and 9.89\,M. The scattering throughout the setting is intentional to reduce mode collapse in soft targets. All teachers share the same \modelname{} codebase (\texttt{DevNet} classes) and are trained without extraction. Their logs are dumped once into a single NumPy archive and reused across all student runs.
 
 \subsection{Ensemble Knowledge Distillation}
 \label{sec:kd}
 
-Following Hinton et al.~\cite{hinton2015distill}, the ensemble target for each
-training image is the mean softmax of 9 teacher checkpoints (configs A, B,
-C $\times$ seeds 0--2), where each teacher's softmax incorporates
-horizontal-flip test-time averaging.  The objective is:
-\begin{equation}
+Following Hinton et al. ~\cite{hinton2015distill}, the ensemble target for each training image is the average softmax of nine supervised checkpoints (configurations A, B, C $\times$ seeds 0 to 2), and each supervised softmax incorporates the average of horizontal flip test times. The purpose is to:\begin{equation}
   \mathcal{L} = \alpha \cdot T^{2}\,
     \mathrm{KL}\!\left(
       \sigma\!\left(\tfrac{z_{t}}{T}\right) \,\Big\|\,
@@ -53,44 +35,19 @@ horizontal-flip test-time averaging.  The objective is:
     \right)
     + (1-\alpha)\cdot\mathrm{CE}(z_{s}, y),
   \label{eq:kdloss}
-\end{equation}
-where $z_{s}$ and $z_{t}$ are student and (mean) teacher logits, $\sigma$
-denotes the softmax, $T = 4.0$, and $\alpha = 0.7$.  Label smoothing
-($\varepsilon = 0.1$) applies to the hard cross-entropy term.  The KL
-is teacher-to-student (teacher as reference distribution).  Target-generation
-scheme (clean no-TTA vs.\ flip-averaged) and ensemble size (9 vs.\ 15 teachers)
-are ablated in Section~\ref{sec:ablations}.
+\end{equation}Here, $z_{s}$ and $z_{t}$ are the student and (average) teacher logits, $\sigma$ is the softmax, $T = 4.0$, and $\alpha = 0.7$. Label smoothing ($\varepsilon = 0.1$) is applied to hard cross entropy terms. KL is teacher-to-student (teacher as reference distribution). Target generation scheme (no clean TTA vs. flipped average) and ensemble size (9 teachers vs. 15 teachers) are removed in sections ~\ref{sec:ablations}.
 
 \subsection{Script-Aware Training}
 \label{sec:training}
 
-Devanagari script is not horizontally symmetric: reflecting a glyph produces an
-invalid character.  Horizontal flips are excluded entirely.  The training
-transform instead applies affine perturbations (rotation, translation, scale,
-shear) followed by elastic deformation; an augmentation tier
-(\texttt{light}/\texttt{medium}/\texttt{heavy}) selected per configuration
-controls the intensity.  Random erasing ($p = 0.25$, area 2--10\%) rounds out
-the per-image regularisation.
+Devanagari Script is not horizontally symmetric. Reflecting glyphs produces invalid characters. Horizontal flips are completely excluded. Instead, the training transformation applies affine perturbations (rotation, translation, scale, shear) followed by elastic deformations. The strength is controlled by the selected enhancement layer (\texttt{light}/\texttt{medium}/\texttt{heavy}) for each configuration. Random purge ($p = 0.25$, area 2--10\%) completes image-wise normalization.
 
-Mixing augmentations---mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
-CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$)---are selected with equal
-probability, each activated with overall probability 0.5 per batch.  Both are
-off during distillation runs: per-image teacher logits cannot be linearly
-combined without corrupting the soft-target distribution, so the KD loss
-(Equation~\ref{eq:kdloss}) always sees clean, unaugmented teacher predictions.
+The mixing extensions ---mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$) --- are selected with equal probability and each is activated for each batch with an overall probability of 0.5. Both are turned off while distillation is running. The KD loss (formula~\ref{eq:kdloss}) always shows a clean, unenhanced teacher prediction, because the per-image teacher logits cannot be linearly combined without compromising the soft target distribution.
 
-Optimisation uses AdamW. The learning-rate schedule is cosine with a 5-epoch
-linear warm-up.  A weight exponential moving average (EMA, decay 0.999) tracks
-a shadow copy; the EMA weights are used for validation and the final checkpoint.
+Use AdamW for optimization. The learning rate schedule is cosine with a linear warmup of 5 epochs. A weighted exponential moving average (EMA, decay 0.999) tracks shadow copies. EMA weights are used for validation and final checkpoint.
 
 \subsection{Evaluation Protocol}
 
-Reported accuracies come from a single forward pass over the DHCD held-out test
-split; no test-time augmentation is applied.  Model selection relies on a 10\%
-stratified validation set carved from the training split before any augmentation.
+Reported accuracy is from a single forward pass on the DHCD holdout test split. test-time augmentation is not applicable. Model selection relies on a 10% stratified validation set cut from the pre-augmentation training split.
 
-Statistical comparisons between \modelname{} and the baseline~\cite{malla2025}
-use the exact two-sided McNemar test~\cite{mcnemar1947} on per-sample binary
-correctness indicators.  Confidence intervals for accuracy and error rate are
-Wilson score intervals at 95\%~\cite{wilson1927}.  ECE~\cite{guo2017calibration}
-is computed with 15 equal-width bins on the held-out test set.
+For statistical comparisons between \modelname{} and the baseline ~\cite{malla2025}, the exact two-sided per-sample binary accuracy index McNemar test~\cite{mcnemar1947} is used. Confidence intervals for accuracy and error rate are Wilson score intervals at 95\%~\cite{wilson1927}. ECE~\cite{guo2017calibration} is computed using 15 equal width bins on the held-out test set.

@@ -1,34 +1,10 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The saturation conclusion is uncomfortable but hard to avoid. At current
-resolution, DHCD's remaining mistakes are governed more by label noise and
-handwriting ambiguity than by model capacity---which means throwing a larger
-recognizer at the problem no longer buys a better one. Compactness stops
-being a compromise at that point. It becomes the right operating point.
+The conclusion of saturation is unpleasant, but difficult to avoid. At the current resolution, the remaining errors in DHCD are driven more by label noise and handwriting ambiguities than by the model's ability. In other words, throwing a bigger recognizer at the problem does not buy a better recognizer. At that point, compactness is no longer a compromise. That will be the correct operating point.
 
-\modelname{} reaches \textbf{99.73\,\%} accuracy with just \textbf{1.11\,M}
-parameters, achieving statistical parity with the leading large-model baseline
-(McNemar $p = 0.345$), even before knowledge distillation enters the picture:
-a 15.6$\times$ reduction in parameters and a 9.5$\times$ CPU-latency reduction
-at no accuracy cost. Why can't anything pull ahead? The same 11-error
-intrinsic floor defeats every configuration tested---large teacher ensembles
-included---and ablations close the obvious escape routes: distillation target
-cleanliness, ensemble size, and test-time augmentation all produce no
-statistically significant gain. The floor is the ceiling.
+\modelname{} reaches the accuracy of \textbf{99.73\,\%} with just the \textbf{1.11\,M} parameter and achieves statistical equivalence with the leading large-scale model baselines (McNemar $p = 0.345$) even before the advent of knowledge distillation. This means a parameter reduction of 15.6$\times$ and a CPU latency reduction of 9.5$\times$ without sacrificing accuracy. Why can't we move forward? The same \textbf{11-error} intrinsic floor breaks all tested configurations (including large-scale teacher ensembles), and ablation closes off the obvious escape route. Distillation target cleanliness, ensemble size, and test-time augmentation all have no statistically significant benefit. The floor is the ceiling.
 
-Two boundaries should be stated plainly. The saturation claim is tied to
-DHCD's particular conditions---$32{\times}32$ resolution, concentrated label
-noise, and its specific writer pool; a cleaner or higher-resolution benchmark
-might expose capacity differences DHCD can no longer reveal. Transfer results
-cover only the \textbf{digit subset} (10 of 46 classes): no independent
-consonant target set sharing DHCD's label taxonomy exists, so consonant-level
-transferability is out of scope here.
+The boundaries between the two must be clearly marked. The saturation claim is tied to certain conditions of DHCD, namely $32{\times}32$ resolution, concentrated label noise, and its particular pool of writers. Cleaner or higher resolution benchmarks may reveal capacity differences that DHCD may not reveal. The transfer results only cover \textbf{digit subset} (10 out of 46 classes). Consonant-level transferability is out of scope here, as there are no independent consonant target sets that share the label taxonomy of DHCD.
 
-The practical implication for Devanagari recognition is to measure more
-honestly before claiming progress. Gains of a few hundredths of a percent
-mean nothing without \emph{paired evaluation}---McNemar or equivalent---against
-the specific test cases where the compared model also fails. The benchmark
-question is harder: DHCD has run its course as a discriminator.
-Higher-resolution scans or genuinely independent writer pools are the next
-necessary step.
+The practical implication for Devanagari recognition is to measure progress more honestly before claiming it. Without \emph{paired evaluation} -- McNemar or equivalent -- for a particular test case where the compared models also fail, a gain of a few hundredths of a percent is meaningless. The benchmark problem is even more difficult. DHCD served as a discriminator. The next necessary step is high-resolution scanning or a completely independent pool of writers.

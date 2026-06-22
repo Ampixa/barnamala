@@ -1,46 +1,18 @@
 \subsection{DHCD to CMATERdb Digit Transfer}
 \label{sec:transfer}
 
-Does the distilled student learn digit structure, or just the visual habits of
-one collection pipeline?  We probe this by running its representations on
-CMATERdb~3.2.1 \cite{das2012cmaterdb}---an independently collected set of
-handwritten Devanagari \emph{numerals} (digits 0--9; 10 classes).  The two
-datasets differ in scanner hardware, writer population, paper stock, and
-binarisation pipeline, so overlapping labels arrive from a visibly different
-source distribution.
+Do distilled students learn the structure of numbers, or just the visual habits of one collection pipeline? CMATERdb~3.2.1 \cite{das2012cmaterdb} -- We investigate this by running its representation on a uniquely collected set of handwritten Devanagari \emph{numerals} (digits 0-9, 10 classes). The two datasets have different scanner hardware, writer populations, paper stocks, and binarization pipelines, so the duplicate labels clearly arrive from different source distributions.
 
-Zero near-duplicate pairs were found at Hamming distance $\leq$5\,bits
-(minimum observed: 6\,bits), ruling out contamination.  Before evaluation,
-images from CMATERdb are polarity-inverted to match DHCD's white-on-black
-convention.
+With Hamming distance $\leq$5\,bits (minimum observed: 6\,bits), no near-overlapping pairs were detected and contamination was ruled out. Before evaluation, the image in CMATERdb is polarized to match the black-on-white convention of DHCD.
 
-\paragraph{Results.}
-Table~\ref{tab:transfer} (upper rows) summarises the transfer outcomes.
-\emph{Zero-shot}---the DHCD-trained distilled student applied directly to
-CMATERdb with no CMATERdb training images---achieves \textbf{76.6$\pm$3.7\%},
-versus \textbf{62.7\%} for a supervised baseline trained on DHCD digit images
-only with the same 10-class head.  On in-distribution DHCD the two are
-statistically tied, but knowledge distillation carries a
-\textbf{+14 percentage points} advantage under domain shift.
-Freezing the backbone and training a fresh 10-class head on CMATERdb
-(\emph{linear probe}) raises accuracy to \textbf{85.4\%}; 30 epochs of
-light full \emph{fine-tuning} at a low learning rate reaches \textbf{97.8\%}.
+\paragraph{Results.} Table ~\ref{tab:transfer} (upper row) summarizes the transfer results. \emph{Zero-shot} --- DHCD applied directly to CMATERdb without training images DHCD trained student -- DHCD using the same 10 class head achieves \textbf{76.6$\pm$3.7\%} versus \textbf{62.7\%} in a supervised baseline trained on digit images only. For in-distribution DHCD, the two are statistically tied, but under domain shift, knowledge distillation has an advantage over \textbf{+14 percentage points}. Freezing the backbone and training a fresh 10 class head with CMATERdb (\emph{linear probe}) increases the accuracy to \textbf{85.4\%}. 30 epochs of lightful \emph{fine-tuning} at low learning rate reach \textbf{97.8\%}.
 
-One caveat: this experiment covers only the \textbf{digit subset} (10 of
-46 DHCD classes).  It says nothing about transfer of the full Devanagari
-character inventory.  Within that narrower scope---after contamination and
-polarity controls---the distilled student preserves more digit structure under
-dataset shift than the supervised DHCD-only baseline does.
+There is one caveat. This experiment only covers \textbf{digit subset} (10 out of 46 DHCD classes). Devanagari Nothing is said about transferring the entire character inventory. Within that narrow range, after contamination and polarity control, the distilled Student preserves more order structure under dataset shifts than the supervised DHCD-only baseline.
 
 \subsection{Corruption Robustness}
 \label{sec:robustness}
 
-Three corruption families are evaluated: additive Gaussian \emph{noise},
-Gaussian \emph{blur}, and \emph{contrast} reduction.  Five severity levels
-follow the ImageNet-C protocol adapted to $32{\times}32$ greyscale images;
-we report mean accuracy across severities 1--5 (mCA) per family and overall.
-To keep preprocessing symmetric, every model applies its \emph{own}
-training-time normalisation to the same corrupted $[0,1]$ input images.
+Three corruption families are evaluated: additive Gaussian \emph{noise}, Gaussian \emph{blur}, and \emph{contrast} reductions. The five severity levels follow the ImageNet-C protocol adapted for $32{\times}32$ grayscale images. We report mean precision for each family and overall severity 1-5 (mCA). To maintain preprocessing symmetry, all models apply their \emph{own} training time regularization to the same corrupted $[0,1]$ input image.
 
 \begin{table}[t]\centering\caption{Transfer and corruption robustness. mCA = mean accuracy over severities 1--5.}\label{tab:transfer}
 \begin{tabular}{lcc}\toprule
@@ -54,13 +26,4 @@ mCA contrast & 75.5\% & 11.5\% \\
 mCA overall & \textbf{75.7\%} & 38.7\% \\\bottomrule
 \end{tabular}\end{table}
 
-\paragraph{Results.}
-\modelname{} fares approximately \textbf{2$\times$} better overall
-(mCA 75.7\% vs.\ 38.7\%); the blur and contrast gaps are striking
-(97.0\% vs.\ 37.6\% under \emph{blur}; 75.5\% vs.\ 11.5\% under
-\emph{contrast}), likely reflecting the baseline's HFC design amplifying blur
-and its fixed $(0.5, 0.5)$ normalisation being sensitive to the global
-intensity shifts that contrast corruption introduces.  One clear reversal:
-under \emph{additive noise}, the baseline holds up better
-(mCA 66.9\% vs.\ 54.7\%)---practitioners targeting noise-heavy deployment
-environments should note that the noise ranking goes the other way.
+\paragraph{Results.} \modelname{} gives about \textbf{2$\times$} better results overall (mCA 75.7\% vs. \ 38.7\%). The gap in blur and contrast is significant (97.0\% vs. \ 37.6\% for \emph{blur} and 75.5\% vs. \ 11.5\% for \emph{contrast}). This likely reflects that the baseline HFC design amplifies blur and its fixed $(0.5, 0.5)$ normalization is sensitive to global intensity changes caused by contrast corruption. There is one obvious reversal. For \emph{additive noise}, the baseline is better (mCA 66.9\% vs.\ 54.7\%). Practitioners who target noisy deployment environments should note that the noise rankings are reversed.

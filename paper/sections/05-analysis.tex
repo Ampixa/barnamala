@@ -3,10 +3,7 @@
 
 \subsection{The Shared Error Floor}
 
-DHCD now has a shared error floor, not just hard examples: across all 15
-\modelname{} students and the reproduced baseline~\cite{malla2025},
-\textbf{11 images} defeat every model.  \emph{No} configuration classifies
-these samples correctly---architecture and training strategy make no difference.
+DHCD now has a shared error floor instead of just a hard example. All 15 \modelname{} students and the replicated baseline ~\cite{malla2025}, \textbf{11 images} broke all models. The \emph{No} configuration classifies these samples correctly. There is no difference in architecture or training strategy.
 
 \begin{figure}[t]
   \centering
@@ -27,20 +24,11 @@ these samples correctly---architecture and training strategy make no difference.
     student mean both lie in the statistical parity region.}
 \end{figure}
 
-When the same 11-image floor catches both a 1.11\,M-parameter compact
-student and a baseline fifteen times its size, the problem is in the data.
-Outside this floor, errors are model-specific (mean pairwise Jaccard
-similarity $\mathbf{0.48}$): seeds shuffle which images fail, but
-ensembling or adding seeds reduces \emph{variance}, not the \emph{bias} the
-floor imposes.
+If the same 11 image floors capture both a compact Student of 1.11\,M parameters and a baseline 15 times its size, the problem lies in the data. Outside this floor, the error is model-specific (average pairwise Jaccard similarity $\mathbf{0.48}$). Seeds shuffle which images fail, but the addition of ensembles or seeds reduces \emph{variance} rather than \emph{bias} imposed by the floor.
 
 \subsection{Confusable Character Pairs}
 
-Script-level collisions dominate remaining mistakes.  Table~\ref{tab:confusions} lists
-the top distilled-student confusion pairs aggregated across the 10
-distilled seeds.  \textbf{ba / waw} leads with 17 cross-confusions.
-\textbf{waw / tabala} follows at 16 and \textbf{tra / ba} at 15, with
-\textbf{dha / gha} (13) and \textbf{da / dhaa} (9) completing the top five.
+Script-level conflicts account for most of the remaining mistakes. Table ~\ref{tab:confusions} lists the top distillation-Student confusion pairs aggregated across the 10 distillation seeds. \textbf{ba / waw} is a lead with 17 mutual confusions. \textbf{waw / tabala} is in 16th place, \textbf{tra / ba} is in 15th place, and \textbf{dha / gha} (13) and \textbf{da / dhaa} (9) make up the top five.
 
 \begin{table}[t]\centering
 \caption{Top confusion pairs in the distilled student pool (aggregate
@@ -56,45 +44,19 @@ da $\leftrightarrow$ dhaa   & 9  & Single hairline distinguishes the pair \\\bot
 \end{tabular}
 \end{table}
 
-At $32{\times}32$ pixels, the distinguishing strokes in these pairs span
-only a few pixels---sometimes fewer.  DHCD provides neither
-higher-resolution inputs nor stroke-level annotation, so the information
-needed to resolve them is simply absent from the images.
+In $32{\times}32$ pixels, the characteristic strokes of these pairs span just a few pixels, sometimes less. DHCD provides neither high-resolution input nor stroke-level annotations, so the information needed to resolve them is not present in the image.
 
 \subsection{Significance Frontier}
 \label{sec:sig-frontier}
 
-Under the exact two-sided McNemar test~\cite{mcnemar1947} at $\alpha = 0.05$,
-crossing from statistical parity to a demonstrable improvement over the
-reproduced baseline (40 errors) requires at most \textbf{25 errors}
-($\geq$99.82\% accuracy)---fewer than 15 additional correct classifications
-separate inconclusive from significant.  Reaching a comfortable margin means
-$\leq$\textbf{20 errors} ($\geq$99.855\%), which in turn means near-perfect
-resolution of every ambiguous-glyph pair in Table~\ref{tab:confusions}.
+Exact two-sided McNemar test~\cite{mcnemar1947} over $\alpha = 0.05$ requires at most \textbf{25 errors} ($\geq$99.82\% precision) to lead to a clear improvement over the reproduced baseline (40 errors) from statistical parity. There are fewer than 15 additional correct classifications that distinguish between inconclusive and important classifications. Reaching a comfortable margin means $\leq$\textbf{20 errors} ($\geq$99.855\%). This means that all ambiguous glyph pairs in Table~\ref{tab:confusions} are resolved almost perfectly.
 
-Every configuration tested stops just short. \textbf{28 errors} is the best
-single result: the 9-teacher ensemble with (semantically invalid) flip-TTA
-applied at test time, excluded on methodological grounds
-(Section~\ref{sec:flip-tta}).  The best defensible single seed reaches
-\textbf{34 errors}; the clean ensemble without flip-TTA reaches \textbf{30 errors}.
-Both sit within the parity region, pinned there by the 11-image irreducible
-floor.
+All tested configurations stop immediately. \textbf{28 errors} is the single best result. 9-teacher ensemble, including the (semantically invalid) flip-TTA that was applied during testing, but is excluded for methodological reasons (section ~\ref{sec:flip-tta}). The most defensible single seed reaches \textbf{34 errors}. Clean ensemble without flips - TTA reaches \textbf{30 errors}. Both are located within the parity region and are fixed by an irreducible floor of 11 images.
 
 \textbf{No lever tested in this study achieved a statistically
-significant improvement over the baseline.}  Scaling the teacher pool from 9
-to 15 changed nothing.  TTA-softened distillation targets and five independent
-seeds left all configurations outside the significance frontier.  This is not
-a failure of experimental design---it defines a saturated benchmark.  The
-frontier is a wall built from mislabelled images and inherently ambiguous
-glyphs, not a line being approached asymptotically.
+significant improvement over the baseline.} Increasing the number of teachers from 9 to 15 did not change anything. With the distillation target softened in TTA and five independent seeds, all configurations remained outside significance frontier. This is not a failure of experimental design. Define a saturated benchmark. The frontier is a wall built from mislabeled images and inherently ambiguous glyphs, not an asymptotically approaching line.
 
 
 \subsection{Calibration}
 
-Expected Calibration Error (ECE)~\cite{guo2017calibration} falls in the
-range \textbf{0.13--0.16} across all \modelname{} configurations---unremarkable
-for softmax classifiers without post-hoc temperature scaling.  ECE does not
-co-vary with accuracy across seeds: better seeds are not better calibrated.
-The 11 floor images are confidently wrong on every seed, not merely uncertain;
-models assign high probability to an incorrect class regardless of how the
-student was trained.
+Expected Calibration Error (ECE)~\cite{guo2017calibration} falls within the range of \textbf{0.13--0.16} across all \modelname{} configurations. It is not noticeable for softmax classifiers without post-hoc temperature scaling. ECE does not covary in accuracy between seeds. A better seed will not calibrate better. The 11th floor image is not just uncertain, it is definitely wrong at every seed. The model assigns a high probability to the incorrect class, regardless of how the student is trained.

@@ -1,25 +1,12 @@
 \section{Introduction}
 \label{sec:intro}
 
-The DHCD dataset~\cite{acharya2015dhcd} is the standard benchmark for
-46-class handwritten Devanagari character recognition. Top-1 accuracies have
-crowded into a narrow band above 99.7\,\%: MallaNet~\cite{malla2025} reaches
-99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture;
-Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly large
-model. At this level successive gains are measured in \emph{hundredths of a
-percent}. Models still carry parameter budgets far beyond what a compact
-on-device recognizer can sustain.
+The DHCD dataset ~\cite{acharya2015dhcd} is a standard benchmark for 46 classes of handwritten Devanagari character recognition. The top-1 accuracy is concentrated in a narrow band above 99.7\,\%. MallaNet~\cite{malla2025} reaches 99.71\,\% in the convolutional architecture with \textbf{17.32\,M} parameters. Mishra ~\cite{mishra2021} independently reported 99.72\,\% for a similarly large model. At this level, continuous gain is measured at \emph{hundredths of a
+percent}. The model still has a parameter budget that far exceeds what a compact on-device recognizer can maintain.
 
-Whether those gains are real is a question existing DHCD papers leave open.
-Point accuracies dominate. McNemar testing, when it appears, is applied
-selectively against weaker baselines without exact $p$-values. With
-$n{=}13{,}800$ test samples near 99.7\,\%, raw-accuracy rankings alone carry
-little inferential weight.
+Whether these benefits are genuine remains an open question in existing DHCD papers. Point accuracy dominates. When McNemar test appears, it is applied selectively against a weaker baseline without having an exact $p$ value. $n{=}13{,}800$ When test samples are close to 99.7\,\%, raw accuracy rankings alone have little inferential weight.
 
-The decisive question is \emph{paired}: do two models fail on
-\emph{different} examples? Exact McNemar tests across every student--teacher
-pair, with Wilson confidence intervals bounding each model's accuracy, answer
-it directly. The leaderboard looks different once that discipline is applied.
+The crucial issue is \emph{paired}. Do the two models fail in the \emph{different} example? The exact McNemar test across all student-teacher pairs answers directly, with Wilson confidence interval bounding the accuracy of each model. Once this discipline is applied, the leaderboard will look different.
 
 A \textbf{1.11\,M}-parameter student reaches statistical parity with the
 prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$). That holds
