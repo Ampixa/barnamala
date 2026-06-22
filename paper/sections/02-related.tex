@@ -2,56 +2,62 @@
 \label{sec:related}
 
 \paragraph{Indic and Devanagari handwritten character recognition.}
-The DHCD dataset~\cite{acharya2015dhcd}, introduced in 2015, established the
-standard 46-class benchmark for handwritten Devanagari character recognition
-and has since supported a long line of architectural refinements.
-Within that line, MallaNet~\cite{malla2025} couples residual branch merging
-with homogeneous filter capsule (HFC) layers to reach 99.71\,\% at
-17.32\,M parameters, while Mishra et al.~\cite{mishra2021} independently
-report 99.72\,\% with a comparably large architecture; reported accuracies now
-sit within hundredths of a percent of one another.
-Recent gains across this literature are therefore measured in hundredths of a
-percent, yet model size remains large.
-A concurrent preprint reports 99.80\,\% on the 10-class Devanagari
-\emph{digit} subset~\cite{malla2025digit}; digit-only results are not
+The DHCD dataset~\cite{acharya2015dhcd} appeared in 2015 and quickly became
+the standard 46-class benchmark for handwritten Devanagari character
+recognition---a status it has held through more than a decade of architectural
+refinements.
+MallaNet~\cite{malla2025} is arguably the most compact entrant in that line,
+coupling residual branch merging with homogeneous filter capsule (HFC) layers
+to reach 99.71\,\% at 17.32\,M parameters.
+Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with a
+comparably large architecture.
+Those two numbers are, for practical purposes, indistinguishable.
+A concurrent preprint pushes to 99.80\,\% on the 10-class Devanagari
+\emph{digit} subset~\cite{malla2025digit}, though digit-only results are not
 comparable to the 46-class task addressed here.
-Together, these results motivate a careful test of whether reported
-improvements are statistically distinguishable from measurement noise.
+What the literature has not asked clearly enough is whether gains measured in
+hundredths of a percent are statistically distinguishable from measurement
+noise at all.
 
 \paragraph{Knowledge distillation and compact model design.}
-Hinton et al.~\cite{hinton2015distill} showed that a student network trained
-on soft probability outputs (``dark knowledge'') of a larger teacher can match
-or approach the teacher's accuracy at substantially lower capacity.
-Residual identity mappings~\cite{he2016identity} and
-squeeze-and-excitation channel re-weighting~\cite{hu2018senet} have since
-become common building blocks for compact architectures that must retain
-representational power while reducing parameter counts.
-Although these techniques are mature, to our knowledge, knowledge distillation
-has not previously been applied to the 46-class DHCD benchmark, and has rarely
-been evaluated on saturated benchmarks where the performance gap between large
-and small models is already within the noise of sampling variation.
-Whether distillation provides a statistically significant advantage over
-direct supervised training in this regime therefore remains open.
+Hinton et al.~\cite{hinton2015distill} showed that soft probability outputs---
+``dark knowledge''---from a large teacher can guide a smaller student to
+match or approach teacher accuracy at substantially lower capacity.
+Residual identity mappings~\cite{he2016identity} and squeeze-and-excitation
+channel re-weighting~\cite{hu2018senet} have since become standard
+building blocks for compact architectures that need to retain representational
+power while cutting parameter counts.
+These techniques are mature.
+Yet to our knowledge, knowledge distillation has not previously been applied
+to the 46-class DHCD benchmark, and it has rarely been stress-tested on
+saturated benchmarks---settings where the performance gap between large and
+small models is already buried inside sampling variation.
+It seems like a natural experiment to run; it also happens to be an unusually
+hard one to interpret without the right statistical tools.
+Whether distillation provides a statistically significant advantage over direct
+supervised training in this regime therefore remains open.
 
 \paragraph{Statistical significance and benchmark saturation.}
-On test sets where top models err on fewer than 0.3\,\% of examples, small
-sample counts can make raw accuracy rankings unstable.
-McNemar's test~\cite{mcnemar1947} provides the appropriate paired framework:
-by conditioning on the subset of examples where two models disagree, it remains
-sensitive to genuine error-pattern differences while being robust to the high
-base-rate correct predictions shared by both classifiers.
-Wilson score intervals~\cite{wilson1927} give calibrated single-model
-accuracy bounds, and calibration analysis~\cite{guo2017calibration}
-connects model confidence to empirical accuracy, a prerequisite for
-interpreting soft distillation targets.
-When applied systematically to a Devanagari recognition benchmark, this suite
-of tools exposes a methodological gap in prior work.
+Small sample counts matter more than they appear to when top models err on
+fewer than 0.3\,\% of examples---raw accuracy rankings can shift from run to
+run without any real difference in model quality.
+McNemar's test~\cite{mcnemar1947} is the appropriate paired framework here:
+by conditioning on the subset of examples where two models disagree, it stays
+sensitive to genuine error-pattern differences while remaining robust to the
+high base-rate of correct predictions that both classifiers share.
+Wilson score intervals~\cite{wilson1927} give calibrated single-model accuracy
+bounds; calibration analysis~\cite{guo2017calibration} connects model
+confidence to empirical accuracy, a prerequisite for interpreting soft
+distillation targets.
+
+Applied to the Devanagari benchmark, this suite of tools exposes a gap that
+is methodological, not architectural.
 MallaNet~\cite{malla2025} applies McNemar against four weaker baselines but
 does not test its nearest competitor (Mishra et al., 99.72\,\%), reports no
 exact $p$-values, and draws no inference about saturation; earlier work reports
 point estimates alone.
-Against that backdrop, \modelname{} closes this gap by reporting exact McNemar
-$p$-values and Wilson confidence intervals across every model
-comparison, including the nearest competitor, and showing that the
-benchmark is saturated and that statistical parity, rather than raw accuracy
-rank, is the appropriate evaluation criterion at this operating point.
+\modelname{} closes this gap by reporting exact McNemar $p$-values and Wilson
+confidence intervals across every model comparison, including the nearest
+competitor, and showing that the benchmark is saturated---that statistical
+parity, rather than raw accuracy rank, is the appropriate evaluation criterion
+at this operating point.

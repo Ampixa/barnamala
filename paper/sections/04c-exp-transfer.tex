@@ -1,54 +1,50 @@
 \subsection{DHCD to CMATERdb Digit Transfer}
 \label{sec:transfer}
 
-We test whether the DHCD-trained distilled student has learned digit
-structure or the visual habits of one collection pipeline by evaluating
-its representations on CMATERdb~3.2.1 \cite{das2012cmaterdb}, an
-independently collected dataset of handwritten Devanagari \emph{numerals}
-(digits 0--9; 10 classes).  CMATERdb changes the scanner workflow,
-writers, paper stocks, and binarisation pipeline, so the overlapping
-labels arrive from a visibly different source distribution.
+Does the distilled student learn digit structure, or just the visual habits of
+one collection pipeline?  We probe this by running its representations on
+CMATERdb~3.2.1 \cite{das2012cmaterdb}---an independently collected set of
+handwritten Devanagari \emph{numerals} (digits 0--9; 10 classes).  CMATERdb
+changes the scanner workflow, writers, paper stocks, and binarisation pipeline,
+so the overlapping labels arrive from a visibly different source distribution.
 
 \paragraph{Provenance guard.}
-We first rule out accidental overlap: before evaluation, we check that no
-CMATERdb image appears in the DHCD training split.  Perceptual hashes
-(pHash) are computed for all CMATERdb samples and compared with 20,000
-DHCD digit references using Hamming distance.  This yields
-\textbf{0 near-duplicate pairs at a threshold of $\leq$5\,bits}; the
-minimum observed Hamming distance is \textbf{6\,bits}.  With contamination ruled
-out, the transfer result reflects domain shift rather than memorisation.
+Before anything else, we check that no CMATERdb image appears in the DHCD
+training split---a mundane but necessary step.  Perceptual hashes (pHash) are
+computed for all CMATERdb samples and compared with 20,000 DHCD digit
+references using Hamming distance.  The result: \textbf{0 near-duplicate pairs
+at a threshold of $\leq$5\,bits}, with a minimum observed distance of
+\textbf{6\,bits}.  Contamination ruled out, the transfer numbers reflect domain
+shift rather than memorisation.
 
 \paragraph{Polarity alignment.}
-The remaining setup difference is photometric: CMATERdb stores black ink
-on a white background, the inverse of DHCD's white-on-black convention.
-An automatic polarity inversion is applied to all CMATERdb images before
-evaluation so foreground intensity matches training; the step is uniform
-across the dataset and is not dataset-specific tuning.
+CMATERdb stores black ink on a white background---the inverse of DHCD's
+white-on-black convention.  We apply a uniform polarity inversion to all
+CMATERdb images before evaluation so foreground intensity matches training.
+This is preprocessing, not tuning; every image gets the same treatment.
 
 \paragraph{Results.}
 Table~\ref{tab:transfer} (upper rows) summarises the transfer outcomes.
-The most stringent test is \emph{zero-shot}: the DHCD-trained distilled
-student is applied directly to CMATERdb, with no CMATERdb training images,
-and achieves \textbf{76.6$\pm$3.7\%} accuracy.  A supervised baseline
-trained on DHCD digit images \emph{only} with the same 10-class head
-reaches \textbf{62.7\%}.  The models are statistically tied on the
-in-distribution DHCD test set, but once the scanner, writers, paper, and
-binarisation change, knowledge distillation carries a
-\textbf{+14 percentage points} advantage into CMATERdb.
+The sharpest test is \emph{zero-shot}: the DHCD-trained distilled student
+applied directly to CMATERdb, no CMATERdb training images, achieves
+\textbf{76.6$\pm$3.7\%} accuracy.  A supervised baseline trained on DHCD
+digit images \emph{only} with the same 10-class head reaches \textbf{62.7\%}.
+On the in-distribution DHCD test set the two are statistically tied---but once
+the scanner, writers, paper, and binarisation change, knowledge distillation
+carries a \textbf{+14 percentage points} advantage into CMATERdb.
 
-A \emph{linear probe} localises that advantage.  With the distilled
-backbone frozen and only a fresh 10-class linear head trained on CMATERdb,
-accuracy improves to \textbf{85.4\%}, showing that the frozen features
-already support a small CMATERdb-specific head.  Light full
-\emph{fine-tuning} (30 epochs on CMATERdb with a low learning rate)
-reaches \textbf{97.8\%}, the upper end once the whole model can adapt.
+A \emph{linear probe} localises where that advantage sits.  Freezing the
+distilled backbone and training only a fresh 10-class linear head on CMATERdb
+raises accuracy to \textbf{85.4\%}; the frozen features apparently already
+support a small CMATERdb-specific head without any backbone adjustment.
+Light full \emph{fine-tuning} (30 epochs on CMATERdb with a low learning rate)
+reaches \textbf{97.8\%}, the natural ceiling once the whole model can adapt.
 
-The interpretation is deliberately narrow.  This experiment covers only
-the \textbf{digit subset} (10 of 46 DHCD classes); it does not evaluate
-transfer of the full Devanagari character inventory.  Within that scope,
-after contamination and polarity controls, the distilled student preserves
-substantially more useful digit structure under dataset shift than the
-supervised DHCD-only baseline.
+A scope note: this experiment covers only the \textbf{digit subset} (10 of
+46 DHCD classes) and says nothing about transfer of the full Devanagari
+character inventory.  Within that scope---after contamination and polarity
+controls---the distilled student preserves substantially more useful digit
+structure under dataset shift than the supervised DHCD-only baseline.
 
 \subsection{Corruption Robustness}
 \label{sec:robustness}
@@ -96,18 +92,16 @@ mCA overall & \textbf{75.7\%} & 38.7\% \\\bottomrule
 \end{figure}
 
 \modelname{} is approximately \textbf{2$\times$} more robust overall
-(mCA 75.7\% vs.\ 38.7\%) and leads by wide margins under \emph{blur}
-(97.0\% vs.\ 37.6\%) and \emph{contrast} reduction (75.5\% vs.\ 11.5\%).
-MallaNet's collapse under these corruptions likely reflects two factors:
-its high-frequency convolutional (HFC) design amplifies blur, and its
-fixed $(0.5, 0.5)$ normalisation is sensitive to global intensity shifts
-introduced by contrast corruption.
+(mCA 75.7\% vs.\ 38.7\%), and the blur and contrast gaps are striking:
+97.0\% vs.\ 37.6\% under \emph{blur}, 75.5\% vs.\ 11.5\% under
+\emph{contrast} reduction.  MallaNet's collapse here arguably reflects two
+compounding factors---its high-frequency convolutional (HFC) design amplifies
+blur, and the fixed $(0.5, 0.5)$ normalisation turns out to be sensitive to
+the global intensity shifts that contrast corruption introduces.
 
-\modelname{} is \textbf{not} uniformly superior.  Under \emph{additive
-noise}, MallaNet is more robust (mCA 66.9\% vs.\ 54.7\%), suggesting that
-MallaNet's larger capacity and fixed normalisation provide some advantage
-when the corruption is high-frequency rather than low-frequency.  We do
-not claim an across-the-board robustness win; the relative ordering is
-corruption-type-dependent and neither model is dominated in every respect.
-Overall mCA favours \modelname{} ($+37.0$ pts), but the noise result is a
-clear exception for noise-heavy deployment environments.
+One clear reversal: under \emph{additive noise}, MallaNet is the more robust
+model (mCA 66.9\% vs.\ 54.7\%).  It seems that MallaNet's larger capacity and
+fixed normalisation offer some advantage specifically when the corruption is
+high-frequency rather than low-frequency.  Overall mCA favours \modelname{}
+($+37.0$ pts), but practitioners targeting noise-heavy deployment environments
+should note that the noise ranking goes the other way.

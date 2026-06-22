@@ -1,67 +1,168 @@
-\documentclass[tikz,border=3pt]{standalone}
-\usetikzlibrary{arrows.meta,positioning}
+\documentclass[tikz,border=4pt]{standalone}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
 
-%% Architecture figure — horizontal pipeline.
-%% Each stage block explicitly shows the PreAct SE structure:
-%%   BN·ReLU·Conv 3×3 (×2), with SE after the second conv.
+%% Two-panel architecture figure for DevNet (PreAct SE-ResNet).
+%% Panel (a): high-level pipeline --- compact coloured boxes.
+%% Panel (b): unravelled PreAct SE-ResBlock with skip, SE sub-block, and WHY annotations.
 
 \begin{document}
 \begin{tikzpicture}[
   font=\scriptsize,
-  node distance=5mm,
-  arr/.style={-{Latex[length=1.8mm]},line width=0.45pt,rounded corners=2pt},
-  blk/.style={draw,rounded corners=2pt,minimum height=10mm,
-               align=center,inner sep=3pt,line width=0.44pt},
-  inp/.style={blk,fill=white,   minimum width=14mm},
-  stm/.style={blk,fill=gray!20, minimum width=17mm},
-  stg/.style={blk,fill=blue!14, minimum width=22mm},
-  hd/.style={blk,fill=teal!14,  minimum width=15mm},
-  fclyr/.style={blk,fill=orange!14,minimum width=15mm},
-  note/.style={draw,rounded corners=2pt,fill=white,align=center,
-               inner sep=3pt,font=\tiny,line width=0.4pt},
+  arr/.style={-{Latex[length=2mm,width=1.3mm]}, line width=0.5pt},
+  darr/.style={arr, dashed, color=gray},
+  %% Panel (a) block styles
+  pblk/.style={draw, rounded corners=3pt, align=center, inner sep=4pt,
+               minimum height=10mm, line width=0.5pt},
+  inp/.style ={pblk, fill=white,      minimum width=12mm},
+  stm/.style ={pblk, fill=gray!22,    minimum width=18mm},
+  stg/.style ={pblk, fill=blue!14,    minimum width=22mm},
+  hd/.style  ={pblk, fill=teal!18,    minimum width=15mm},
+  fc/.style  ={pblk, fill=orange!18,  minimum width=15mm},
+  %% Panel (b) node styles
+  op/.style={draw, rounded corners=2pt, align=center, inner sep=3pt,
+             minimum height=7mm, minimum width=13mm,
+             fill=blue!10, line width=0.5pt},
+  seop/.style={op, fill=violet!12},
+  circ/.style={draw, circle, inner sep=2pt, line width=0.5pt, fill=white, font=\small},
+  ann/.style={align=left, font=\tiny, text=gray},
 ]
 
-\node[inp] (in) {\textbf{Input}\\$1{\times}32{\times}32$};
+%% =========================================================================
+%%  PANEL (a) -- High-level pipeline
+%% =========================================================================
 
-\node[stm,right=of in] (stem) {%
-  \textbf{Stem}\\
-  Conv\,$3{\times}3$\\
-  BN\,$\cdot$\,ReLU\\
-  $40{\times}32^2$};
+\node[inp] (in)
+  {\textbf{Input}\\$1{\times}32{\times}32$};
 
-\node[stg,right=of stem] (s1) {%
-  \textbf{Stage\,1}\;(${\times}2$)\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
-  \textbf{39\,k}\quad$40{\times}32^2$};
+\node[stm, right=5mm of in] (stem)
+  {\textbf{Stem}\\Conv $3{\times}3$/1\\BN~ReLU\\$40{\times}32{\times}32$};
 
-\node[stg,right=of s1] (s2) {%
-  \textbf{Stage\,2}\;(${\times}2$, stride\,2)\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
-  \textbf{154\,k}\quad$80{\times}16^2$};
+\node[stg, right=5mm of stem] (s1)
+  {\textbf{Stage 1}\\$2\times$ PreAct SE\\no stride\\$40{\times}32{\times}32$\\{\tiny 39\,k params}};
 
-\node[stg,right=of s2] (s3) {%
-  \textbf{Stage\,3}\;(${\times}2$, stride\,2)\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
-  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
-  \textbf{616\,k}\quad$160{\times}8^2$};
+\node[stg, right=5mm of s1] (s2)
+  {\textbf{Stage 2}\\$2\times$ PreAct SE\\stride 2\\$80{\times}16{\times}16$\\{\tiny 154\,k params}};
 
-\node[hd,right=of s3] (gap) {%
-  BN\,$\cdot$\,ReLU\\
-  Global\\AvgPool\\$160$};
+\node[stg, right=5mm of s2] (s3)
+  {\textbf{Stage 3}\\$2\times$ PreAct SE\\stride 2\\$160{\times}8{\times}8$\\{\tiny 616\,k params}};
 
-\node[fclyr,right=of gap] (fc) {%
-  Dropout\\FC\,$160{\to}46$};
+\node[hd, right=5mm of s3] (gap)
+  {BN~ReLU\\Global\\AvgPool\\$160$-dim};
 
-\foreach \a/\b in {in/stem,stem/s1,s1/s2,s2/s3,s3/gap,gap/fc}
+\node[fc, right=5mm of gap] (clf)
+  {Dropout $p{=}0.1$\\FC $160{\to}46$};
+
+\foreach \a/\b in {in/stem, stem/s1, s1/s2, s2/s3, s3/gap, gap/clf}
   \draw[arr] (\a.east) -- (\b.west);
 
-%% SE module annotation (compact note below Stage 2)
-\node[note,below=7mm of s2] (legend) {%
-  SE\,module:\;GAP $\to$ FC\,$\cdot$\,ReLU $\to$ FC\,$\cdot$\,Sigmoid $\to$ channel\,scale\;($r{=}8$)};
-\draw[arr,dashed,color=gray!55,line width=0.38pt]
-  (legend.north) -- ++(0,2mm) -| (s2.south);
+\node[font=\footnotesize\bfseries, below=3mm of s2] (labA)
+  {(a)~Full pipeline};
+
+%% =========================================================================
+%%  PANEL (b) -- Unravelled PreAct SE-ResBlock
+%% =========================================================================
+
+%% Main-path operation nodes
+\node[op, below=26mm of in.south west, anchor=north west, xshift=2mm] (bn1)
+  {BN};
+\node[op, right=5mm of bn1]   (relu1) {ReLU};
+\node[op, right=5mm of relu1] (cv1)   {Conv\\$3{\times}3$};
+\node[op, right=5mm of cv1]   (bn2)   {BN};
+\node[op, right=5mm of bn2]   (relu2) {ReLU};
+\node[op, right=5mm of relu2] (cv2)   {Conv\\$3{\times}3$};
+
+%% SE sub-block
+\node[seop, right=8mm of cv2]    (se_gap) {GAP};
+\node[seop, right=4mm of se_gap] (se_fc1) {FC\\$C/8$};
+\node[seop, right=4mm of se_fc1] (se_r)   {ReLU};
+\node[seop, right=4mm of se_r]   (se_fc2) {FC\\$C$};
+\node[seop, right=4mm of se_fc2] (se_sig) {$\sigma$};
+
+%% Channel-wise multiply node
+\node[circ, right=5mm of se_sig] (mul) {$\otimes$};
+
+%% Addition node
+\node[circ, right=24mm of mul] (add) {$\oplus$};
+
+%% Block input / output labels
+\node[op, left=8mm of bn1] (blkin)
+  {\textbf{in}\\$C{\times}H{\times}W$};
+\node[op, right=6mm of add] (blkout)
+  {\textbf{out}\\$C{\times}H{\times}W$};
+
+%% Skip path coordinates (runs below main path)
+\coordinate (skip_start) at ([yshift=-12mm]blkin.south);
+\coordinate (skip_end)   at ([yshift=-12mm]add.south);
+
+%% -------------------------------------------------------------------------
+%%  Arrows -- main path
+%% -------------------------------------------------------------------------
+\draw[arr] (blkin.east) -- (bn1.west);
+\draw[arr] (bn1.east) -- (relu1.west);
+\draw[arr] (relu1.east) -- (cv1.west);
+\draw[arr] (cv1.east) -- (bn2.west);
+\draw[arr] (bn2.east) -- (relu2.west);
+\draw[arr] (relu2.east) -- (cv2.west);
+\draw[arr] (cv2.east) -- (se_gap.west);
+\draw[arr] (se_gap.east) -- (se_fc1.west);
+\draw[arr] (se_fc1.east) -- (se_r.west);
+\draw[arr] (se_r.east) -- (se_fc2.west);
+\draw[arr] (se_fc2.east) -- (se_sig.west);
+\draw[arr] (se_sig.east) -- (mul.west);
+
+%% SE also scales the conv output: tap from cv2 east, go down into mul south
+\draw[arr] ([xshift=3mm]cv2.east) -- ++(0,-6mm) -| (mul.south);
+
+%% mul to add, add to output
+\draw[arr] (mul.east) -- (add.west);
+\draw[arr] (add.east) -- (blkout.west);
+
+%% -------------------------------------------------------------------------
+%%  Skip path
+%% -------------------------------------------------------------------------
+\draw[arr]
+  (blkin.south) -- (skip_start)
+  -- node[midway, below, font=\tiny, text=gray]
+       {identity (or $1{\times}1$ Conv s2 if downsampling)}
+  (skip_end)
+  -- (add.south);
+
+%% -------------------------------------------------------------------------
+%%  WHY annotations
+%% -------------------------------------------------------------------------
+\node[ann, above=3mm of bn1] (wbn)
+  {Pre-activation:\\BN before Conv\\(better grad flow)};
+\draw[darr] (wbn.south) -- (bn1.north);
+
+\node[ann, above=3mm of cv1] (wcv)
+  {$3{\times}3$ kernel:\\local stroke\\patterns};
+\draw[darr] (wcv.south) -- (cv1.north);
+
+\node[ann, above=3mm of se_fc1] (wse)
+  {SE: recalibrate\\channel weights\\($r\!=\!8$)};
+\draw[darr] (wse.south) -- (se_fc1.north);
+
+\node[ann, above=3mm of mul] (wmul)
+  {$\otimes$: channel-wise\\scale};
+\draw[darr] (wmul.south) -- (mul.north);
+
+%% -------------------------------------------------------------------------
+%%  Background box for panel (b)
+%% -------------------------------------------------------------------------
+\begin{scope}[on background layer]
+  \node[draw=gray!40, rounded corners=4pt, fill=gray!5, line width=0.5pt,
+        fit=(blkin)(blkout)(skip_start)(skip_end)(wbn)(wse)(wmul)(wcv),
+        inner sep=6pt] (panelB) {};
+\end{scope}
+
+\node[font=\footnotesize\bfseries, below=2mm of panelB.south]
+  {(b)~PreAct SE-ResBlock (unravelled)};
+
+%% =========================================================================
+%%  Horizontal rule separating panels
+%% =========================================================================
+\draw[gray!40, line width=0.4pt]
+  ([yshift=-5mm]in.south west) -- ([yshift=-5mm]clf.south east);
 
 \end{tikzpicture}
 \end{document}

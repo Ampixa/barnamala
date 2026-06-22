@@ -1,21 +1,19 @@
 \begin{abstract}
-We present \modelname{}, a compact convolutional network with \textbf{1.11\,M}
-parameters, and show that it reaches \textbf{99.73\,\%} top-1 accuracy on the 46-class
-DHCD Devanagari handwriting benchmark~\cite{acharya2015dhcd}, the highest
-reported result on the standard split, with a \textbf{15.6\(\times\)} smaller
-footprint than prior state-of-the-art models.
-We apply a rigorous paired evaluation protocol (exact McNemar tests with Wilson
-confidence intervals) systematically across all student--teacher
-configurations and find that \emph{no} configuration achieves a statistically
-significant win over any other: every tested model, including large teacher
-ensembles, converges to the same \textbf{11-error intrinsic floor},
-which indicates that DHCD is \textbf{saturated} at current resolution.
-The nearest large-model baseline (17.32\,M parameters) is statistically
-indistinguishable from \modelname{} (McNemar \(p=0.345\)), and parity holds
-\emph{even without knowledge distillation}.
-Beyond DHCD, \modelname{} transfers to CMATERdb digit recognition (zero-shot
-\textbf{76.6\,\%}; fine-tuned \textbf{97.8\,\%}) and shows substantially greater
-robustness to common image corruptions than large baselines (mean corruption
-accuracy \textbf{75.7\,\%} vs.\ \textbf{38.7\,\%}).
-We release all code, model weights, and experimental artifacts at~\repourl.
+\modelname{} is a compact convolutional network (\textbf{1.11\,M} parameters)
+reaching \textbf{99.73\,\%} top-1 accuracy on the 46-class DHCD Devanagari
+benchmark~\cite{acharya2015dhcd}---the highest reported result, at a
+\textbf{15.6\(\times\)} smaller footprint than prior state-of-the-art.
+Exact McNemar tests with Wilson confidence intervals, applied across every
+student--teacher pairing, found that \emph{no} configuration achieves a
+statistically significant win: every model tested---large teacher ensembles
+included---converges to the same \textbf{11-error intrinsic floor}, indicating
+DHCD is \textbf{saturated} at current resolution.
+Somewhat surprisingly, parity with the nearest large-model baseline
+(17.32\,M parameters; McNemar \(p=0.345\)) holds \emph{even without
+knowledge distillation}.
+Outside DHCD, \modelname{} transfers to CMATERdb digit recognition
+(zero-shot \textbf{76.6\,\%}; fine-tuned \textbf{97.8\,\%}) and is
+substantially more robust to common image corruptions than large baselines
+(mean corruption accuracy \textbf{75.7\,\%} vs.\ \textbf{38.7\,\%}).
+All code, weights, and artifacts are at~\repourl.
 \end{abstract}

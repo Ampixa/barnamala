@@ -1,33 +1,33 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-DHCD has reached the point where a larger recognizer no longer buys a
-better recognizer.  At current resolution, the benchmark is saturated:
-the remaining mistakes are governed more by label noise and handwriting
-ambiguity than by model capacity.  In that setting, compactness is not a
-compromise.  It is the right operating point.
+The saturation conclusion is uncomfortable but hard to avoid.  At current
+resolution, DHCD's remaining mistakes are governed more by label noise and
+handwriting ambiguity than by model capacity---which means throwing a larger
+recognizer at the problem no longer buys a better one.  Compactness stops
+being a compromise at that point.  It becomes the right operating point.
 
-\modelname{} (C1) makes the case concretely: \textbf{1.11\,M} parameters,
-\textbf{99.73\,\%} accuracy, and statistical parity with the leading
-large-model baseline (McNemar $p = 0.345$), even without knowledge
-distillation.
-Rigorous paired evaluation (C2) then exposes why no model can pull ahead:
-the same 11-image intrinsic floor defeats every configuration tested,
-large teacher ensembles included.
-Ablations (C3) close the obvious escape routes: distillation target
-cleanliness, ensemble size, and test-time augmentation produce no
-statistically significant gain once sampling noise is controlled.
-Efficiency profiling (C4) gives the practical upshot: a 15.6$\times$
-reduction in parameters and memory and a 9.5$\times$ CPU-latency
-reduction at no accuracy cost, with fully reproducible artifacts
-released (C5).
+That reframing has practical weight.  \modelname{} reaches \textbf{99.73\,\%}
+accuracy with just \textbf{1.11\,M} parameters, achieving statistical parity
+with the leading large-model baseline (McNemar $p = 0.345$), even before
+knowledge distillation enters the picture.  Efficiency profiling puts the
+upshot in concrete terms: a 15.6$\times$ reduction in parameters and memory
+and a 9.5$\times$ CPU-latency reduction at no accuracy cost, with fully
+reproducible artifacts released.
 
-The lesson for Devanagari recognition is therefore not to keep polishing
+Why can't anything pull ahead?  Paired evaluation exposes the answer.
+The same 11-image intrinsic floor defeats every configuration tested---large
+teacher ensembles included---and the ablations close the obvious escape
+routes.  Distillation target cleanliness, ensemble size, and test-time
+augmentation produce no statistically significant gain once sampling noise
+is controlled.  Scaling the teacher pool from 9 to 15 changes nothing
+outside the significance frontier.  The floor is the ceiling.
+
+For Devanagari recognition, the implication is not to keep polishing
 architectures against DHCD, but to measure more honestly and move to
-harder evidence.  For that reason, \emph{paired evaluation protocols}
-(McNemar or similar) should be standard before gains of a few hundredths
-of a percent are treated as progress.  The field also needs
-\emph{fresh, harder benchmarks}: higher-resolution scans, genuinely
-independent writer pools, or multi-script character inventories that do
-not share DHCD's provenance and can separate models that DHCD can no
-longer separate.
+harder evidence.  \emph{Paired evaluation protocols} (McNemar or similar)
+should be standard before gains of a few hundredths of a percent are
+treated as progress.  The field also needs \emph{fresh, harder benchmarks}:
+higher-resolution scans, genuinely independent writer pools, or multi-script
+character inventories that do not share DHCD's provenance and can separate
+models that DHCD can no longer separate.

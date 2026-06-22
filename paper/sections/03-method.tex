@@ -2,51 +2,49 @@
 
 \subsection{Compact Student Architecture}
 
-Our student network, \modelname{}, is a pre-activation squeeze-and-excitation
-residual network~\cite{he2016identity,hu2018senet} for single-channel
-$32{\times}32$ images.  A $3{\times}3$ stem convolution feeds three stages of
-PreAct SE blocks with channel widths $(40, 80, 160)$ and depths $(2, 2, 2)$.
-Each stage except the first downsamples spatially by a factor of two using a
-strided convolution in the first block.  A standard squeeze-and-excitation module
-(reduction ratio 8) recalibrates channel responses after the second convolution
-in each block.  Global average pooling (GAP) collapses the spatial dimensions;
-a single dropout layer ($p = 0.1$) then precedes the linear classifier, which
-maps to 46 classes (the DHCD character inventory).
-The total trainable parameter count is \textbf{1,109,116}.
+\modelname{} is a pre-activation squeeze-and-excitation residual
+network~\cite{he2016identity,hu2018senet} designed for single-channel
+$32{\times}32$ images.  Channel widths run $(40, 80, 160)$ across three stages
+of depth $(2, 2, 2)$; Stages~2 and~3 downsample by stride~2
+(Figure~\ref{fig:arch}).  The total trainable parameter count is
+\textbf{1,109,116}.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/architecture.pdf}
   \caption{%
     \modelname{} architecture.
-    Each stage applies two PreAct SE-ResBlocks with the structure shown inside:
-    BN$\cdot$ReLU$\cdot$Conv\,$3{\times}3$ (twice), with an SE module after the second
-    convolution.  Stages~2 and~3 use stride~2 on the first block.
-    Inset note: SE\,=\,squeeze (GAP)
-    $\to$ excite (two FC layers with ReLU/$\sigma$)
-    $\to$ channel-wise scale.
+    \textbf{(a)}~Full pipeline: a stem convolution feeds three stages of
+    PreAct SE-ResBlocks with channel widths $(40, 80, 160)$; a BN--ReLU--GAP
+    head produces a 160-dim descriptor before the linear classifier.
+    \textbf{(b)}~Unravelled PreAct SE-ResBlock: the input splits into a main
+    path (BN$\to$ReLU$\to$Conv\,$3{\times}3\to$BN$\to$ReLU$\to$Conv\,$3{\times}3$)
+    and an identity skip (or $1{\times}1$ Conv with stride~2 when downsampling).
+    After the second convolution an SE module (GAP$\to$FC/$C\!8\to$ReLU$\to$FC/$C\to\sigma$)
+    re-weights channels; the scaled features and the skip are summed at~$\oplus$.
   }
   \label{fig:arch}
 \end{figure}
 
 \subsection{Teacher Ensemble}
 
-We train an ensemble of 15 teachers from three architecture configurations and
-five independent random seeds (seeds 0--4).  Two
-configurations share widths $(96, 192, 384)$ with depths $(3, 3, 3)$ but use
-different data-augmentation intensities (medium vs.\ heavy tier; see
+The ensemble comprises 15 teachers drawn from three architecture configurations
+crossed with five independent random seeds (seeds 0--4).  Two of those
+configurations share widths $(96, 192, 384)$ and depths $(3, 3, 3)$ but differ
+in augmentation intensity (medium vs.\ heavy tier; see
 Section~\ref{sec:training}); the third uses widths $(64, 128, 256)$ with depths
-$(4, 4, 4)$ and medium augmentation.  These choices yield parameter counts of
-5.97\,M and 9.89\,M per teacher respectively, spanning a 5.97--9.89\,M range
-across the ensemble.  All teachers use the same \modelname{} codebase (the
+$(4, 4, 4)$ under medium augmentation.  The resulting parameter counts are
+5.97\,M and 9.89\,M per teacher, spanning a 5.97--9.89\,M range across the
+ensemble---a deliberate spread intended to discourage mode collapse in the soft
+targets.  All teachers share the same \modelname{} codebase (the
 \texttt{DevNet} class) and are trained without distillation.  Their logits are
-dumped once and stored in a single NumPy archive reused across student runs.
+dumped once and stored in a single NumPy archive reused across all student runs.
 
 \subsection{Ensemble Knowledge Distillation}
 \label{sec:kd}
 
 We follow the knowledge distillation framework of Hinton et al.\
-\cite{hinton2015distill}.  For each training image, the ensemble target is the
+\cite{hinton2015distill}.  The ensemble target for each training image is the
 mean softmax of 9 teacher checkpoints (configs A, B, C $\times$ seeds 0--2),
 where each teacher's softmax is computed with horizontal-flip test-time
 averaging over the training image.  The distillation objective combines a
@@ -73,20 +71,20 @@ and ensemble size (9 vs.\ 15 teachers) are examined in our ablations.
 \label{sec:training}
 
 Devanagari script is not horizontally symmetric: reflecting a glyph produces an
-invalid character.  For this reason, we \emph{exclude} horizontal flips entirely
-from the augmentation pipeline.  The training transform applies affine perturbations
-(rotation, translation, scale, shear) followed by elastic deformation; an
-augmentation tier (\texttt{light}/\texttt{medium}/\texttt{heavy}) selected per
-configuration controls the intensity.
-Random erasing ($p = 0.25$, area 2--10\%) provides additional regularisation.
+invalid character.  Horizontal flips are excluded entirely.  The training
+transform instead applies affine perturbations (rotation, translation, scale,
+shear) followed by elastic deformation; an augmentation tier
+(\texttt{light}/\texttt{medium}/\texttt{heavy}) selected per configuration
+controls the intensity.  Random erasing ($p = 0.25$, area 2--10\%) rounds out
+the per-image regularisation.
 
-At the batch level, mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
-CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$) are selected with equal
+Mixing augmentations---mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
+CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$)---are selected with equal
 probability, each activated with overall probability 0.5 per batch.  We disable
-mixing during distillation runs because per-image teacher logits cannot be
-linearly combined without introducing bias in the soft-target distribution; the
-KD loss (Equation~\ref{eq:kdloss}) uses clean, unaugmented teacher predictions
-for every training sample.
+both during distillation runs.  The reason is straightforward: per-image teacher
+logits cannot be linearly combined without introducing bias in the soft-target
+distribution, so the KD loss (Equation~\ref{eq:kdloss}) always sees clean,
+unaugmented teacher predictions.
 
 Optimisation uses AdamW with a cosine learning-rate schedule preceded by a
 5-epoch linear warm-up.  A weight exponential moving average (EMA, decay 0.999)
@@ -95,11 +93,10 @@ EMA weights.
 
 \subsection{Evaluation Protocol}
 
-All reported accuracies come from a single forward pass over the DHCD held-out
-test split; no test-time augmentation is used.  For model selection during
-training, we use a 10\% stratified-held-out validation set carved from the
-official training split before any augmentation, preserving class balance
-throughout.
+Reported accuracies come from a single forward pass over the DHCD held-out test
+split; no test-time augmentation is applied.  Model selection during training
+relies on a 10\% stratified-held-out validation set carved from the official
+training split before any augmentation, preserving class balance throughout.
 
 Statistical comparisons between \modelname{} and the MallaNet
 baseline~\cite{malla2025} use the exact two-sided McNemar
