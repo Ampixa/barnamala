@@ -4,44 +4,43 @@
 Does the distilled student learn digit structure, or just the visual habits of
 one collection pipeline?  We probe this by running its representations on
 CMATERdb~3.2.1 \cite{das2012cmaterdb}---an independently collected set of
-handwritten Devanagari \emph{numerals} (digits 0--9; 10 classes).  CMATERdb
-changes the scanner workflow, writers, paper stocks, and binarisation pipeline,
-so the overlapping labels arrive from a visibly different source distribution.
+handwritten Devanagari \emph{numerals} (digits 0--9; 10 classes).  The two
+datasets differ in scanner hardware, writer population, paper stock, and
+binarisation pipeline, so overlapping labels arrive from a visibly different
+source distribution.
 
-We verified zero near-duplicate pairs between CMATERdb and DHCD at Hamming
-distance $\leq$5\,bits (minimum observed: 6\,bits), ruling out contamination.
-CMATERdb images are polarity-inverted before evaluation to match DHCD's
-white-on-black convention.
+Zero near-duplicate pairs were found at Hamming distance $\leq$5\,bits
+(minimum observed: 6\,bits), ruling out contamination.  Before evaluation,
+images from CMATERdb are polarity-inverted to match DHCD's white-on-black
+convention.
 
 \paragraph{Results.}
 Table~\ref{tab:transfer} (upper rows) summarises the transfer outcomes.
 \emph{Zero-shot}---the DHCD-trained distilled student applied directly to
 CMATERdb with no CMATERdb training images---achieves \textbf{76.6$\pm$3.7\%},
 versus \textbf{62.7\%} for a supervised baseline trained on DHCD digit images
-only with the same 10-class head; on in-distribution DHCD the two are
+only with the same 10-class head.  On in-distribution DHCD the two are
 statistically tied, but knowledge distillation carries a
 \textbf{+14 percentage points} advantage under domain shift.
-A \emph{linear probe} (frozen backbone, fresh 10-class head trained on
-CMATERdb) raises accuracy to \textbf{85.4\%}, and light full
-\emph{fine-tuning} (30 epochs, low learning rate) reaches \textbf{97.8\%}.
+Freezing the backbone and training a fresh 10-class head on CMATERdb
+(\emph{linear probe}) raises accuracy to \textbf{85.4\%}; 30 epochs of
+light full \emph{fine-tuning} at a low learning rate reaches \textbf{97.8\%}.
 
-A scope note: this experiment covers only the \textbf{digit subset} (10 of
-46 DHCD classes) and says nothing about transfer of the full Devanagari
-character inventory.  Within that scope---after contamination and polarity
-controls---the distilled student preserves substantially more useful digit
-structure under dataset shift than the supervised DHCD-only baseline.
+One caveat: this experiment covers only the \textbf{digit subset} (10 of
+46 DHCD classes).  It says nothing about transfer of the full Devanagari
+character inventory.  Within that narrower scope---after contamination and
+polarity controls---the distilled student preserves more digit structure under
+dataset shift than the supervised DHCD-only baseline does.
 
 \subsection{Corruption Robustness}
 \label{sec:robustness}
 
-Out-of-distribution robustness is measured with additive Gaussian
-\emph{noise}, Gaussian \emph{blur}, and \emph{contrast} reduction.  Each
-is applied at five severity levels (following the ImageNet-C protocol
-adapted to $32{\times}32$ greyscale images).  We report mean accuracy
-across severities 1--5 (mCA) for each corruption family and overall.
-Each model uses its \emph{own} training-time normalisation on the same
-corrupted $[0,1]$ input images, keeping the comparison focused on robustness
-rather than an asymmetric preprocessing advantage.
+Three corruption families are evaluated: additive Gaussian \emph{noise},
+Gaussian \emph{blur}, and \emph{contrast} reduction.  Five severity levels
+follow the ImageNet-C protocol adapted to $32{\times}32$ greyscale images;
+we report mean accuracy across severities 1--5 (mCA) per family and overall.
+To keep preprocessing symmetric, every model applies its \emph{own}
+training-time normalisation to the same corrupted $[0,1]$ input images.
 
 \begin{table}[t]\centering\caption{Transfer and corruption robustness. mCA = mean accuracy over severities 1--5.}\label{tab:transfer}
 \begin{tabular}{lcc}\toprule

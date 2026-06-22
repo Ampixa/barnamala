@@ -18,8 +18,7 @@ the class-index permutation implied by their data loader.  Seed~0 yields
 \subsection{Main Parity Result}
 \label{sec:parity}
 
-Table~\ref{tab:main} compares each \modelname{} configuration across
-five independent seeds with the reproduced baseline~\cite{malla2025}.
+Five seeds per configuration; Table~\ref{tab:main}.
 
 \begin{table}[t]\centering
 \caption{Main result on DHCD test ($n{=}13{,}800$). Errors over 5
@@ -34,16 +33,15 @@ MallaNet \cite{malla2025} (repro) & 17.32M & 40 & n/a & 99.710 & n/a \\\bottomru
 \end{tabular}\end{table}
 
 A 1.11\,M-parameter student sits inside the noise floor of a 17.32\,M-parameter
-baseline.  In the \textbf{distilled, TTA-targets} configuration (9 teacher
-checkpoints, flip-averaged soft labels; see~\S\ref{sec:kd}), the result is
-\textbf{36.6$\pm$2.1} errors (99.735\%); McNemar $p = 0.345$ confirms
-statistical indistinguishability at $\alpha = 0.05$.  The best single seed
-reaches \textbf{34 errors} (99.754\%), Wilson 95\% CI
-\textbf{[99.656\%, 99.824\%]}, at \textbf{15.6$\times$} fewer parameters.
+baseline.  The \textbf{distilled, TTA-targets} variant (9 teacher checkpoints,
+flip-averaged soft labels; see~\S\ref{sec:kd}) reaches
+\textbf{36.6$\pm$2.1} errors (99.735\%), with McNemar $p = 0.345$---no
+detectable gap at $\alpha = 0.05$.  Best seed: \textbf{34 errors} (99.754\%),
+Wilson 95\% CI \textbf{[99.656\%, 99.824\%]}, at \textbf{15.6$\times$} fewer
+parameters.
 
-Clean single-pass logits from a 15-teacher pool give $p = 1.000$; the
-supervised control (no teacher at all) gives $p = 0.701$.  Parity is not
-carried by distillation---the architecture alone is sufficient.
+$p = 1.000$ for clean single-pass logits (15-teacher pool); $p = 0.701$ for the
+supervised control with no teacher.  Distillation is not the source of parity.
 
 \subsection{Comparison with Prior Work}
 \label{sec:sota}
@@ -64,10 +62,10 @@ Yadav et al.~\cite{yadav2024mlcnn}& 2024 & ${\approx}0.4$\,M& 99.21\,\%  & Modif
 Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & CNN baseline \\\bottomrule
 \end{tabular}\end{table}
 
-The top four models are separated by only 0.07\,\%---well within sampling noise.
-\modelname{} is the only entry with a verified parameter budget under 2\,M
-\emph{and} accuracy above 99.5\,\%; the next lightest above that threshold
-is~\cite{malla2025} at 17.32\,M---a \textbf{15.6$\times$} gap.
+0.07\,\% separates the top four---one or two test images.  No other entry
+simultaneously clears 99.5\,\% accuracy and stays under 2\,M parameters;
+\cite{malla2025} is the next-lightest model above that threshold at 17.32\,M,
+a \textbf{15.6$\times$} difference in parameter count.
 
 \subsection{Efficiency}
 \label{sec:efficiency}

@@ -32,22 +32,19 @@ crossed with five independent random seeds (seeds 0--4).  Two of those
 configurations share widths $(96, 192, 384)$ and depths $(3, 3, 3)$ but differ
 in augmentation intensity (medium vs.\ heavy tier; see
 Section~\ref{sec:training}); the third uses widths $(64, 128, 256)$ with depths
-$(4, 4, 4)$ under medium augmentation.  The resulting parameter counts are
-5.97\,M and 9.89\,M per teacher, spanning a 5.97--9.89\,M range across the
-ensemble---a deliberate spread intended to discourage mode collapse in the soft
-targets.  All teachers share the same \modelname{} codebase (the
+$(4, 4, 4)$ under medium augmentation.  Parameter counts land at 5.97\,M and
+9.89\,M---the spread across configs is intentional, to reduce mode collapse in
+the soft targets.  All teachers share the same \modelname{} codebase (the
 \texttt{DevNet} class) and are trained without distillation.  Their logits are
-dumped once and stored in a single NumPy archive reused across all student runs.
+dumped once into a single NumPy archive reused across all student runs.
 
 \subsection{Ensemble Knowledge Distillation}
 \label{sec:kd}
 
-We follow the knowledge distillation framework of Hinton et al.\
-\cite{hinton2015distill}.  The ensemble target for each training image is the
-mean softmax of 9 teacher checkpoints (configs A, B, C $\times$ seeds 0--2),
-where each teacher's softmax is computed with horizontal-flip test-time
-averaging over the training image.  The distillation objective combines a
-temperature-softened KL divergence and a hard cross-entropy term:
+Following Hinton et al.~\cite{hinton2015distill}, the ensemble target for each
+training image is the mean softmax of 9 teacher checkpoints (configs A, B,
+C $\times$ seeds 0--2), where each teacher's softmax incorporates
+horizontal-flip test-time averaging.  The objective is:
 \begin{equation}
   \mathcal{L} = \alpha \cdot T^{2}\,
     \mathrm{KL}\!\left(
@@ -58,13 +55,11 @@ temperature-softened KL divergence and a hard cross-entropy term:
   \label{eq:kdloss}
 \end{equation}
 where $z_{s}$ and $z_{t}$ are student and (mean) teacher logits, $\sigma$
-denotes the softmax, $T = 4.0$ is the temperature, and $\alpha = 0.7$ weights
-the soft target relative to the hard label.  We apply the label-smoothing
-coefficient ($\varepsilon = 0.1$) to the hard cross-entropy term.
-The KL is computed in the teacher-to-student direction (teacher as reference
-distribution), consistent with standard KD practice~\cite{hinton2015distill}.
-The choice of target-generation scheme (clean no-TTA vs.\ flip-averaged targets)
-and ensemble size (9 vs.\ 15 teachers) are examined in our ablations.
+denotes the softmax, $T = 4.0$, and $\alpha = 0.7$.  Label smoothing
+($\varepsilon = 0.1$) applies to the hard cross-entropy term.  The KL
+is teacher-to-student (teacher as reference distribution).  Target-generation
+scheme (clean no-TTA vs.\ flip-averaged) and ensemble size (9 vs.\ 15 teachers)
+are ablated in Section~\ref{sec:ablations}.
 
 \subsection{Script-Aware Training}
 \label{sec:training}
@@ -79,28 +74,23 @@ the per-image regularisation.
 
 Mixing augmentations---mixup~\cite{zhang2018mixup} ($\alpha = 0.2$) and
 CutMix~\cite{yun2019cutmix} ($\alpha = 1.0$)---are selected with equal
-probability, each activated with overall probability 0.5 per batch.  We disable
-both during distillation runs.  The reason is straightforward: per-image teacher
-logits cannot be linearly combined without introducing bias in the soft-target
-distribution, so the KD loss (Equation~\ref{eq:kdloss}) always sees clean,
-unaugmented teacher predictions.
+probability, each activated with overall probability 0.5 per batch.  Both are
+off during distillation runs: per-image teacher logits cannot be linearly
+combined without corrupting the soft-target distribution, so the KD loss
+(Equation~\ref{eq:kdloss}) always sees clean, unaugmented teacher predictions.
 
-Optimisation uses AdamW with a cosine learning-rate schedule preceded by a
-5-epoch linear warm-up.  A weight exponential moving average (EMA, decay 0.999)
-tracks a shadow copy of the model; validation and the final checkpoint use the
-EMA weights.
+Optimisation uses AdamW. The learning-rate schedule is cosine with a 5-epoch
+linear warm-up.  A weight exponential moving average (EMA, decay 0.999) tracks
+a shadow copy; the EMA weights are used for validation and the final checkpoint.
 
 \subsection{Evaluation Protocol}
 
 Reported accuracies come from a single forward pass over the DHCD held-out test
-split; no test-time augmentation is applied.  Model selection during training
-relies on a 10\% stratified-held-out validation set carved from the official
-training split before any augmentation, preserving class balance throughout.
+split; no test-time augmentation is applied.  Model selection relies on a 10\%
+stratified validation set carved from the training split before any augmentation.
 
 Statistical comparisons between \modelname{} and the baseline~\cite{malla2025}
-use the exact two-sided McNemar
-test~\cite{mcnemar1947} on per-sample binary correctness indicators from the
-same test set.  Confidence intervals for accuracy and error rate are Wilson
-score intervals at 95\%~\cite{wilson1927}.  We measure calibration quality with
-Expected Calibration Error (ECE)~\cite{guo2017calibration}, computed with 15
-equal-width bins on the held-out test set.
+use the exact two-sided McNemar test~\cite{mcnemar1947} on per-sample binary
+correctness indicators.  Confidence intervals for accuracy and error rate are
+Wilson score intervals at 95\%~\cite{wilson1927}.  ECE~\cite{guo2017calibration}
+is computed with 15 equal-width bins on the held-out test set.

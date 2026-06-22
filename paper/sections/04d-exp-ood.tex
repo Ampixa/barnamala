@@ -1,7 +1,7 @@
 \subsection{Cross-Dataset Generalisation}
 \label{sec:ood}
 
-Both models are evaluated zero-shot on two independently collected Devanagari datasets---different writers, scanner workflows, and collection years---with no fine-tuning applied.
+Both models are evaluated zero-shot on two independently collected Devanagari datasets---separate writers and scanner workflows, each from a different collection year---with no fine-tuning applied.
 
 \paragraph{NHCD (Pant 2012).}
 The Nepali Handwritten Character Dataset~\cite{pant2012nhcd} covers the same 46-class inventory in $28{\times}28$ JPEG images; we polarity-invert and bilinearly resize to $32{\times}32$ before evaluation.
@@ -12,20 +12,17 @@ The baseline~\cite{malla2025} collapses to \textbf{23.99\%}
 identical in-distribution performance on DHCD, with the +62\,pp consonant
 disparity being the most striking number.
 
-One systematic error cluster is linguistically informative.
-For both models, the four dental/retroflex consonant pairs
-(ta/\d{t}a, tha/\d{t}ha, da/\d{d}a, dha/\d{d}ha) produce
-near-zero accuracy with systematic cross-class confusion.
-These pairs are visually distinguished by a single diacritic stroke
-whose rendering conventions differ between Indian and Nepali handwriting
-traditions---a script-level domain gap that neither model resolves,
-though \modelname{} handles the remaining classes substantially better.
+The dental/retroflex pairs are the clearest failure mode. Each of the four pairs
+(ta/\d{t}a, tha/\d{t}ha, da/\d{d}a, dha/\d{d}ha) collapses to near-zero accuracy,
+driven by cross-class confusion between strokes whose rendering conventions differ
+between Indian and Nepali handwriting traditions---a script-level domain gap neither
+model resolves. Outside this cluster, \modelname{} and the baseline diverge sharply.
 
 \paragraph{Prashanth et al.\ 2021.}
 After $32{\times}32$ resize, \modelname{} achieves \textbf{79.31\%} zero-shot on
 this 22{,}500-image digit dataset~\cite{prashanth2021}; the baseline achieves \textbf{72.60\%}.
-Both results are consistent with the NHCD digit outcome and the CMATERdb result from Section~\ref{sec:transfer}.
-Devanagari digit~5 confuses with digit~7 at high rates for both models, reflecting a genuine visual similarity in the script.
+These numbers track the NHCD digit outcome and the CMATERdb result from Section~\ref{sec:transfer}.
+Digit~5 confusing with digit~7 at high rates is a genuine visual similarity in the Devanagari script, not a training artifact.
 
 \begin{table}[t]\centering
 \caption{Zero-shot cross-dataset accuracy. Both models trained on DHCD
@@ -44,5 +41,7 @@ MallaNet~\cite{malla2025} & 23.99\%         & 10.38\%          & 58.85\%        
 Gap                       & $+$54.9\,pp     & $+$61.9\,pp      & $+$36.9\,pp      & $+$6.7\,pp       \\\bottomrule
 \end{tabular}\end{table}
 
-Matched in-distribution accuracy conceals a substantial generalisation gap.
-Both out-of-distribution evaluations consistently favour \modelname{}---as does the corruption-robustness result from Section~\ref{sec:robustness}---suggesting that knowledge distillation from a diverse teacher ensemble provides a generalisation benefit that raw accuracy on a saturated benchmark cannot detect.
+Matching in-distribution accuracy conceals where the gap is. Both out-of-distribution evaluations
+favour \modelname{}---as does the corruption result in Section~\ref{sec:robustness}. This
+pattern across three held-out evaluations suggests that distilling from a diverse teacher
+ensemble transfers better across writer and scanner variation than the raw DHCD score implies.

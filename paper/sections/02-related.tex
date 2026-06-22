@@ -7,32 +7,22 @@ since 2015. MallaNet~\cite{malla2025} couples residual branch merging with
 homogeneous filter capsule (HFC) layers to reach 99.71\,\% at 17.32\,M
 parameters; Mishra et al.~\cite{mishra2021} independently report 99.72\,\% with
 a comparably large architecture---for practical purposes, indistinguishable.
-A concurrent preprint reaches 99.80\,\% on the 10-class digit subset~\cite{malla2025digit},
-though digit-only results are not comparable to the 46-class task addressed here.
+A concurrent preprint puts 99.80\,\% on the 10-class digit subset~\cite{malla2025digit}; digit-only results do not transfer to the 46-class task.
 
 \paragraph{Knowledge distillation and compact model design.}
 Hinton et al.~\cite{hinton2015distill} showed that soft probability
-outputs---``dark knowledge''---from a large teacher can guide a smaller student
-to match teacher accuracy at substantially lower capacity.
-Residual identity mappings~\cite{he2016identity} and squeeze-and-excitation
-channel re-weighting~\cite{hu2018senet} are standard building blocks for compact
-architectures that retain representational power while cutting parameter counts.
-To our knowledge, knowledge distillation has not previously been applied to the
-46-class DHCD benchmark, and has rarely been stress-tested on saturated
-benchmarks where the performance gap is already buried inside sampling variation.
+outputs---``dark knowledge''---transfer accuracy from a large teacher to a smaller student
+at substantially lower capacity.
+He et al.~\cite{he2016identity} introduced residual identity mappings; Hu et al.~\cite{hu2018senet} added squeeze-and-excitation channel re-weighting.
+Both are now routine components in compact architectures that trade parameter count for retained discriminative power.
+No prior work has applied knowledge distillation to the 46-class DHCD task.
+Stress-testing distillation on a saturated benchmark---where the performance gap sits inside sampling variation---is likewise unexplored.
 
 \paragraph{Statistical significance and benchmark saturation.}
-When top models err on fewer than 0.3\,\% of examples, raw accuracy rankings
-can shift run-to-run without any real difference in model quality.
-McNemar's test~\cite{mcnemar1947} is the appropriate paired framework:
-conditioning on disagreement examples, it stays sensitive to genuine
-error-pattern differences while staying insensitive to the high base-rate of
-shared correct predictions.
-Wilson score intervals~\cite{wilson1927} provide calibrated single-model
-accuracy bounds; calibration analysis~\cite{guo2017calibration} connects
-confidence to empirical accuracy, a prerequisite for interpreting soft
-distillation targets.
-The prior work~\cite{malla2025} applies McNemar against four weaker baselines
+Raw accuracy rankings on DHCD can flip between runs with no change in model quality, once the best models err on fewer than 0.3\,\% of examples.
+McNemar's test~\cite{mcnemar1947} handles this: by conditioning on disagreement examples, it detects genuine error-pattern shifts without inflating sensitivity from the large pool of shared correct predictions.
+Wilson score intervals~\cite{wilson1927} bound single-model accuracy; \cite{guo2017calibration} links confidence to empirical accuracy, which matters when soft distillation targets are being interpreted.
+\cite{malla2025} applies McNemar against four weaker baselines
 but omits its nearest competitor (Mishra et al., 99.72\,\%) and reports no exact $p$-values.
 \modelname{} closes this gap by reporting exact McNemar $p$-values and Wilson
 CIs across every comparison and showing the benchmark is saturated.
