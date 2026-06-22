@@ -14,9 +14,7 @@ MallaNet architecture of~\cite{malla2025} from the published description,
 including the exact normalisation ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and
 the class-index permutation implied by their data loader.  Seed~0 yields
 \textbf{40 errors} on the held-out test set---\textbf{99.7101\%} accuracy---which
-matches the 99.71\% figure reported in~\cite{malla2025}.  This checkpoint
-(seed 0) serves as the baseline in all McNemar tests, ensuring directly
-comparable per-sample correctness vectors.
+matches the 99.71\% figure reported in~\cite{malla2025}.
 
 \subsection{Main Parity Result}
 \label{sec:parity}
@@ -76,25 +74,15 @@ Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & C
 \end{tabular}\end{table}
 
 Table~\ref{tab:sota} situates \modelname{} against all published results on
-this split.  The mean accuracy of 99.735\,\% is nominally the highest reported,
-but the cleaner story is that the top four models are separated by only
-0.07\,\%---well within sampling noise on a 13,800-image test set.  McNemar
-tests require per-sample predictions and are therefore available only for
-MallaNet, the one prior model we re-implemented.
-
-The result is about size, not a new accuracy ceiling.  \modelname{} is the only
-entry in this table with both a verified parameter budget under 2\,M \emph{and}
-accuracy above 99.5\,\%.  The next lightest model above that threshold is
-MallaNet at 17.32\,M parameters~\cite{malla2025}---a \textbf{15.6$\times$}
-gap.  Prior compact models (Yadav et al., 0.4\,M) fall 0.5\,\% below the
-saturation floor; much larger models (Mishra et al., 39\,M) gain nothing over
-\modelname{} once the benchmark is saturated.
+this split.  The top four models are separated by only 0.07\,\%---well within
+sampling noise on a 13,800-image test set---so the result is about size, not a
+new accuracy ceiling.  \modelname{} is the only entry with both a verified
+parameter budget under 2\,M \emph{and} accuracy above 99.5\,\%; the next
+lightest model above that threshold is MallaNet at 17.32\,M
+parameters~\cite{malla2025}---a \textbf{15.6$\times$} gap.
 
 \subsection{Efficiency}
 \label{sec:efficiency}
-
-Table~\ref{tab:eff} and Figure~\ref{fig:frontier} pin down the matched-accuracy
-computational gap between \modelname{} and MallaNet.
 
 \begin{table}[t]\centering
 \caption{Efficiency (single $32{\times}32$ image; CPU latency
@@ -107,23 +95,4 @@ MallaNet   & 17.32M & 2434M & 69.3MB & 26.1MB & 78.8$\pm$0.89\,ms & 13.6\,img/s 
 \midrule Ratio & 15.6$\times$ & 14.8$\times$ & 15.6$\times$ & 9.5$\times$ & 9.5$\times$ & 11.1$\times$ \\\bottomrule
 \end{tabular}\end{table}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.6\linewidth]{figures/efficiency_frontier.pdf}
-  \caption{Accuracy--parameter trade-off across all models with published
-    results on the standard 46-class DHCD split (Table~\ref{tab:sota}).
-    Wilson 95\,\% CI bars shown for \modelname{} and MallaNet.
-    The dashed red line marks the label-noise ceiling implied by the
-    11-error intrinsic floor (99.92\,\%).}
-  \label{fig:frontier}
-\end{figure}
-
-None of this changes the accuracy conclusion---it just makes the deployment case
-concrete.  \modelname{} requires \textbf{14.8$\times$} fewer multiply-accumulate
-operations (164\,M vs.\ 2,434\,M MACs), occupies \textbf{15.6$\times$} less
-disk space (4.4\,MB vs.\ 69.3\,MB), and uses \textbf{9.5$\times$} less peak
-activation memory (2.8\,MB vs.\ 26.1\,MB).  On a single CPU thread, latency is
-\textbf{9.5$\times$} lower (8.28\,ms vs.\ 78.8\,ms) and single-image
-throughput is \textbf{11.1$\times$} higher (151\,img/s vs.\ 13.6\,img/s).
-No quantisation or pruning was applied; accuracy parity on the 13,800-sample
-test set holds as measured.
+\modelname{} runs at \textbf{9.5$\times$} lower CPU latency and \textbf{14.8$\times$} fewer MACs with no quantisation or pruning; accuracy parity holds.

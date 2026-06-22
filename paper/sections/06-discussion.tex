@@ -8,38 +8,16 @@ That choice reflects the available data, not a design preference.
 Extending the test to the full 36-consonant inventory would require a
 genuinely independent target set with DHCD's label taxonomy; the apparent
 public candidates---principally the Acharya~\cite{acharya2015dhcd} and
-Pant datasets---are same-provenance splits of DHCD itself.  Treating them
-as held-out targets would reintroduce training-evaluation contamination.
-Transferability claims here are therefore limited to digits, not consonants.  That limitation is informative: the
-Devanagari recognition community lacks the independent held-out corpora
-needed to test whether gains survive real provenance shifts.  The digit
-result, where the compact model outperforms a supervised baseline by
-\textbf{+14\,pp} under domain shift, is evidence that those benchmarks are
-worth building, not a substitute for them.
+Pant datasets---are same-provenance splits of DHCD itself.
+Transferability claims here are therefore limited to digits, not consonants.
 
 \paragraph{Single-benchmark evaluation.}
-Consonant-level accuracy results rest on a single held-out split of
-DHCD.  McNemar is still useful here---it compares models on the same
-examples and controls for within-split variability---but it cannot answer
-whether the ordering holds when data provenance changes.  The saturation
-claim is therefore tied to DHCD's particular conditions, including its
+The saturation claim is tied to DHCD's particular conditions---its
 $32{\times}32$ resolution, concentrated label noise, and writer pool.  A
 cleaner or more diverse consonant benchmark might expose capacity
-differences that DHCD no longer reveals.  It seems this reflects the public
-benchmark landscape, not a peculiarity of the present experiment.  The
-right interpretation is narrow but useful: DHCD appears saturated at this
-resolution and provenance, while Devanagari recognition as a broader
-problem remains less settled.
+differences that DHCD no longer reveals.
 
 \paragraph{Efficiency versus accuracy.}
-The \textbf{15.6$\times$} parameter reduction and \textbf{9.5$\times$}
-latency improvement matter because they do not trade away DHCD accuracy.
-At the benchmark's current saturation point, the remaining mistakes appear
-governed by data more than model capacity---so a larger network has little
-room to justify its cost.  Compactness is the appropriate response to that
-evidence, not a concession.  A more
-discriminative benchmark, especially one where additional capacity could
-push below the 11-error floor, might change the efficiency trade-off.
-What these results establish is a deployment argument for DHCD-like conditions;
-whether the same argument holds once the benchmark itself stops being the
-limiting factor is a question for a harder dataset.
+Compactness is the appropriate response to benchmark saturation: when remaining
+errors are governed by data rather than model capacity, a larger network has
+little room to justify its cost.

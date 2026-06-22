@@ -7,46 +7,41 @@ DHCD now has a shared error floor, not just hard examples: across all 15
 \modelname{} students and the reproduced MallaNet baseline~\cite{malla2025},
 \textbf{11 images} defeat every model.  \emph{No} configuration classifies
 these samples correctly, regardless of architecture, training strategy, or
-random seed.  Figure~\ref{fig:floor} visualises the cumulative
-error-sharing distribution: errors fall sharply from the universal
-11-image floor into a sparse tail of model-specific misses, concentrating
-the remaining failure mass in this irreducible core.
+random seed.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.6\linewidth]{figures/error_floor.pdf}
-  \caption{%
-    Number of test images missed by exactly $k$ of the 16 models (15
-    \modelname{} students $+$ MallaNet).
-    Eleven images are missed by all 16 models simultaneously, forming an
-    irreducible error floor; the remaining errors distribute sparsely
-    across individual models.
-  }
-  \label{fig:floor}
+  \begin{subfigure}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{figures/error_floor.pdf}
+    \caption{Images missed by exactly $k$ of the 16 models.
+      Eleven are missed by all 16 simultaneously---an irreducible floor.}
+    \label{fig:floor}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{figures/significance_frontier.pdf}
+    \caption{Every configuration sits above the $p{<}0.05$ threshold
+      (25 errors). The 11-error floor marks the hard lower bound.}
+    \label{fig:sig-frontier}
+  \end{subfigure}
+  \caption{Left: shared error floor across all 16 models.
+    Right: significance frontier---30-error clean ensemble and 36.6-error
+    student mean both lie in the statistical parity region.}
 \end{figure}
 
 When the same 11-image floor catches both a 1.11\,M-parameter compact
-student and a baseline fifteen times its size, the problem is more likely
-in the data than in the models: these samples are \emph{mislabelled or
-fundamentally ambiguous} in DHCD, not hard examples a better model could
-eventually learn.  Outside this floor, most errors are model-specific---the
-mean pairwise Jaccard similarity of error sets across models is
-$\mathbf{0.48}$, which suggests seeds and configurations shuffle which
-images fall in the error tail without reliably reducing it.  Ensembling
-or adding training seeds reduces \emph{variance}, not the underlying
-\emph{bias} imposed by the floor.
+student and a baseline fifteen times its size, the problem is in the data.
+Outside this floor, errors are model-specific (mean pairwise Jaccard
+similarity $\mathbf{0.48}$): seeds shuffle which images fail, but
+ensembling or adding seeds reduces \emph{variance}, not the \emph{bias} the
+floor imposes.
 
 \subsection{Confusable Character Pairs}
 
 Script-level collisions dominate remaining mistakes.  Table~\ref{tab:confusions} lists
 the top distilled-student confusion pairs aggregated across the 10
 distilled seeds.  \textbf{ba / waw} leads with 17 cross-confusions, followed by
-\textbf{waw / tabala} (16) and \textbf{tra / ba} (15).  Roughly 48 errors
-across the distilled student pool trace back to just these three pairs.
-The \textbf{dha / gha} confusion (13 instances) comes from
-near-identical looped ascenders separated only by a subtle curve in the
-lower body of the glyph; the \textbf{da / dhaa} pair (9 instances)
-turns on a single horizontal hairline.
+\textbf{waw / tabala} (16) and \textbf{tra / ba} (15); \textbf{dha / gha}
+(13 instances) and \textbf{da / dhaa} (9 instances) round out the top five.
 
 \begin{table}[t]\centering
 \caption{Top confusion pairs in the distilled student pool (aggregate
@@ -62,26 +57,21 @@ da $\leftrightarrow$ dhaa   & 9  & Single hairline distinguishes the pair \\\bot
 \end{tabular}
 \end{table}
 
-What these pairs expose, it seems, is a resolution limit: the confusable glyphs differ by
-strokes finer than a few pixels at $32{\times}32$ resolution.  Resolving
-them would require higher-resolution inputs or richer annotation marking
-which specific stroke is present; DHCD provides neither.
+These pairs expose a resolution limit: the confusable glyphs differ by
+strokes finer than a few pixels at $32{\times}32$ resolution, and DHCD
+provides neither higher-resolution inputs nor stroke-level annotation.
 
 \subsection{Significance Frontier}
 \label{sec:sig-frontier}
 
-The McNemar test shows that statistical significance on DHCD is separated
-from parity by only a handful of disputed images: it converts accuracy
-into disagreement counts rather than raw totals, making the significance
-frontier strikingly narrow.  Under the exact two-sided
-test~\cite{mcnemar1947} at $\alpha = 0.05$, crossing from
-statistical parity to a demonstrable improvement over the reproduced
-MallaNet baseline (40 errors) requires at most \textbf{25 errors} on the
-same 13,800-sample test set (corresponding to $\geq$99.82\% accuracy) ---
-fewer than 15 additional correct classifications separating inconclusive
-from significant.  A comfortable margin would require $\leq$\textbf{20
-errors} ($\geq$99.855\%), a target that demands near-perfect resolution of
-the ambiguous-glyph pairs in Table~\ref{tab:confusions}.
+Under the exact two-sided McNemar test~\cite{mcnemar1947} at $\alpha = 0.05$,
+crossing from statistical parity to a demonstrable improvement over the
+reproduced MallaNet baseline (40 errors) requires at most \textbf{25 errors}
+($\geq$99.82\% accuracy) --- fewer than 15 additional correct classifications
+separating inconclusive from significant.  A comfortable margin would require
+$\leq$\textbf{20 errors} ($\geq$99.855\%), a target that demands
+near-perfect resolution of the ambiguous-glyph pairs in
+Table~\ref{tab:confusions}.
 
 Every configuration tested stops just short of this frontier.  The best
 single result is \textbf{28 errors}: the 9-teacher ensemble with
@@ -89,9 +79,7 @@ single result is \textbf{28 errors}: the 9-teacher ensemble with
 on methodological grounds (Section~\ref{sec:flip-tta}).  The best
 defensible single seed reaches \textbf{34 errors}; the best ensemble
 without flip-TTA reaches \textbf{30 errors}.  Both sit within the parity
-region, separated from significance not by a rounding issue but by the
-11-image irreducible floor itself: eliminating the floor would put even
-the weaker configurations inside the frontier.
+region, separated from significance by the 11-image irreducible floor itself.
 
 \textbf{No lever tested in this study achieved a statistically
 significant improvement over MallaNet.}  Scaling the teacher pool from 9
@@ -102,39 +90,14 @@ saturated benchmark.  The significance frontier is not a line researchers
 are approaching asymptotically, but a wall built from mislabelled images
 and inherently ambiguous glyphs.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/significance_frontier.pdf}
-  \caption{Every configuration tested sits above the $p{<}0.05$ significance
-    threshold (25 errors).  The best defensible ensemble result (30 errors)
-    and the primary student mean (36.6 errors) both lie in the statistical
-    parity region.  The 11-error label-noise floor marks the hard lower bound
-    no model can cross at current data quality.}
-  \label{fig:sig-frontier}
-\end{figure}
 
 \subsection{Calibration}
 
-Calibration confirms residual errors are confident failures, not ordinary
-uncertainty.  Expected Calibration Error (ECE)~\cite{guo2017calibration},
-measured with 15 equal-width bins on the held-out DHCD test set, falls in
-the range \textbf{0.13--0.16} across all \modelname{} student
-configurations.  Unremarkable values for softmax classifiers without
-post-hoc temperature scaling---but they tell a consistent story:
-moderate over-confidence concentrated at the extremes of the confidence
-distribution, where models assign very high probabilities to characters
-they have seen thousands of times in training.  One interpretation is
-that this pattern reflects training on a near-clean benchmark whose label
-noise is confined to the 11-image floor rather than diffused across the
-full class distribution.
-
-Two features of the calibration landscape stand out.  ECE does
-not co-vary with accuracy across seeds: better seeds are not better
-calibrated, and worse seeds are not systematically over-confident in
-distinct ways.  Calibration is essentially uniform while accuracy varies
-within a narrow band.  Then there is the floor itself: the 11 floor images
-sit at the tails of the confidence distribution regardless of seed---models
-are confidently wrong on these samples, not uncertain.  Both observations
-point to the same conclusion: the error floor is arguably a data-level
-property imposed by the images themselves, not a model-level property that
-architectural or training choices can correct.
+Expected Calibration Error (ECE)~\cite{guo2017calibration} falls in the
+range \textbf{0.13--0.16} across all \modelname{} configurations ---
+unremarkable values for softmax classifiers without post-hoc temperature
+scaling.  ECE does not co-vary with accuracy across seeds: better seeds are
+not better calibrated.  Critically, the 11 floor images are confidently
+wrong, not uncertain: models assign high probability to an incorrect class
+on every seed, confirming the error floor is a data-level property that
+architectural or training choices cannot correct.

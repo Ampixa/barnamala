@@ -7,27 +7,27 @@ handwriting ambiguity than by model capacity---which means throwing a larger
 recognizer at the problem no longer buys a better one.  Compactness stops
 being a compromise at that point.  It becomes the right operating point.
 
-That reframing has practical weight.  \modelname{} reaches \textbf{99.73\,\%}
-accuracy with just \textbf{1.11\,M} parameters, achieving statistical parity
-with the leading large-model baseline (McNemar $p = 0.345$), even before
-knowledge distillation enters the picture.  Efficiency profiling puts the
-upshot in concrete terms: a 15.6$\times$ reduction in parameters and memory
-and a 9.5$\times$ CPU-latency reduction at no accuracy cost, with fully
-reproducible artifacts released.
+\modelname{} reaches \textbf{99.73\,\%} accuracy with just \textbf{1.11\,M}
+parameters, achieving statistical parity with the leading large-model baseline
+(McNemar $p = 0.345$), even before knowledge distillation enters the picture:
+a 15.6$\times$ reduction in parameters and a 9.5$\times$ CPU-latency reduction
+at no accuracy cost.  Why can't anything pull ahead?  The same 11-image
+intrinsic floor defeats every configuration tested---large teacher ensembles
+included---and ablations close the obvious escape routes: distillation target
+cleanliness, ensemble size, and test-time augmentation all produce no
+statistically significant gain.  The floor is the ceiling.
 
-Why can't anything pull ahead?  Paired evaluation exposes the answer.
-The same 11-image intrinsic floor defeats every configuration tested---large
-teacher ensembles included---and the ablations close the obvious escape
-routes.  Distillation target cleanliness, ensemble size, and test-time
-augmentation produce no statistically significant gain once sampling noise
-is controlled.  Scaling the teacher pool from 9 to 15 changes nothing
-outside the significance frontier.  The floor is the ceiling.
+Two limitations are worth noting.  The saturation claim is tied to DHCD's
+particular conditions---$32{\times}32$ resolution, concentrated label noise,
+and its writer pool; a cleaner or higher-resolution benchmark might reveal
+capacity differences DHCD can no longer expose.  Transfer results are limited
+to the \textbf{digit subset} (10 of 46 classes): no independent consonant
+target set with DHCD's label taxonomy exists, so consonant-level
+transferability remains untested.
 
-For Devanagari recognition, the implication is not to keep polishing
-architectures against DHCD, but to measure more honestly and move to
-harder evidence.  \emph{Paired evaluation protocols} (McNemar or similar)
-should be standard before gains of a few hundredths of a percent are
-treated as progress.  The field also needs \emph{fresh, harder benchmarks}:
-higher-resolution scans, genuinely independent writer pools, or multi-script
-character inventories that do not share DHCD's provenance and can separate
-models that DHCD can no longer separate.
+For Devanagari recognition the implication is to measure more honestly and move
+to harder evidence.  \emph{Paired evaluation protocols} (McNemar or similar)
+should be standard before gains of a few hundredths of a percent are treated as
+progress.  The field needs \emph{fresh, harder benchmarks}: higher-resolution
+scans, genuinely independent writer pools, or multi-script inventories that can
+separate models DHCD no longer can.

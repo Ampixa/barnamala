@@ -3,74 +3,55 @@
 
 The DHCD dataset~\cite{acharya2015dhcd} has become the standard benchmark for
 46-class handwritten Devanagari character recognition. Top-1 accuracies have
-crowded into a narrow band above 99.7\,\%---a situation that, it turns out,
-makes the benchmark harder to interpret than it first appears.
-MallaNet~\cite{malla2025} reaches 99.71\,\% with a \textbf{17.32\,M}-parameter
-convolutional architecture; Mishra~\cite{mishra2021} independently reports
-99.72\,\% with a similarly large model.
-At this level successive gains are measured in \emph{hundredths of a percent},
-yet the models claiming them still carry parameter budgets far beyond what a
-compact on-device recognizer can reasonably sustain.
-So the question the field arguably needs answered is not which model ranks
-first---it is whether the gap between large and small models reflects a real
-performance difference or just measurement noise.
+crowded into a narrow band above 99.7\,\%: MallaNet~\cite{malla2025} reaches
+99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture;
+Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly large
+model. At this level successive gains are measured in \emph{hundredths of a
+percent}, yet models still carry parameter budgets far beyond what a compact
+on-device recognizer can sustain.
 
-Existing DHCD papers leave that question unresolved.
-Point accuracies dominate. When McNemar testing appears at all, it is used
-selectively against weaker baselines, without testing the nearest competitor
-and without reporting exact $p$-values.
-With a test set of $n{=}13{,}800$ samples and accuracies near 99.7\,\%,
-overlapping unpaired confidence intervals are essentially guaranteed---raw-accuracy
-rankings alone carry little inferential weight.
+Existing DHCD papers leave unresolved whether these gains are real. Point
+accuracies dominate; McNemar testing, when it appears, is applied selectively
+against weaker baselines without exact $p$-values. With $n{=}13{,}800$ test
+samples near 99.7\,\%, raw-accuracy rankings alone carry little inferential
+weight.
 
-The decisive question is \emph{paired}: on the \emph{same} test images, do two
-models fail on \emph{different} examples?
-We answer it with the exact McNemar test for every student--teacher pair we
-evaluate, alongside Wilson confidence intervals for each model's accuracy.
-Applying this systematically---rather than selectively---changes what the
-leaderboard actually says.
+We answer the decisive \emph{paired} question---do two models fail on
+\emph{different} examples?---with exact McNemar tests for every student--teacher
+pair and Wilson confidence intervals for each model's accuracy. Applying this
+systematically changes what the leaderboard actually says.
 
-The result is striking. A \textbf{1.11\,M}-parameter student reaches statistical
-parity with MallaNet (McNemar $p=0.345$) using \textbf{15.6\(\times\)} fewer
-parameters, and the same parity holds \emph{even without knowledge distillation}.
-This turns out to matter more than expected: across distillation targets
-(TTA-softened vs.\ clean no-TTA targets, and a supervised control) and teacher
+A \textbf{1.11\,M}-parameter student reaches statistical parity with MallaNet
+(McNemar $p=0.345$) using \textbf{15.6\(\times\)} fewer parameters, and the
+same parity holds \emph{even without knowledge distillation}. Across distillation
+targets (TTA-softened vs.\ clean no-TTA, and a supervised control) and teacher
 ensemble size (9 vs.\ 15 teachers), \emph{no lever} produces a statistically
-significant improvement.
-Every model tested converges to the same \textbf{11-error intrinsic floor},
-where DHCD's label noise and handwriting ambiguity appear to dominate.
-The benchmark is saturated. Meaningful progress now requires either a harder
+significant improvement. Every model tested converges to the same
+\textbf{11-error intrinsic floor}; meaningful progress now requires a harder
 evaluation set or substantially different modelling assumptions.
 
 \medskip
 \noindent\textbf{Contributions.}
 \begin{itemize}
-  \item[\textbf{C1.}] \modelname{}---a compact student with \textbf{1.11\,M}
-    parameters---achieves \textbf{99.73\,\%} on DHCD, the highest reported
-    accuracy on the standard 46-class split, at a \textbf{15.6\(\times\)}
-    smaller footprint than prior state-of-the-art.
-    McNemar ($p=0.345$) confirms statistical parity with the nearest large
-    baseline, and the student ties it \emph{even without distillation}.
+  \item[\textbf{C1.}] \modelname{}---\textbf{1.11\,M} parameters---achieves
+    \textbf{99.73\,\%} on DHCD (highest reported on the standard 46-class
+    split) at \textbf{15.6\(\times\)} smaller footprint than prior
+    state-of-the-art; McNemar ($p=0.345$) confirms parity even without
+    distillation.
 
-  \item[\textbf{C2.}] Exact McNemar tests and Wilson CIs applied
-    systematically (not selectively) across all configurations reveal
-    that DHCD is \textbf{saturated}: every model shares the same
-    \textbf{11-error intrinsic floor}.
+  \item[\textbf{C2.}] Exact McNemar tests and Wilson CIs applied across all
+    configurations reveal DHCD is \textbf{saturated}: every model shares the
+    same \textbf{11-error intrinsic floor}.
 
-  \item[\textbf{C3.}] We ablate distillation targets (TTA-softened vs.\ clean
-    no-TTA targets vs.\ supervised control), teacher ensemble size (9 vs.\ 15
-    teachers), and test-time augmentation.
-    The ablations show which design choices matter and---once statistical noise
-    is properly accounted for---which arguably do not.
+  \item[\textbf{C3.}] Ablations over distillation targets, teacher ensemble
+    size (9 vs.\ 15), and TTA show which choices matter once statistical noise
+    is properly accounted for.
 
-  \item[\textbf{C4.}] Efficiency, transfer, and robustness profiling:
-    \modelname{} is \textbf{15.6\(\times\)} smaller and faster than
-    MallaNet, transfers to CMATERdb digits (zero-shot \textbf{76.6\%};
-    fine-tuned \textbf{97.8\%}), and remains far more robust to common
+  \item[\textbf{C4.}] \modelname{} is \textbf{15.6\(\times\)} smaller and
+    faster than MallaNet, transfers to CMATERdb digits (zero-shot
+    \textbf{76.6\%}; fine-tuned \textbf{97.8\%}), and is far more robust to
     corruptions (mCA \textbf{75.7\%} vs.\ \textbf{38.7\%}).
 
-  \item[\textbf{C5.}] Training code, model weights, distillation scripts, and
-    evaluation harnesses are released at \repourl{}---fully reproducible
-    artifacts for future work on Devanagari recognition and benchmark
-    saturation.
+  \item[\textbf{C5.}] Code, weights, and evaluation harnesses released at
+    \repourl{}.
 \end{itemize}

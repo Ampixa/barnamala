@@ -1,30 +1,16 @@
 \subsection{Cross-Dataset Generalisation}
 \label{sec:ood}
 
-Both \modelname{} and the reproduced MallaNet baseline are evaluated zero-shot
-on two independently collected Devanagari datasets---different writers, scanner
-workflows, and collection years.  No fine-tuning or parameter adaptation is
-applied in either case.
+Both models are evaluated zero-shot on two independently collected Devanagari datasets---different writers, scanner workflows, and collection years---with no fine-tuning applied.
 
 \paragraph{NHCD (Pant 2012).}
-The Nepali Handwritten Character Dataset~\cite{pant2012nhcd} was assembled at
-Tribhuvan University, Nepal, in 2012---three years before DHCD, with 40 named
-contributors whose identifiers are encoded in the filenames, and no writer
-overlap.  It covers the same 46-class inventory (36 consonants\,+\,10 digits)
-in $28{\times}28$ JPEG images with dark-ink-on-white polarity.  Before
-evaluation we polarity-invert and bilinearly resize to $32{\times}32$ to match
-the DHCD convention; no labels are used.
-
-The consonant gap is the striking number here.
-\modelname{} achieves \textbf{78.92\%} zero-shot overall
+The Nepali Handwritten Character Dataset~\cite{pant2012nhcd} covers the same 46-class inventory in $28{\times}28$ JPEG images; we polarity-invert and bilinearly resize to $32{\times}32$ before evaluation.
+\modelname{} achieves \textbf{78.92\%} zero-shot
 (95.80\% on digits, 72.33\% on consonants).
 MallaNet collapses to \textbf{23.99\%}
 (58.85\% on digits, 10.38\% on consonants)---a \textbf{55\,pp gap} despite
-identical in-distribution performance on DHCD.  The +62\,pp consonant
-disparity appears to reflect MallaNet's homogeneous filter capsule (HFC) layers
-and fixed $(0.5,\,0.5)$ normalisation overfitting to DHCD's specific stroke
-rendering, while soft-label training from a diverse teacher ensemble produces
-representations that are less dataset-specific.
+identical in-distribution performance on DHCD, with the +62\,pp consonant
+disparity being the most striking number.
 
 One systematic error cluster is linguistically informative.
 For both models, the four dental/retroflex consonant pairs
@@ -36,18 +22,10 @@ traditions---a script-level domain gap that neither model resolves,
 though \modelname{} handles the remaining classes substantially better.
 
 \paragraph{Prashanth et al.\ 2021.}
-Prashanth et al.~\cite{prashanth2021} provide 22{,}500 handwritten
-Devanagari digit images (10 classes, 2{,}250 per digit, $28{\times}28$
-JPEG) collected independently from DHCD, with matching dark-background
-polarity.
-After $32{\times}32$ resize, \modelname{} achieves \textbf{79.31\%}
-zero-shot; MallaNet achieves \textbf{72.60\%}.
-Both numbers are consistent with the NHCD digit outcome and the
-CMATERdb result from Section~\ref{sec:transfer}---the digit representation gap
-seems reproducible across independent datasets.
-Devanagari digit~5 confuses with digit~7 at high rates for both
-models, which reflects a genuine visual similarity in the script rather than a
-model-specific artefact.
+After $32{\times}32$ resize, \modelname{} achieves \textbf{79.31\%} zero-shot on
+this 22{,}500-image digit dataset~\cite{prashanth2021}; MallaNet achieves \textbf{72.60\%}.
+Both results are consistent with the NHCD digit outcome and the CMATERdb result from Section~\ref{sec:transfer}.
+Devanagari digit~5 confuses with digit~7 at high rates for both models, reflecting a genuine visual similarity in the script.
 
 \begin{table}[t]\centering
 \caption{Zero-shot cross-dataset accuracy. Both models trained on DHCD
@@ -67,9 +45,4 @@ Gap                       & $+$54.9\,pp     & $+$61.9\,pp      & $+$36.9\,pp    
 \end{tabular}\end{table}
 
 Matched in-distribution accuracy conceals a substantial generalisation gap.
-The compact distilled model transfers reliably across writer pools and scanner
-workflows; the larger model does not.  Both out-of-distribution evaluations
-consistently favour \modelname{}---as does the corruption-robustness result
-from Section~\ref{sec:robustness}---suggesting that knowledge distillation from
-a diverse teacher ensemble provides a generalisation benefit that raw accuracy
-on a saturated benchmark cannot detect.
+Both out-of-distribution evaluations consistently favour \modelname{}---as does the corruption-robustness result from Section~\ref{sec:robustness}---suggesting that knowledge distillation from a diverse teacher ensemble provides a generalisation benefit that raw accuracy on a saturated benchmark cannot detect.

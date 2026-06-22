@@ -41,61 +41,29 @@ Ensemble & Errors & Acc\,\% & McNemar $p$ & $p{<}0.05$? \\\midrule
 9 teachers, flip-TTA  & 28 & 99.797 & 0.029  & fragile \\\bottomrule
 \end{tabular}\end{table}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.9\linewidth]{figures/teacher_diversity.pdf}
-  \caption{Individual teacher error counts span 27--43, but both the 9-teacher
-    and 15-teacher ensembles collapse to the same 30-error ceiling.
-    Adding six more teachers provides no gain because the remaining errors
-    are concentrated in the 11-image irreducible floor, not in
-    model-specific variance.}
-  \label{fig:teacher-div}
-\end{figure}
-
-It is worth pausing on why this negative result is as clean as it is.  The
-individual teachers still disagree enough to make the test meaningful---clean
-per-model error counts are 27, 28, 30, 30, 32, 34, 36, 37, 37, 39, 39, 40,
-41, 42, and 43---so the vote is not trivially saturated by a homogeneous pool.
-Yet both the 9-teacher and the 15-teacher majority-vote pools plateau at
-\textbf{30 errors} (99.783\%), with an identical McNemar $p = 0.0755$ against
-the reproduced MallaNet baseline.  This is a cleaner negative result than it
-might appear: ensemble diversity is not the bottleneck.  The remaining 30
-errors sit in an irreducible floor where additional models vote the same wrong
-answer, not in the tail of model-specific variance that more teachers would
-correct.
+Individual teachers disagree enough to make the test meaningful---clean
+per-model error counts span 27--43---yet both the 9-teacher and 15-teacher
+majority-vote pools plateau at \textbf{30 errors} (99.783\%), with an
+identical McNemar $p = 0.0755$.  Ensemble diversity is not the bottleneck:
+the remaining errors sit in an irreducible floor where additional models vote
+the same wrong answer.
 
 \subsection{Flip-TTA at Test Time}
 \label{sec:flip-tta}
 
-Averaging each teacher's predictions over the original and horizontally-flipped
-test image---before taking the majority vote---is what the third row of
-Table~\ref{tab:ensemble} tests.  Errors drop to \textbf{28} ($p = 0.029$),
-the only entry in our study that crosses the 0.05 threshold.
-
-We do not treat this as a positive result, for two reasons.
-
-First, flip-TTA is semantically invalid for Devanagari.  Horizontal reflection
-produces characters that do not exist in the script, and the training
-distribution deliberately excludes horizontal flips (Section~\ref{sec:training}).
-Averaging predictions over that out-of-distribution augmentation introduces a
-systematic bias with data-dependent, uncontrolled direction.
-
-The apparent gain is also fragile.  When flip-TTA is applied to
-\emph{individual} teachers rather than the ensemble, errors increase
-dramatically, reaching \textbf{88} and \textbf{102} on the worst-affected
-checkpoints, up from clean baselines of 30--43.  The ensemble partially
-masks this variance because individual teachers' errors correlate in ways that
-happen to cancel on this particular test split---and the McNemar margin itself
-is only 2 samples (30 vs.\ 28 errors) on a test set of 13,800 images, giving a
-Wilson interval that nearly straddles parity.
-
-One detail deserves clarification.  The student distillation targets in
-Section~\ref{sec:kd} are \emph{also} generated with flip-averaging, but over
-\emph{training} images, where the flip is applied to the source document being
-transcribed, not to a held-out test sample.  That use is a target-smoothing
-device during training, not a prediction strategy, and is not affected by the
-invalidity of flip-TTA as a test-time predictor.  The finding here invalidates
-flip augmentation when it is used to produce final predictions on the test set.
-We therefore exclude the $p = 0.029$ result from the set of defensible
-conclusions and report the clean ensemble baselines
-(30 errors) as the upper-bound reference for teacher performance.
+Averaging each teacher's logits over the original and horizontally-flipped test
+image drops errors to \textbf{28} ($p = 0.029$), the only result in our study
+that crosses the 0.05 threshold; we do not treat this as a positive result.
+Flip-TTA is semantically invalid for Devanagari: horizontal reflection produces
+characters absent from the script, and the training distribution deliberately
+excludes such flips (Section~\ref{sec:training}).
+The gain is also fragile: applied to \emph{individual} teachers, flip-TTA
+raises errors to \textbf{88} and \textbf{102} on the worst-affected checkpoints,
+up from clean baselines of 30--43, with the ensemble masking this variance only
+by accident on this split.
+Note that the student's training-time targets (Section~\ref{sec:kd}) also use
+flip-averaging, but over \emph{training} images as a target-smoothing device---a
+distinct use that is unaffected by the invalidity of flip-TTA as a test-time
+predictor.
+We therefore exclude the $p = 0.029$ result and report the 30-error clean
+ensemble as the upper-bound reference for teacher performance.
