@@ -1,33 +1,34 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The saturation conclusion is uncomfortable but hard to avoid.  At current
+The saturation conclusion is uncomfortable but hard to avoid. At current
 resolution, DHCD's remaining mistakes are governed more by label noise and
 handwriting ambiguity than by model capacity---which means throwing a larger
-recognizer at the problem no longer buys a better one.  Compactness stops
-being a compromise at that point.  It becomes the right operating point.
+recognizer at the problem no longer buys a better one. Compactness stops
+being a compromise at that point. It becomes the right operating point.
 
 \modelname{} reaches \textbf{99.73\,\%} accuracy with just \textbf{1.11\,M}
 parameters, achieving statistical parity with the leading large-model baseline
 (McNemar $p = 0.345$), even before knowledge distillation enters the picture:
 a 15.6$\times$ reduction in parameters and a 9.5$\times$ CPU-latency reduction
-at no accuracy cost.  Why can't anything pull ahead?  The same 11-image
+at no accuracy cost. Why can't anything pull ahead? The same 11-error
 intrinsic floor defeats every configuration tested---large teacher ensembles
 included---and ablations close the obvious escape routes: distillation target
 cleanliness, ensemble size, and test-time augmentation all produce no
-statistically significant gain.  The floor is the ceiling.
+statistically significant gain. The floor is the ceiling.
 
-Two limitations are worth noting.  The saturation claim is tied to DHCD's
-particular conditions---$32{\times}32$ resolution, concentrated label noise,
-and its writer pool; a cleaner or higher-resolution benchmark might reveal
-capacity differences DHCD can no longer expose.  Transfer results are limited
-to the \textbf{digit subset} (10 of 46 classes): no independent consonant
-target set with DHCD's label taxonomy exists, so consonant-level
-transferability remains untested.
+Two boundaries should be stated plainly. The saturation claim is tied to
+DHCD's particular conditions---$32{\times}32$ resolution, concentrated label
+noise, and its specific writer pool; a cleaner or higher-resolution benchmark
+might expose capacity differences DHCD can no longer reveal. Transfer results
+cover only the \textbf{digit subset} (10 of 46 classes): no independent
+consonant target set sharing DHCD's label taxonomy exists, so consonant-level
+transferability is out of scope here.
 
-For Devanagari recognition the implication is to measure more honestly and move
-to harder evidence.  \emph{Paired evaluation protocols} (McNemar or similar)
-should be standard before gains of a few hundredths of a percent are treated as
-progress.  The field needs \emph{fresh, harder benchmarks}: higher-resolution
-scans, genuinely independent writer pools, or multi-script inventories that can
-separate models DHCD no longer can.
+The practical implication for Devanagari recognition is to measure more
+honestly before claiming progress. Gains of a few hundredths of a percent
+mean nothing without \emph{paired evaluation}---McNemar or equivalent---against
+the specific test cases where the compared model also fails. The benchmark
+question is harder: DHCD has run its course as a discriminator.
+Higher-resolution scans or genuinely independent writer pools are the next
+necessary step.

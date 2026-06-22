@@ -1,58 +1,59 @@
 \section{Introduction}
 \label{sec:intro}
 
-The DHCD dataset~\cite{acharya2015dhcd} has become the standard benchmark for
+The DHCD dataset~\cite{acharya2015dhcd} is the standard benchmark for
 46-class handwritten Devanagari character recognition. Top-1 accuracies have
 crowded into a narrow band above 99.7\,\%: MallaNet~\cite{malla2025} reaches
 99.71\,\% with a \textbf{17.32\,M}-parameter convolutional architecture;
 Mishra~\cite{mishra2021} independently reports 99.72\,\% with a similarly large
 model. At this level successive gains are measured in \emph{hundredths of a
-percent}, yet models still carry parameter budgets far beyond what a compact
+percent}. Models still carry parameter budgets far beyond what a compact
 on-device recognizer can sustain.
 
-Existing DHCD papers leave unresolved whether these gains are real. Point
-accuracies dominate; McNemar testing, when it appears, is applied selectively
-against weaker baselines without exact $p$-values. With $n{=}13{,}800$ test
-samples near 99.7\,\%, raw-accuracy rankings alone carry little inferential
-weight.
+Whether those gains are real is a question existing DHCD papers leave open.
+Point accuracies dominate. McNemar testing, when it appears, is applied
+selectively against weaker baselines without exact $p$-values. With
+$n{=}13{,}800$ test samples near 99.7\,\%, raw-accuracy rankings alone carry
+little inferential weight.
 
-We answer the decisive \emph{paired} question---do two models fail on
-\emph{different} examples?---with exact McNemar tests for every student--teacher
-pair and Wilson confidence intervals for each model's accuracy. Applying this
-systematically changes what the leaderboard actually says.
+The decisive question is \emph{paired}: do two models fail on
+\emph{different} examples? We answer it with exact McNemar tests for every
+student--teacher pair and Wilson confidence intervals for each model's accuracy.
+Applying this systematically changes what the leaderboard actually says.
 
 A \textbf{1.11\,M}-parameter student reaches statistical parity with the
-prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$) using
-\textbf{15.6\(\times\)} fewer parameters, and the
-same parity holds \emph{even without knowledge distillation}. Across distillation
-targets (TTA-softened vs.\ clean no-TTA, and a supervised control) and teacher
-ensemble size (9 vs.\ 15 teachers), \emph{no lever} produces a statistically
-significant improvement. Every model tested converges to the same
-\textbf{11-error intrinsic floor}; meaningful progress now requires a harder
-evaluation set or substantially different modelling assumptions.
+prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$)---and the
+same parity holds \emph{even without knowledge distillation}.
+Across distillation targets (TTA-softened vs.\ clean no-TTA, and a supervised
+control) and teacher ensemble size (9 vs.\ 15 teachers), \emph{no lever}
+produces a statistically significant improvement. Every configuration tested
+converges to the same \textbf{11-error intrinsic floor}; meaningful progress
+now requires a harder evaluation set or substantially different modelling
+assumptions.
 
 \medskip
 \noindent\textbf{Contributions.}
 \begin{itemize}
   \item[\textbf{C1.}] \modelname{}---\textbf{1.11\,M} parameters---achieves
-    \textbf{99.73\,\%} on DHCD (highest reported on the standard 46-class
-    split) at \textbf{15.6\(\times\)} smaller footprint than prior
-    state-of-the-art; McNemar ($p=0.345$) confirms parity even without
+    \textbf{99.73\,\%} on DHCD, the highest reported on the standard 46-class
+    split, at \textbf{15.6\(\times\)} smaller footprint than prior
+    state-of-the-art. McNemar ($p=0.345$) confirms parity even without
     distillation.
 
-  \item[\textbf{C2.}] Exact McNemar tests and Wilson CIs applied across all
-    configurations reveal DHCD is \textbf{saturated}: every model shares the
-    same \textbf{11-error intrinsic floor}.
+  \item[\textbf{C2.}] DHCD is \textbf{saturated}. Exact McNemar tests and
+    Wilson CIs applied across all configurations reveal a shared
+    \textbf{11-error intrinsic floor} that no configuration escapes.
 
-  \item[\textbf{C3.}] Ablations over distillation targets, teacher ensemble
-    size (9 vs.\ 15), and TTA show which choices matter once statistical noise
-    is properly accounted for.
+  \item[\textbf{C3.}] The ablations settle which choices matter: distillation
+    target cleanliness, ensemble size (9 vs.\ 15 teachers), and TTA each
+    produce no statistically significant gain once noise is properly accounted
+    for.
 
-  \item[\textbf{C4.}] \modelname{} is \textbf{15.6\(\times\)} smaller and
-    faster than prior state-of-the-art, transfers to CMATERdb digits (zero-shot
-    \textbf{76.6\%}; fine-tuned \textbf{97.8\%}), and holds up far better
-    under corruptions (mCA \textbf{75.7\%} vs.\ \textbf{38.7\%}).
+  \item[\textbf{C4.}] At \textbf{15.6\(\times\)} smaller and \textbf{9.5\(\times\)}
+    faster on CPU than prior state-of-the-art, \modelname{} transfers to
+    CMATERdb digits (zero-shot \textbf{76.6\%}; fine-tuned \textbf{97.8\%})
+    and degrades far less under corruptions (mCA \textbf{75.7\%}
+    vs.\ \textbf{38.7\%}).
 
-  \item[\textbf{C5.}] Everything needed to reproduce the experiments is at
-    \repourl{}.
+  \item[\textbf{C5.}] Full reproduction materials are at \repourl{}.
 \end{itemize}
