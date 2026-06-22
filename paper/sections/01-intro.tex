@@ -17,18 +17,17 @@ $n{=}13{,}800$ test samples near 99.7\,\%, raw-accuracy rankings alone carry
 little inferential weight.
 
 The decisive question is \emph{paired}: do two models fail on
-\emph{different} examples? We answer it with exact McNemar tests for every
-student--teacher pair and Wilson confidence intervals for each model's accuracy.
-Applying this systematically changes what the leaderboard actually says.
+\emph{different} examples? Exact McNemar tests across every student--teacher
+pair, with Wilson confidence intervals bounding each model's accuracy, answer
+it directly. The leaderboard looks different once that discipline is applied.
 
 A \textbf{1.11\,M}-parameter student reaches statistical parity with the
-prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$)---and the
-same parity holds \emph{even without knowledge distillation}.
-Across distillation targets (TTA-softened vs.\ clean no-TTA, and a supervised
-control) and teacher ensemble size (9 vs.\ 15 teachers), \emph{no lever}
-produces a statistically significant improvement. Every configuration tested
-converges to the same \textbf{11-error intrinsic floor}; meaningful progress
-now requires a harder evaluation set or substantially different modelling
+prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$). That holds
+\emph{even without knowledge distillation}. Neither the distillation target
+(TTA-softened versus clean) nor the ensemble size (9 versus 15 teachers)
+makes a statistically significant difference. Every configuration tested
+converges to the same \textbf{11-error intrinsic floor}; progress now
+requires a harder evaluation set or substantially different modelling
 assumptions.
 
 \medskip
