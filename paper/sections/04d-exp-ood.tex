@@ -7,7 +7,7 @@ Both models are evaluated zero-shot on two independently collected Devanagari da
 The Nepali Handwritten Character Dataset~\cite{pant2012nhcd} covers the same 46-class inventory in $28{\times}28$ JPEG images; we polarity-invert and bilinearly resize to $32{\times}32$ before evaluation.
 \modelname{} achieves \textbf{78.92\%} zero-shot
 (95.80\% on digits, 72.33\% on consonants).
-MallaNet collapses to \textbf{23.99\%}
+The baseline~\cite{malla2025} collapses to \textbf{23.99\%}
 (58.85\% on digits, 10.38\% on consonants)---a \textbf{55\,pp gap} despite
 identical in-distribution performance on DHCD, with the +62\,pp consonant
 disparity being the most striking number.
@@ -23,7 +23,7 @@ though \modelname{} handles the remaining classes substantially better.
 
 \paragraph{Prashanth et al.\ 2021.}
 After $32{\times}32$ resize, \modelname{} achieves \textbf{79.31\%} zero-shot on
-this 22{,}500-image digit dataset~\cite{prashanth2021}; MallaNet achieves \textbf{72.60\%}.
+this 22{,}500-image digit dataset~\cite{prashanth2021}; the baseline achieves \textbf{72.60\%}.
 Both results are consistent with the NHCD digit outcome and the CMATERdb result from Section~\ref{sec:transfer}.
 Devanagari digit~5 confuses with digit~7 at high rates for both models, reflecting a genuine visual similarity in the script.
 

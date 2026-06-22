@@ -4,7 +4,7 @@
 \subsection{The Shared Error Floor}
 
 DHCD now has a shared error floor, not just hard examples: across all 15
-\modelname{} students and the reproduced MallaNet baseline~\cite{malla2025},
+\modelname{} students and the reproduced baseline~\cite{malla2025},
 \textbf{11 images} defeat every model.  \emph{No} configuration classifies
 these samples correctly, regardless of architecture, training strategy, or
 random seed.
@@ -66,7 +66,7 @@ provides neither higher-resolution inputs nor stroke-level annotation.
 
 Under the exact two-sided McNemar test~\cite{mcnemar1947} at $\alpha = 0.05$,
 crossing from statistical parity to a demonstrable improvement over the
-reproduced MallaNet baseline (40 errors) requires at most \textbf{25 errors}
+reproduced baseline (40 errors) requires at most \textbf{25 errors}
 ($\geq$99.82\% accuracy) --- fewer than 15 additional correct classifications
 separating inconclusive from significant.  A comfortable margin would require
 $\leq$\textbf{20 errors} ($\geq$99.855\%), a target that demands
@@ -82,7 +82,7 @@ without flip-TTA reaches \textbf{30 errors}.  Both sit within the parity
 region, separated from significance by the 11-image irreducible floor itself.
 
 \textbf{No lever tested in this study achieved a statistically
-significant improvement over MallaNet.}  Scaling the teacher pool from 9
+significant improvement over the baseline.}  Scaling the teacher pool from 9
 to 15, applying TTA-softened distillation targets, and running five
 independent seeds all leave configurations outside the significance
 frontier.  This is not a failure of experimental design---it defines a

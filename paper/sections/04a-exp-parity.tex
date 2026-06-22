@@ -8,23 +8,22 @@ We use DHCD~\cite{acharya2015dhcd}, the standard 46-class Devanagari
 handwriting benchmark (36 consonants, 10 numerals): 78,200 training images
 and 13,800 test images, each $32{\times}32$ greyscale.
 
-\paragraph{Reproducing the MallaNet baseline.}
+\paragraph{Reproducing the baseline.}
 To enable sample-level McNemar comparison, we re-implemented the
-MallaNet architecture of~\cite{malla2025} from the published description,
+architecture of~\cite{malla2025} from the published description,
 including the exact normalisation ($\text{mean}{=}0.5,\;\text{std}{=}0.5$) and
 the class-index permutation implied by their data loader.  Seed~0 yields
-\textbf{40 errors} on the held-out test set---\textbf{99.7101\%} accuracy---which
-matches the 99.71\% figure reported in~\cite{malla2025}.
+\textbf{40 errors} (\textbf{99.7101\%}), matching the reported figure.
 
 \subsection{Main Parity Result}
 \label{sec:parity}
 
 Table~\ref{tab:main} compares each \modelname{} configuration across
-five independent seeds with the reproduced MallaNet baseline.
+five independent seeds with the reproduced baseline~\cite{malla2025}.
 
 \begin{table}[t]\centering
 \caption{Main result on DHCD test ($n{=}13{,}800$). Errors over 5
-  seeds; McNemar vs.\ reproduced MallaNet (seed~0).}
+  seeds; McNemar vs.\ reproduced baseline~\cite{malla2025} (seed~0).}
 \label{tab:main}
 \begin{tabular}{lccccc}\toprule
 Configuration & Params & Errors (5 seeds) & Mean$\pm$std & Acc \% & McNemar $p$ \\\midrule
@@ -34,34 +33,26 @@ Configuration & Params & Errors (5 seeds) & Mean$\pm$std & Acc \% & McNemar $p$ 
 MallaNet \cite{malla2025} (repro) & 17.32M & 40 & n/a & 99.710 & n/a \\\bottomrule
 \end{tabular}\end{table}
 
-The headline finding is straightforward: a 1.11\,M-parameter student sits
-inside the noise floor of a 17.32\,M-parameter teacher.  In the
-\textbf{distilled, TTA-targets} configuration, the student learns from 9 teacher
-checkpoints (configurations A, B, C $\times$ seeds 0--2), with soft labels
-produced by flip-averaged test-time augmentation over each training image (see
-\S\ref{sec:kd}).  The result is \textbf{36.6$\pm$2.1} errors (99.735\%); a
-two-sided McNemar $p = 0.345$ makes the compact student statistically
-indistinguishable from the reproduced MallaNet at $\alpha = 0.05$.  The best
-single seed reaches \textbf{34 errors} (99.754\%), with a Wilson 95\%
-confidence interval of \textbf{[99.656\%, 99.824\%]}.  The compact model ties
-it---at \textbf{15.6$\times$} fewer parameters.
+A 1.11\,M-parameter student sits inside the noise floor of a 17.32\,M-parameter
+baseline.  In the \textbf{distilled, TTA-targets} configuration (9 teacher
+checkpoints, flip-averaged soft labels; see~\S\ref{sec:kd}), the result is
+\textbf{36.6$\pm$2.1} errors (99.735\%); McNemar $p = 0.345$ confirms
+statistical indistinguishability at $\alpha = 0.05$.  The best single seed
+reaches \textbf{34 errors} (99.754\%), Wilson 95\% CI
+\textbf{[99.656\%, 99.824\%]}, at \textbf{15.6$\times$} fewer parameters.
 
-What about the ablations?  Using clean single-pass logits from a 15-teacher pool
-rather than flip-averaged targets gives $p = 1.000$ against MallaNet: same
-accuracy tier, no measurable benefit from TTA soft labels.  Somewhat
-surprisingly, the \emph{supervised control}---trained without any teacher signal
-at all---also ties MallaNet ($p = 0.701$).  Parity is not carried by knowledge
-distillation alone; the compact architecture itself is sufficient to match the
-larger model.
+Clean single-pass logits from a 15-teacher pool give $p = 1.000$; the
+supervised control (no teacher at all) gives $p = 0.701$.  Parity is not
+carried by distillation---the architecture alone is sufficient.
 
 \subsection{Comparison with Prior Work}
 \label{sec:sota}
 
 \begin{table}[t]\centering
 \caption{Published results on the standard 46-class DHCD test split
-  (78,200 train / 13,800 test). All accuracies from the primary sources.
-  $\dagger$~McNemar test requires per-sample predictions; only available
-  for the re-implemented MallaNet baseline (Table~\ref{tab:main}).}
+  (78,200 train / 13,800 test). All accuracies from primary sources.
+  McNemar requires per-sample predictions; only available for the
+  re-implemented baseline (Table~\ref{tab:main}).}
 \label{tab:sota}
 \begin{tabular}{llrrl}\toprule
 Model & Year & Params & Accuracy & Architecture \\\midrule
@@ -73,20 +64,17 @@ Yadav et al.~\cite{yadav2024mlcnn}& 2024 & ${\approx}0.4$\,M& 99.21\,\%  & Modif
 Acharya et al.~\cite{acharya2015dhcd}& 2015 & ${\approx}0.03$\,M & 98.47\,\% & CNN baseline \\\bottomrule
 \end{tabular}\end{table}
 
-Table~\ref{tab:sota} situates \modelname{} against all published results on
-this split.  The top four models are separated by only 0.07\,\%---well within
-sampling noise on a 13,800-image test set---so the result is about size, not a
-new accuracy ceiling.  \modelname{} is the only entry with both a verified
-parameter budget under 2\,M \emph{and} accuracy above 99.5\,\%; the next
-lightest model above that threshold is MallaNet at 17.32\,M
-parameters~\cite{malla2025}---a \textbf{15.6$\times$} gap.
+The top four models are separated by only 0.07\,\%---well within sampling noise.
+\modelname{} is the only entry with a verified parameter budget under 2\,M
+\emph{and} accuracy above 99.5\,\%; the next lightest above that threshold
+is~\cite{malla2025} at 17.32\,M---a \textbf{15.6$\times$} gap.
 
 \subsection{Efficiency}
 \label{sec:efficiency}
 
 \begin{table}[t]\centering
-\caption{Efficiency (single $32{\times}32$ image; CPU latency
-  single-thread, mean$\pm$std over 40 runs).}
+\caption{Efficiency vs.\ \cite{malla2025} (single $32{\times}32$ image;
+  CPU latency single-thread, mean$\pm$std over 40 runs).}
 \label{tab:eff}
 \begin{tabular}{lcccccc}\toprule
 Model & Params & MACs & Size & Peak act. & CPU lat.\ (b1) & Tput \\\midrule
@@ -95,4 +83,5 @@ MallaNet   & 17.32M & 2434M & 69.3MB & 26.1MB & 78.8$\pm$0.89\,ms & 13.6\,img/s 
 \midrule Ratio & 15.6$\times$ & 14.8$\times$ & 15.6$\times$ & 9.5$\times$ & 9.5$\times$ & 11.1$\times$ \\\bottomrule
 \end{tabular}\end{table}
 
-\modelname{} runs at \textbf{9.5$\times$} lower CPU latency and \textbf{14.8$\times$} fewer MACs with no quantisation or pruning; accuracy parity holds.
+\textbf{9.5$\times$} lower CPU latency, \textbf{14.8$\times$} fewer MACs,
+no quantisation or pruning; accuracy parity holds.

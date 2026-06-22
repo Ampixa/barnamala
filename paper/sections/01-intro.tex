@@ -21,8 +21,9 @@ We answer the decisive \emph{paired} question---do two models fail on
 pair and Wilson confidence intervals for each model's accuracy. Applying this
 systematically changes what the leaderboard actually says.
 
-A \textbf{1.11\,M}-parameter student reaches statistical parity with MallaNet
-(McNemar $p=0.345$) using \textbf{15.6\(\times\)} fewer parameters, and the
+A \textbf{1.11\,M}-parameter student reaches statistical parity with the
+prior state-of-the-art~\cite{malla2025} (McNemar $p=0.345$) using
+\textbf{15.6\(\times\)} fewer parameters, and the
 same parity holds \emph{even without knowledge distillation}. Across distillation
 targets (TTA-softened vs.\ clean no-TTA, and a supervised control) and teacher
 ensemble size (9 vs.\ 15 teachers), \emph{no lever} produces a statistically
@@ -48,7 +49,7 @@ evaluation set or substantially different modelling assumptions.
     is properly accounted for.
 
   \item[\textbf{C4.}] \modelname{} is \textbf{15.6\(\times\)} smaller and
-    faster than MallaNet, transfers to CMATERdb digits (zero-shot
+    faster than prior state-of-the-art, transfers to CMATERdb digits (zero-shot
     \textbf{76.6\%}; fine-tuned \textbf{97.8\%}), and is far more robust to
     corruptions (mCA \textbf{75.7\%} vs.\ \textbf{38.7\%}).
 

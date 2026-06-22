@@ -98,8 +98,8 @@ split; no test-time augmentation is applied.  Model selection during training
 relies on a 10\% stratified-held-out validation set carved from the official
 training split before any augmentation, preserving class balance throughout.
 
-Statistical comparisons between \modelname{} and the MallaNet
-baseline~\cite{malla2025} use the exact two-sided McNemar
+Statistical comparisons between \modelname{} and the baseline~\cite{malla2025}
+use the exact two-sided McNemar
 test~\cite{mcnemar1947} on per-sample binary correctness indicators from the
 same test set.  Confidence intervals for accuracy and error rate are Wilson
 score intervals at 95\%~\cite{wilson1927}.  We measure calibration quality with
