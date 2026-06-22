@@ -30,12 +30,13 @@ We next ask whether the teacher pool is too small.  Here the ensemble acts as a
 training-time soft targets.  Table~\ref{tab:ensemble} gives a simple answer:
 more teachers do not move the ceiling.
 
-\begin{table}[t]\centering\caption{Teacher ensembles on DHCD test. Scaling from 9 to 15 teachers does not move the plateau.}\label{tab:ensemble}
+\begin{table}[t]\centering
+\caption{Teacher ensembles on DHCD test ($n{=}13{,}800$). Rows 1--2: scaling from 9 to 15 teachers does not move the 30-error plateau. Row 3: adding flip-TTA crosses $p{<}0.05$ but is methodologically invalid (Section~\ref{sec:flip-tta}).}\label{tab:ensemble}
 \begin{tabular}{lcccc}\toprule
-Ensemble & Errors & Acc \% & McNemar $p$ & Sig.? \\\midrule
-9 teachers, clean  & 30 & 99.783 & 0.0755 & no \\
-15 teachers, clean & 30 & 99.783 & 0.0755 & no \\
-9 teachers, +flip-TTA & 28 & 99.797 & 0.029 & fragile \\\bottomrule
+Ensemble & Errors & Acc\,\% & McNemar $p$ & $p{<}0.05$? \\\midrule
+9 teachers, clean     & 30 & 99.783 & 0.0755 & no \\
+15 teachers, clean    & 30 & 99.783 & 0.0755 & no \\
+9 teachers, flip-TTA  & 28 & 99.797 & 0.029  & fragile \\\bottomrule
 \end{tabular}\end{table}
 
 \begin{figure}[t]

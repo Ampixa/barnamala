@@ -1,29 +1,67 @@
 \documentclass[tikz,border=3pt]{standalone}
 \usetikzlibrary{arrows.meta,positioning}
+
+%% Architecture figure — horizontal pipeline.
+%% Each stage block explicitly shows the PreAct SE structure:
+%%   BN·ReLU·Conv 3×3 (×2), with SE after the second conv.
+
 \begin{document}
 \begin{tikzpicture}[
   font=\scriptsize,
   node distance=5mm,
-  flow/.style={-{Latex[length=1.8mm]},line width=0.45pt,rounded corners=2pt},
-  blk/.style={draw,rounded corners=2pt,minimum height=10mm,minimum width=17mm,align=center,inner sep=3pt},
-  stem/.style={blk,fill=gray!20},
-  se/.style={blk,fill=blue!15,minimum width=20mm},
-  gap/.style={blk,fill=green!15},
-  fc/.style={blk,fill=orange!15},
-  note/.style={draw,rounded corners=2pt,fill=white,align=center,inner sep=3pt,font=\tiny}
+  arr/.style={-{Latex[length=1.8mm]},line width=0.45pt,rounded corners=2pt},
+  blk/.style={draw,rounded corners=2pt,minimum height=10mm,
+               align=center,inner sep=3pt,line width=0.44pt},
+  inp/.style={blk,fill=white,   minimum width=14mm},
+  stm/.style={blk,fill=gray!20, minimum width=17mm},
+  stg/.style={blk,fill=blue!14, minimum width=22mm},
+  hd/.style={blk,fill=teal!14,  minimum width=15mm},
+  fclyr/.style={blk,fill=orange!14,minimum width=15mm},
+  note/.style={draw,rounded corners=2pt,fill=white,align=center,
+               inner sep=3pt,font=\tiny,line width=0.4pt},
 ]
-  \node[blk,fill=white] (in) {Input\\$1{\times}32{\times}32$};
-  \node[stem,right=of in] (stem) {Stem\\$3{\times}3$ Conv\\$40{\times}32{\times}32$};
-  \node[se,right=of stem] (s1) {Stage 1\\$2{\times}$ SE block\\$40{\times}32{\times}32$\\[1pt]\textbf{39k params}};
-  \node[se,right=of s1] (s2) {Stage 2\\$2{\times}$ SE block\\$80{\times}16{\times}16$\\[1pt]\textbf{154k params}};
-  \node[se,right=of s2] (s3) {Stage 3\\$2{\times}$ SE block\\$160{\times}8{\times}8$\\[1pt]\textbf{616k params}};
-  \node[gap,right=of s3] (gap) {BN + ReLU\\Global AvgPool\\$160$};
-  \node[fc,right=of gap] (fc) {Dropout\\FC $160{\to}46$};
 
-  \foreach \a/\b in {in/stem,stem/s1,s1/s2,s2/s3,s3/gap,gap/fc}
-    \draw[flow] (\a.east) -- (\b.west);
+\node[inp] (in) {\textbf{Input}\\$1{\times}32{\times}32$};
 
-  \node[note,below=7mm of s2] (legend) {SE block detail: Squeeze $\rightarrow$ FC $\rightarrow$ FC $\rightarrow$ Scale};
-  \draw[flow] (legend.north) -- ++(0,2mm) -| (s2.south);
+\node[stm,right=of in] (stem) {%
+  \textbf{Stem}\\
+  Conv\,$3{\times}3$\\
+  BN\,$\cdot$\,ReLU\\
+  $40{\times}32^2$};
+
+\node[stg,right=of stem] (s1) {%
+  \textbf{Stage\,1}\;(${\times}2$)\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
+  \textbf{39\,k}\quad$40{\times}32^2$};
+
+\node[stg,right=of s1] (s2) {%
+  \textbf{Stage\,2}\;(${\times}2$, stride\,2)\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
+  \textbf{154\,k}\quad$80{\times}16^2$};
+
+\node[stg,right=of s2] (s3) {%
+  \textbf{Stage\,3}\;(${\times}2$, stride\,2)\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\\
+  BN\,$\cdot$\,ReLU\,$\cdot$\,Conv\,$3{\times}3$\,+\,SE\\
+  \textbf{616\,k}\quad$160{\times}8^2$};
+
+\node[hd,right=of s3] (gap) {%
+  BN\,$\cdot$\,ReLU\\
+  Global\\AvgPool\\$160$};
+
+\node[fclyr,right=of gap] (fc) {%
+  Dropout\\FC\,$160{\to}46$};
+
+\foreach \a/\b in {in/stem,stem/s1,s1/s2,s2/s3,s3/gap,gap/fc}
+  \draw[arr] (\a.east) -- (\b.west);
+
+%% SE module annotation (compact note below Stage 2)
+\node[note,below=7mm of s2] (legend) {%
+  SE\,module:\;GAP $\to$ FC\,$\cdot$\,ReLU $\to$ FC\,$\cdot$\,Sigmoid $\to$ channel\,scale\;($r{=}8$)};
+\draw[arr,dashed,color=gray!55,line width=0.38pt]
+  (legend.north) -- ++(0,2mm) -| (s2.south);
+
 \end{tikzpicture}
 \end{document}
